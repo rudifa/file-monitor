@@ -1,0 +1,14 @@
+
+[Desktop Entry]
+Name=File Monitor
+Name[en_US]=File Monitor
+Comment=Display files and automatically redraw them when they change on disk.
+GenericName=File Monitor
+GenericName[en_US]=File Monitor
+Exec=file-monitor
+Terminal=false
+Type=Application
+Icon=file-monitor
+Categories=Utility;Viewer;Monitor;TextTools;Qt;
+MimeType=text/plain;text/x-c;text/css;text/sgml;text/xml;text/html;text/richtext;text/x-script.sh;application/x-bsh;application/x-sh;application/xml;application/xhtml+xml;application/x-javascript;text/x-script.phyton;image/gif;image/jpeg;image/pjpeg;image/png
+StartupNotify=true

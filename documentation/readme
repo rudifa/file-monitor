@@ -1,0 +1,158 @@
+
+File Monitor v1.0.0
+Updated 2010-05-31
+
+Send all feedback/comments/problems to markturney@gmail.com
+Copyright 2010 Mark Turney, licensed under GPLv3 or later.
+
+
+
+WHAT IS FILE MONITOR?
+=========================
+
+File Monitor is a cross-platform viewer that displays files and
+automatically redraws them when they are changed on disk.  This
+makes File Monitor a perfect logfile viewer, or a nice canvas upon
+which to display changing files.  
+
+File Monitor allows you to zoom into and otherwise navigate files of
+interest. Whenever a file is reloaded or closed and opened, all
+navigation settings are restored.
+
+File Monitor supports the display of text, html, svg, and image
+file formats.
+
+For more information on File Monitor, visit:
+
+http://code.google.com/p/file-monitor
+
+
+LICENSING AND COST
+==================
+
+File Monitor is a GPLv3 open source application and as such costs nothing to
+use or distribute.  If you want to re-use the source code of File Monitor,
+you are bound to the GPLv3 license.  For more information on the GPLv3
+license, please open the license.txt file in the install directory or visit:
+http://www.gnu.org/licenses/gpl.html
+
+
+WARRANTY
+========
+
+File Monitor is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+INSTALLATION
+============
+
+Windows:
+- Download "file_monitor_setup.exe".
+- Double click the file_monitor_setup.exe file and follow the installation guide.
+
+Linux Package - GUI (Lucid and above - Qt 4.6 or greater required):
+- Download the .deb package for your architecture.
+    For example: file-monitor_1.0.0-1_amd64.deb is the .deb for x86-64 machines.
+- Double click on the .deb package and the "Package Installer" dialog will appear.
+- Click the "Install Package" button.
+- Enter your root password when prompted.
+- Close the "Installation finished" and "Package Installer" dialogs.
+
+    Note: If you are unable to install the Qt 4.6 libraries on your system, you
+          will need to install from source.
+    
+Linux Package - Command Line (Lucid and above - Qt 4.6 or greater required):
+- Download the .deb package for your architecture.
+    For example file-monitor_1.0.0-1_amd64.deb is the .deb for amd64 machines.
+- Open a shell and navigate to the directory containing the .deb file.
+- Type sudo dpkg -i followed by the name of the .deb.
+    For example: sudo dpkg -i file-monitor_1.0.0-1_amd64.deb
+
+    Note: If you are unable to install the Qt 4.6 libraries on your system, you
+          will need to install from source.
+
+OSX (delayed)
+
+From Source (Windows):
+- Download and install the Qt framework (4.6 or higher) for Windows from:
+    http://qt.nokia.com/downloads
+- Ensure that the Qt bin directory (Qt/20xx/qt/bin) and the Qt Mingw bin
+    directory (Qt/20xx/mingw/bin) is in your PATH environment variable.
+- Download "file_monitor_1.0.0.tar.gz".
+- Uncompress "file_monitor_1.0.0.tar.gz" into the directory
+    "file_monitor_1.0.0".
+- Open a command prompt and navigate to this directory.
+- Type "qmake".  This will create the makefile for your system.
+- Type "mingw32-make release install".  This will compile and install
+    File Monitor to "C:/Program Files/file-monitor".
+- Make a link from the executable "file-monitor.exe" in the
+    installation directory to your desktop.
+
+From Source (Unix):
+- If qt4-dev-tools version 4.6 or greater is available for your
+    platform, install it. Otherwise, follow the next two steps
+    and download it from Nokia themselves.
+- Download and install the Qt framework (4.6 or higher) for your OS from:
+    http://qt.nokia.com/downloads
+- Ensure that the Qt bin directory (Qt/20xx/qt/bin) is in your
+    PATH environment variable.
+- Install a compilation toolchain (build-essential on linux).
+- Download "file_monitor_1.0.0.tar.gz".
+- Uncompress "file_monitor_1.0.0.tar.gz" into the directory
+    "file_monitor_1.0.0".
+- Open a shell and navigate to the "file_monitor_1.0.0" directory.
+- Type "qmake".  This will create the makefile for your system.
+- Type "sudo make install".  This will build and install File Monitor
+    on your system.
+
+
+REMOVAL
+=======
+
+Windows Installer:
+- Open Control Panel
+- Open "Add or Remove Programs"
+- Click on the "XmlSoft - File Monitor" entry and press it's Remove button.
+- Follow the directions within the resulting uninstallation guide.
+
+Linux Package - GUI:
+- Navigate to System / Administration / Synaptic Package Manager.
+- Enter your root password when prompted.
+- In the quick search bar type "file-monitor".
+- Right click on the File Monitor entry and click on the "Mark for Complete Removal" option.
+- Click the Apply button, click Apply in the resulting dialog and close the following dialogs.
+- Close the Synaptic Package Manager.
+
+Linux Package - Command Line:
+- Open a shell and type "sudo dpkg -P file-monitor" and click enter.
+
+OSX (delayed)
+
+Source for Windows:
+- Delete the "C:\Program Files\file-monitor" directory and any
+    links that you may have created which point to any of those files.
+
+Source for Unix:
+- Download "file_monitor_1.0.0.tar.gz".
+- Uncompress "file_monitor_1.0.0.tar.gz" into the directory
+    "file_monitor_1.0.0".
+- Open a shell and navigate to the "file_monitor_1.0.0" directory.
+- Type "qmake".  This will create the makefile for your system.
+- Type "sudo make uninstall".  This will remove File Monitor and it's
+    associated files from your system.
+
+
+ACKNOWLEDGMENTS (chronological order)
+=====================================
+
+Mark Turney - Developer
+
+
+VERSION HISTORY
+========================
+
+2010-05-31 v1.0.0
+    Initial release of File Monitor.
+

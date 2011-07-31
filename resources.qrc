@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/file_open.png</file>
+        <file>icons/file_close.png</file>
+        <file>icons/file_zoom_in.png</file>
+        <file>icons/file_zoom_out.png</file>
+    </qresource>
+</RCC>

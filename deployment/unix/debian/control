@@ -1,0 +1,16 @@
+Source: file-monitor
+Section: utils
+Priority: optional
+Maintainer: Mark Turney <markturney@gmail.com>
+Build-Depends: debhelper (>= 7), libqt4-dev (>= 4.3.4)
+Standards-Version: 3.8.0
+Homepage: http://code.google.com/p/file-monitor/
+
+Package: file-monitor
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: File Monitor is a viewer that auto-redraws when files change.
+ File Monitor is a convenient canvas upon which to watch
+ the changes that you make to a file from another program. 
+ Currently supported file types are text, html, svg,
+ and image file formats.
