@@ -25,9 +25,6 @@ public:
     void setHorizontalScroll(int scroll);
     int getHorizontalScroll() const;
 
-public slots:
-    void slotSetScroll();
-
 private slots:
     void slotLoadDeferredScroll();
 
