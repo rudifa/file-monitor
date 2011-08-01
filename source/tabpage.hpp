@@ -16,13 +16,14 @@ public:
     enum FileType { TEXT, HTML, SVG, IMAGE };
 
     TabPage(QWidget * parent = 0);
-    virtual ~TabPage();
+    ~TabPage();
 
     bool load(QString const & uri);
     
     QString getUri() const;
     QFileSystemWatcher * getFileWatcher();
     int getZoom() const;
+    void loadSettings();
 
     static double const zoom_min;
     static double const zoom_max;
@@ -35,7 +36,6 @@ public slots:
     void slotZoomIn();
     void slotZoomOut();
     void slotSetZoom(int zoom);
-    void slotLoadSettings();
 
 private slots:
     void slotReload();

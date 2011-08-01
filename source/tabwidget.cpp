@@ -35,9 +35,7 @@ TabWidget::TabWidget(Ui::MainWindow * ui, QWidget * parent)
     for (int i = 0; i < document_uris.count(); ++i)
         loadFile(document_uris[i]);
 
-    // If we are loading documents from the last session.
-    if (!document_uris.isEmpty())
-        QTimer::singleShot(0, this, SLOT(slotRestoreTabSettings()));
+    setCurrentIndex(settings.value("currentTabIndex", -1).toInt());
 }
 
 TabWidget::~TabWidget()
@@ -47,55 +45,7 @@ TabWidget::~TabWidget()
     settings.setValue("currentTabIndex", currentIndex());
 }
 
-// Restore tab settings last to first because the last loaded is the current tab.
-void TabWidget::slotRestoreTabSettings()
-{
-    // Restore the settings on the currently selected tab.
-    TabPage * tab_page = dynamic_cast<TabPage *>(widget(currentIndex()));
-    assert(tab_page);
-    tab_page->slotLoadSettings();
-
-    // If we have restored the settings of all tabs down to the first one.
-    if (currentIndex() == 0) {
-        // Set current index from last session and exit (no more recursion).
-        setCurrentIndex(settings.value("currentTabIndex", -1).toInt());
-
-        return;
-    }
-
-    // Set the previous tab current, and use a singleshot to wait for the
-    //  controls on that tab to finish rendering, then restore their settings.
-    setCurrentIndex(currentIndex() - 1);
-    QTimer::singleShot(0, this, SLOT(slotRestoreTabSettings()));
-}
-
-void TabWidget::slotRemoveTab(int index)
-{
-    // When there are no tabs, the open dialog starts in lastOpenUri's directory.
-    settings.setValue("lastOpenUri", tabUri(currentWidget()));
-
-    delete widget(index);
-}
-
-void TabWidget::slotCurrentTabChanged()
-{
-    // If we have just closed the last tab.
-    if (!count())
-        return;
-
-    QTimer::singleShot(0, this, SLOT(slotUpdateTabs()));
-}
-
-void TabWidget::slotFileChanged(QString changed_file_uri)
-{
-    TabPage * tab_page = uriTabPage(changed_file_uri);
-    setCurrentWidget(tab_page);
-
-    // Give the application that is modifying this file a bit of time to finish.
-    QTimer::singleShot(20, tab_page, SLOT(slotReload()));
-}
-
-void TabWidget::slotUpdateTabs()
+void TabWidget::updateTabConnections()
 {
     // Update tab connections.
     for (int i = 0; i < count(); ++i) {
@@ -117,6 +67,32 @@ void TabWidget::slotUpdateTabs()
 
     // Update the current tab's zoom slider.
     synchronizeZoomSlider();
+}
+
+void TabWidget::slotRemoveTab(int index)
+{
+    // When there are no tabs, the open dialog starts in lastOpenUri's directory.
+    settings.setValue("lastOpenUri", tabUri(currentWidget()));
+
+    delete widget(index);
+}
+
+void TabWidget::slotCurrentTabChanged()
+{
+    // If we have just closed the last tab.
+    if (!count())
+        return;
+
+    updateTabConnections();
+}
+
+void TabWidget::slotFileChanged(QString changed_file_uri)
+{
+    TabPage * tab_page = uriTabPage(changed_file_uri);
+    setCurrentWidget(tab_page);
+
+    // Give the application that is modifying this file a bit of time to finish.
+    QTimer::singleShot(20, tab_page, SLOT(slotReload()));
 }
 
 void TabWidget::slotLoadFile()
@@ -161,7 +137,7 @@ bool TabWidget::loadFile(QString const & file_uri)
     connect(tab_page->getFileWatcher(), SIGNAL(fileChanged(QString)), SLOT(slotFileChanged(QString)));
 
     setCurrentWidget(tab_page);
-    QTimer::singleShot(0, tab_page, SLOT(slotLoadSettings()));
+    tab_page->loadSettings();
     return true;
 }
 

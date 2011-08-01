@@ -16,10 +16,6 @@ HtmlView::HtmlView(QWidget * parent)
     web_view(new QWebView(parent))
 { }
 
-HtmlView::~HtmlView()
-{
-}
-
 QWidget * HtmlView::getWidget()
 {
     return web_view;
@@ -32,40 +28,6 @@ bool HtmlView::load(QString const & file_uri)
     return true;
 }
 
-void HtmlView::setVerticalScroll(int scroll)
-{
-    deferred_vertical_scroll = scroll;
-    slotLoadDeferredScroll();
-}
-
-int HtmlView::getVerticalScroll() const
-{
-    return web_view->page()->currentFrame()->scrollPosition().y();
-}
-
-void HtmlView::setHorizontalScroll(int scroll)
-{
-    deferred_horizontal_scroll = scroll;
-}
-
-int HtmlView::getHorizontalScroll() const
-{
-    return web_view->page()->currentFrame()->scrollPosition().x();
-}
-
-// QWebView has no signal to tell us that the page has fully loaded.
-//  Instead, we periodically check to see if it is ready for the scroll to be set.
-void HtmlView::slotLoadDeferredScroll()
-{
-    if (web_view->page()->currentFrame()->scrollBarMaximum(Qt::Vertical) >= deferred_vertical_scroll)
-    {
-        QPoint scroll = QPoint(deferred_horizontal_scroll, deferred_vertical_scroll);
-        web_view->page()->currentFrame()->setScrollPosition(scroll);
-    } else {
-        QTimer::singleShot(10, this, SLOT(slotLoadDeferredScroll()));
-    }
-}
-
 void HtmlView::setZoom(double zoom)
 {
     if (zoom == 0.0)
@@ -75,4 +37,28 @@ void HtmlView::setZoom(double zoom)
     web_view->page()->currentFrame()->setZoomFactor(relative_zoom);
 
     absolute_zoom = zoom;
+}
+
+void HtmlView::setScrollDimensions(QPoint dimensions)
+{
+    scroll_dimensions = dimensions;
+    slotSetScroll();
+}
+
+QPoint HtmlView::getScrollDimensions() const
+{
+    return web_view->page()->currentFrame()->scrollPosition();
+}
+
+//  Periodically check to see if the control is ready for the scroll to be set.
+void HtmlView::slotSetScroll()
+{
+    int max_scroll_vertical = web_view->page()->currentFrame()->scrollBarMaximum(Qt::Vertical);
+    int max_scroll_horizontal = web_view->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
+    QPoint scroll_max(max_scroll_horizontal, max_scroll_vertical);
+
+    if (scroll_max.x() >= scroll_dimensions.x() && scroll_max.y() >= scroll_dimensions.y())
+        web_view->page()->currentFrame()->setScrollPosition(scroll_dimensions);
+    else
+        QTimer::singleShot(10, this, SLOT(slotSetScroll()));
 }

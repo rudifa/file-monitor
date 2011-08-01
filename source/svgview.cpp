@@ -6,6 +6,7 @@
 #include <QGraphicsSvgItem>
 #include <QWheelEvent>
 #include <QScrollBar>
+#include <QTimer>
 
 #include <cmath>
 #include <cassert>
@@ -17,10 +18,6 @@ SvgView::SvgView(QWidget * parent)
     setTransformationAnchor(AnchorUnderMouse);
     setDragMode(ScrollHandDrag);
     setViewportUpdateMode(FullViewportUpdate);
-}
-
-SvgView::~SvgView()
-{
 }
 
 QWidget * SvgView::getWidget()
@@ -53,26 +50,6 @@ void SvgView::paintEvent(QPaintEvent *event)
     QGraphicsView::paintEvent(event);
 }
 
-void SvgView::setVerticalScroll(int scroll)
-{
-    verticalScrollBar()->setSliderPosition(scroll);
-}
-
-int SvgView::getVerticalScroll() const
-{
-    return verticalScrollBar()->value();
-}
-
-void SvgView::setHorizontalScroll(int scroll)
-{
-    horizontalScrollBar()->setValue(scroll);
-}
-
-int SvgView::getHorizontalScroll() const
-{
-    return horizontalScrollBar()->value();
-}
-
 void SvgView::setZoom(double zoom)
 {
     if (zoom == 0.0)
@@ -83,4 +60,33 @@ void SvgView::setZoom(double zoom)
     scale(relative_zoom, relative_zoom);
 
     absolute_zoom = zoom;
+}
+
+void SvgView::setScrollDimensions(QPoint dimensions)
+{
+    scroll_dimensions = dimensions;
+    slotSetScroll();
+}
+
+QPoint SvgView::getScrollDimensions() const
+{
+    int horizontal_scroll = horizontalScrollBar()->value();
+    int vertical_scroll = verticalScrollBar()->value();
+    return QPoint(horizontal_scroll, vertical_scroll);
+}
+
+//  Periodically check to see if the control is ready for the scroll to be set.
+void SvgView::slotSetScroll()
+{
+    int max_scroll_vertical = verticalScrollBar()->maximum();
+    int max_scroll_horizontal = horizontalScrollBar()->maximum();
+    QPoint scroll_max(max_scroll_horizontal, max_scroll_vertical);
+
+    if (scroll_max.x() >= scroll_dimensions.x() && scroll_max.y() >= scroll_dimensions.y())
+    {
+        horizontalScrollBar()->setSliderPosition(scroll_dimensions.x());
+        verticalScrollBar()->setSliderPosition(scroll_dimensions.y());
+    } else {
+        QTimer::singleShot(10, this, SLOT(slotSetScroll()));
+    }
 }

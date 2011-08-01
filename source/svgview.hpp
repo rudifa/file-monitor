@@ -16,16 +16,16 @@ class SvgView : public QGraphicsView, public View
 
 public:
     SvgView(QWidget * parent);
-    ~SvgView();
 
     QWidget * getWidget();
     bool load(QString const & file_uri);
 
     void setZoom(double zoom);
-    void setVerticalScroll(int scroll);
-    int getVerticalScroll() const;
-    void setHorizontalScroll(int scroll);
-    int getHorizontalScroll() const;
+    void setScrollDimensions(QPoint dimensions);
+    QPoint getScrollDimensions() const;
+
+private slots:
+    void slotSetScroll();
 
 protected:
     void paintEvent(QPaintEvent *event);

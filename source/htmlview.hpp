@@ -14,26 +14,19 @@ class HtmlView : public QObject, public View
 
 public:
     HtmlView(QWidget * parent);
-    ~HtmlView();
 
     QWidget * getWidget();
     bool load(QString const & file_uri);
 
     void setZoom(double zoom);
-    void setVerticalScroll(int scroll);
-    int getVerticalScroll() const;
-    void setHorizontalScroll(int scroll);
-    int getHorizontalScroll() const;
+    void setScrollDimensions(QPoint dimensions);
+    QPoint getScrollDimensions() const;
 
 private slots:
-    void slotLoadDeferredScroll();
+    void slotSetScroll();
 
 protected:
     QWebView * web_view;
-
-private:
-    int deferred_vertical_scroll;
-    int deferred_horizontal_scroll;
 };
 
 #endif

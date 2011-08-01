@@ -2,6 +2,8 @@
 #ifndef VIEW_HPP
 #define VIEW_HPP
 
+#include <QPoint>
+
 class QString;
 class QWidget;
 
@@ -18,7 +20,6 @@ class View
 {
 public:
     View(ZoomParameters zoom_parameters);
-    virtual ~View();
 
     virtual QWidget * getWidget() = 0;
     virtual bool load(QString const & file_uri) = 0;
@@ -26,15 +27,13 @@ public:
     virtual void setZoom(double zoom) = 0;
     double getZoom() const;
 
-    virtual void setVerticalScroll(int scroll) = 0;
-    virtual int getVerticalScroll() const = 0;
-    virtual void setHorizontalScroll(int scroll) = 0;
-    virtual int getHorizontalScroll() const = 0;
+    virtual void setScrollDimensions(QPoint scroll_dimensions) = 0;
+    virtual QPoint getScrollDimensions() const = 0;
 
 protected:
-    double absolute_zoom;
-
     ZoomParameters zoom_parameters;
+    double absolute_zoom;
+    QPoint scroll_dimensions;
 };
 
 #endif

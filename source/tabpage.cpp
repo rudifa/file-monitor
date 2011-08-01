@@ -112,12 +112,11 @@ void TabPage::slotSetZoom(int zoom)
     view->setZoom(zoom);
 }
 
-void TabPage::slotLoadSettings()
+void TabPage::loadSettings()
 {
     settings.beginGroup(getUri());
     view->setZoom(settings.value("zoom", 0).toDouble());
-    view->setVerticalScroll(settings.value("verticalScroll", 0).toInt());
-    view->setHorizontalScroll(settings.value("horizontalScroll", 0).toInt());
+    view->setScrollDimensions(settings.value("scroll_dimensions", QPoint(0, 0)).toPoint());
     settings.endGroup();
 
     signalZoomChanged(view->getZoom());
@@ -127,15 +126,14 @@ void TabPage::slotReload()
 {
     saveSettings();
     view->load(file_uri);
-    slotLoadSettings();
+    loadSettings();
 }
 
 void TabPage::saveSettings()
 {
     settings.beginGroup(getUri());
     settings.setValue("zoom", view->getZoom());
-    settings.setValue("verticalScroll", view->getVerticalScroll());
-    settings.setValue("horizontalScroll", view->getHorizontalScroll());
+    settings.setValue("scroll_dimensions", view->getScrollDimensions());
     settings.endGroup();
 }
 

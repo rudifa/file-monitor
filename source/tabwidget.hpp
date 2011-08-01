@@ -22,6 +22,8 @@ public:
     explicit TabWidget(Ui::MainWindow * ui, QWidget * parent = 0);
     ~TabWidget();
 
+    void updateTabConnections();
+
 public slots:
     void slotLoadFile();
     void slotCloseCurrentTab();
@@ -30,10 +32,6 @@ private slots:
     void slotRemoveTab(int index);
     void slotCurrentTabChanged();
     void slotFileChanged(QString changed_file_uri);
-    void slotUpdateTabs();
-
-    // Restore each one of the tab's settings, one tab at a time, last to first.
-    void slotRestoreTabSettings();
 
 private:
     Ui::MainWindow * ui;
