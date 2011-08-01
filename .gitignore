@@ -3,3 +3,6 @@
 _build
 Makefile
 
+# Qt-Creator files
+*.pro.user
+
