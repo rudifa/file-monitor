@@ -25,6 +25,7 @@ public:
     ~TabWidget();
 
     void updateTabConnections();
+    void openFiles(QStringList file_uris);
 
 public slots:
     void slotLoadFile();

@@ -71,6 +71,18 @@ void TabWidget::updateTabConnections()
     synchronizeZoomSlider();
 }
 
+void TabWidget::openFiles(QStringList file_uris)
+{
+    if (file_uris.isEmpty())
+        return;
+
+    for (int i = 0; i < file_uris.size(); ++i)
+        loadFile(file_uris[i]);
+
+    TabPage * tab_page = uriTabPage(file_uris.last());
+    setCurrentWidget(tab_page);
+}
+
 void TabWidget::slotRemoveTab(int index)
 {
     // When there are no tabs, the open dialog starts in lastOpenUri's directory.

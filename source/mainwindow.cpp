@@ -7,6 +7,8 @@
 #include <QSpacerItem>
 #include <QGridLayout>
 #include <QSlider>
+#include <QDropEvent>
+#include <QUrl>
 
 MainWindow::MainWindow(QWidget * parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -38,14 +40,44 @@ MainWindow::~MainWindow()
 
 // Add this kind of code to every widget with translatable strings when we want the app
 //  to retranslate on the fly. "Internationalization with Qt"
-void MainWindow::changeEvent(QEvent * e)
+void MainWindow::changeEvent(QEvent * event)
 {
-    QMainWindow::changeEvent(e);
-    switch (e->type()) {
+    QMainWindow::changeEvent(event);
+    switch (event->type()) {
     case QEvent::LanguageChange:
         ui->retranslateUi(this);
         break;
     default:
         break;
+    }
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent * event)
+{
+    event->acceptProposedAction();
+}
+
+void MainWindow::dragMoveEvent(QDragMoveEvent * event)
+{
+    event->acceptProposedAction();
+}
+void MainWindow::dragLeaveEvent(QDragLeaveEvent * event)
+{
+    event->accept();
+}
+
+void MainWindow::dropEvent(QDropEvent * event)
+{
+    QMimeData const * mime_data = event->mimeData();
+
+    if (mime_data->hasUrls())
+    {
+        QStringList path_list;
+        QList<QUrl> url_list = mime_data->urls();
+
+        for (int i = 0; i < url_list.size() && i < 32; ++i)
+            path_list.append(url_list.at(i).toLocalFile());
+
+        tab_widget->openFiles(path_list);
     }
 }

@@ -15,6 +15,7 @@
 SvgView::SvgView(QWidget * parent)
     : View(parent, ZoomParameters(.3, 1.5, 3)), graphics_view(new QGraphicsView(parent))
 {
+    graphics_view->setAcceptDrops(false);
     graphics_view->setScene(new QGraphicsScene(this));
     graphics_view->setTransformationAnchor(graphics_view->AnchorUnderMouse);
     graphics_view->setDragMode(graphics_view->ScrollHandDrag);

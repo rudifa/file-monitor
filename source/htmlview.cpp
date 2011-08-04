@@ -16,6 +16,7 @@
 HtmlView::HtmlView(QWidget * parent)
     : View(parent, ZoomParameters(.03, .5, 17)), web_view(new QWebView(parent))
 {
+    web_view->setAcceptDrops(false);
     connect(web_view->page(), SIGNAL(scrollRequested(int,int,QRect)), SIGNAL(signalUserChangedDisplay()));
 }
 
