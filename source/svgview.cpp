@@ -5,9 +5,7 @@
 
 #include <QGraphicsView>
 #include <QGraphicsSvgItem>
-#include <QWheelEvent>
 #include <QScrollBar>
-#include <QTimer>
 
 #include <cmath>
 #include <cassert>

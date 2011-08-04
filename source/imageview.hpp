@@ -4,8 +4,9 @@
 
 #include "view.hpp"
 
-class QLabel;
-class QScrollArea;
+class QWidget;
+class QGraphicsView;
+class QGraphicsPixmapItem;
 
 class ImageView : public View
 {
@@ -21,8 +22,8 @@ public:
     QPoint getScrollDimensions() const;
 
 protected:
-    QLabel * image_label;
-    QScrollArea * scroll_area;
+    QGraphicsView * graphics_view;
+    QGraphicsPixmapItem * graphics_item;
 };
 
 #endif

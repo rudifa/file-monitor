@@ -33,8 +33,11 @@ namespace
          return TabPage::HTML;
       if (extension == "svg")
          return TabPage::SVG;
-      if (extension == "jpg" || extension == "jpeg" || extension == "gif"
-          || extension == "png" || extension == "bmp" || extension =="ico") {
+      if (extension == "bmp" || extension == "gif" || extension == "jpg" ||
+          extension == "jpeg" || extension == "png" || extension == "pbm" ||
+          extension == "pgm" || extension == "ppm" || extension == "xbm" ||
+          extension == "xpm" || extension =="ico")
+      {
           return TabPage::IMAGE;
       }
 

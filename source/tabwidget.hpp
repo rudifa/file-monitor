@@ -35,6 +35,7 @@ private slots:
     void slotRemoveTab(int index);
     void slotCurrentTabChanged();
     void slotFileChanged(QString changed_file_uri);
+    void slotSynchronizeZoomSlider();
 
 private:
     Ui::MainWindow * ui;
@@ -45,9 +46,6 @@ private:
     QSettings settings;
 
     TabPage * loadFile(QString const & file_uri);
-    void synchronizeZoomSlider();
-
-    std::set<QString> loaded_uris;
 };
 
 #endif

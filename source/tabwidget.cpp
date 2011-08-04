@@ -67,8 +67,8 @@ void TabWidget::updateTabConnections()
         }
     }
 
-    // Update the current tab's zoom slider.
-    synchronizeZoomSlider();
+    // Wait until the event loop has finished rendering the current page.
+    QTimer::singleShot(0, this, SLOT(slotSynchronizeZoomSlider()));
 }
 
 void TabWidget::openFiles(QStringList file_uris)
@@ -198,7 +198,7 @@ QStringList TabWidget::allTabUris() const
 }
 
 // Update the zoom slider using the current tab's zoom value.
-void TabWidget::synchronizeZoomSlider()
+void TabWidget::slotSynchronizeZoomSlider()
 {
     TabPage * tab_page = dynamic_cast<TabPage *>(widget(currentIndex()));
     assert(tab_page);
