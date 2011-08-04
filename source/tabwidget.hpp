@@ -5,6 +5,8 @@
 #include <QTabWidget>
 #include <QSettings>
 
+#include <set>
+
 namespace Ui
 {
     class MainWindow;
@@ -41,8 +43,10 @@ private:
     QStringList allTabUris() const;
     QSettings settings;
 
-    bool loadFile(QString const & file_uri);
+    TabPage * loadFile(QString const & file_uri);
     void synchronizeZoomSlider();
+
+    std::set<QString> loaded_uris;
 };
 
 #endif

@@ -51,17 +51,19 @@ void TabWidget::updateTabConnections()
     for (int i = 0; i < count(); ++i) {
         TabPage * tab_page = dynamic_cast<TabPage *>(widget(i));
         assert(tab_page);
-        if (i == currentIndex()) {
+        if (i == currentIndex())
+        {
             connect(ui->action_file_zoom_in, SIGNAL(triggered()), tab_page, SLOT(slotZoomIn()));
             connect(ui->action_file_zoom_out, SIGNAL(triggered()), tab_page, SLOT(slotZoomOut()));
             connect(zoom_slider, SIGNAL(valueChanged(int)), tab_page, SLOT(slotSetZoom(int)));
-            connect(tab_page, SIGNAL(signalZoomChanged(int)), zoom_slider, SLOT(setValue(int)));
-
-        } else {
+            connect(tab_page, SIGNAL(signalUserChangedZoom(int)), zoom_slider, SLOT(setValue(int)));
+        }
+        else
+        {
             disconnect(ui->action_file_zoom_in, SIGNAL(triggered()), tab_page, SLOT(slotZoomIn()));
             disconnect(ui->action_file_zoom_out, SIGNAL(triggered()), tab_page, SLOT(slotZoomOut()));
             disconnect(zoom_slider, SIGNAL(valueChanged(int)), tab_page, SLOT(slotSetZoom(int)));
-            disconnect(tab_page, SIGNAL(signalZoomChanged(int)), zoom_slider, SLOT(setValue(int)));
+            disconnect(tab_page, SIGNAL(signalUserChangedZoom(int)), zoom_slider, SLOT(setValue(int)));
         }
     }
 
@@ -82,6 +84,10 @@ void TabWidget::slotCurrentTabChanged()
     // If we have just closed the last tab.
     if (!count())
         return;
+
+    TabPage * tab_page = dynamic_cast<TabPage *>(currentWidget());
+    // Wait until the event loop has finished rendering the current page.
+    QTimer::singleShot(0, tab_page, SLOT(slotLoadSettings()));
 
     updateTabConnections();
 }
@@ -104,41 +110,43 @@ void TabWidget::slotLoadFile()
 
     QString file_uri = QFileDialog::getOpenFileName(
         this, tr("Select File"), open_from_uri, tr("*.*"));
-    loadFile(file_uri);
+
+    TabPage * tab_page = loadFile(file_uri);
+    if (tab_page)
+        setCurrentWidget(tab_page);
 }
 
-bool TabWidget::loadFile(QString const & file_uri)
+TabPage * TabWidget::loadFile(QString const & file_uri)
 {
     if (file_uri.isEmpty())
-        return false;
+        return 0;
 
     QFileInfo file_info(file_uri);
     if (!file_info.exists())
-        return false;
+        return 0;
 
     QString canonical_file_uri = file_info.canonicalFilePath();
 
     // If this file is already loaded, switch to that tab.
     TabPage * loaded_tab_page = uriTabPage(canonical_file_uri);
-    if (loaded_tab_page) {
+    if (loaded_tab_page)
+    {
         setCurrentWidget(loaded_tab_page);
-        return true;
+        return loaded_tab_page;
     }
 
     TabPage * tab_page = new TabPage(this);
-    if (!tab_page->load(canonical_file_uri)) {
+    if (!tab_page->load(canonical_file_uri))
+    {
         QMessageBox::warning(this, tr("File Error"), tr("This file could not be loaded."),
             QMessageBox::Ok, QMessageBox::NoButton);
         tab_page->deleteLater();
-        return false;
+        return 0;
     }
 
     addTab(tab_page, file_info.fileName());
     connect(tab_page->getFileWatcher(), SIGNAL(fileChanged(QString)), SLOT(slotFileChanged(QString)));
-
-    setCurrentWidget(tab_page);
-    tab_page->loadSettings();
-    return true;
+    return tab_page;
 }
 
 void TabWidget::slotCloseCurrentTab()
@@ -182,5 +190,8 @@ void TabWidget::synchronizeZoomSlider()
 {
     TabPage * tab_page = dynamic_cast<TabPage *>(widget(currentIndex()));
     assert(tab_page);
+
+    zoom_slider->blockSignals(true);
     zoom_slider->setValue(tab_page->getZoom());
+    zoom_slider->blockSignals(false);
 }

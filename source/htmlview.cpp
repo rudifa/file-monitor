@@ -11,10 +11,17 @@
 #include <cmath>
 #include <cassert>
 
+#include <utility>
+
 HtmlView::HtmlView(QWidget * parent)
-    : QObject(parent), View(ZoomParameters(.03, .5, 17)),
-    web_view(new QWebView(parent))
-{ }
+    : View(parent, ZoomParameters(.03, .5, 17)), web_view(new QWebView(parent))
+{
+    connect(web_view->page(), SIGNAL(scrollRequested(int,int,QRect)), SIGNAL(signalUserChangedDisplay()));
+}
+
+HtmlView::~HtmlView()
+{
+}
 
 QWidget * HtmlView::getWidget()
 {
@@ -39,18 +46,19 @@ void HtmlView::setZoom(double zoom)
     absolute_zoom = zoom;
 }
 
+namespace
+{
+    // Holds the desired scroll dimensions while the HTML control renders.
+    QPoint scroll_dimensions;
+}
+
 void HtmlView::setScrollDimensions(QPoint dimensions)
 {
     scroll_dimensions = dimensions;
     slotSetScroll();
 }
 
-QPoint HtmlView::getScrollDimensions() const
-{
-    return web_view->page()->currentFrame()->scrollPosition();
-}
-
-//  Periodically check to see if the control is ready for the scroll to be set.
+// Periodically check to see if the control is ready for the scroll to be set.
 void HtmlView::slotSetScroll()
 {
     int max_scroll_vertical = web_view->page()->currentFrame()->scrollBarMaximum(Qt::Vertical);
@@ -61,4 +69,9 @@ void HtmlView::slotSetScroll()
         web_view->page()->currentFrame()->setScrollPosition(scroll_dimensions);
     else
         QTimer::singleShot(10, this, SLOT(slotSetScroll()));
+}
+
+QPoint HtmlView::getScrollDimensions() const
+{
+    return web_view->page()->currentFrame()->scrollPosition();
 }

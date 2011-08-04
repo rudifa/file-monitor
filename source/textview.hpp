@@ -4,16 +4,13 @@
 
 #include "view.hpp"
 
-#include <QObject>
-
 class QTextEdit;
 
-class TextView : public QObject, public View
+class TextView : public View
 {
-    Q_OBJECT
-
 public:
     TextView(QWidget * parent);
+    ~TextView();
 
     QWidget * getWidget();
     bool load(QString const & file_uri);
@@ -21,9 +18,6 @@ public:
     void setZoom(double zoom);
     void setScrollDimensions(QPoint dimensions);
     QPoint getScrollDimensions() const;
-
-private slots:
-    void slotSetScroll();
 
 protected:
     QTextEdit * text_edit;

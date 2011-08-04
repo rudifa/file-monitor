@@ -4,16 +4,15 @@
 
 #include "view.hpp"
 
-#include <QObject>
-
 class QWebView;
 
-class HtmlView : public QObject, public View
+class HtmlView : public View
 {
     Q_OBJECT
 
 public:
     HtmlView(QWidget * parent);
+    ~HtmlView();
 
     QWidget * getWidget();
     bool load(QString const & file_uri);

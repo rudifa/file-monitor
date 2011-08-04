@@ -1,8 +1,8 @@
 
 #include "view.hpp"
 
-View::View(ZoomParameters zoom_parameters)
-    : zoom_parameters(zoom_parameters)
+View::View(QObject * parent, ZoomParameters zoom_parameters)
+    : QObject(parent), zoom_parameters(zoom_parameters)
 {
 }
 

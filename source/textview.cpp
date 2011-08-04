@@ -11,9 +11,17 @@
 #include <cassert>
 
 TextView::TextView(QWidget * parent)
-    : QObject(parent), View(ZoomParameters(.5, 8, 12)), text_edit(new QTextEdit(parent))
+    : View(parent, ZoomParameters(.5, 8, 12)), text_edit(new QTextEdit(parent))
 {
     text_edit->setReadOnly(true);
+
+    connect(text_edit->verticalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
+    connect(text_edit->horizontalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
+}
+
+TextView::~TextView()
+{
+
 }
 
 QWidget * TextView::getWidget()
@@ -50,8 +58,8 @@ void TextView::setZoom(double zoom)
 
 void TextView::setScrollDimensions(QPoint dimensions)
 {
-    scroll_dimensions = dimensions;
-    slotSetScroll();
+    text_edit->horizontalScrollBar()->setSliderPosition(dimensions.x());
+    text_edit->verticalScrollBar()->setSliderPosition(dimensions.y());
 }
 
 QPoint TextView::getScrollDimensions() const
@@ -59,20 +67,4 @@ QPoint TextView::getScrollDimensions() const
     int horizontal_scroll = text_edit->horizontalScrollBar()->value();
     int vertical_scroll = text_edit->verticalScrollBar()->value();
     return QPoint(horizontal_scroll, vertical_scroll);
-}
-
-//  Periodically check to see if the control is ready for the scroll to be set.
-void TextView::slotSetScroll()
-{
-    int max_scroll_vertical = text_edit->verticalScrollBar()->maximum();
-    int max_scroll_horizontal = text_edit->horizontalScrollBar()->maximum();
-    QPoint scroll_max(max_scroll_horizontal, max_scroll_vertical);
-
-    if (scroll_max.x() >= scroll_dimensions.x() && scroll_max.y() >= scroll_dimensions.y())
-    {
-        text_edit->horizontalScrollBar()->setSliderPosition(scroll_dimensions.x());
-        text_edit->verticalScrollBar()->setSliderPosition(scroll_dimensions.y());
-    } else {
-        QTimer::singleShot(10, this, SLOT(slotSetScroll()));
-    }
 }

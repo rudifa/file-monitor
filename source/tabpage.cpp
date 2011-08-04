@@ -1,6 +1,7 @@
 
 #include "tabpage.hpp"
 
+#include "view.hpp"
 #include "textview.hpp"
 #include "svgview.hpp"
 #include "htmlview.hpp"
@@ -48,7 +49,6 @@ TabPage::TabPage(QWidget * parent)
 
 TabPage::~TabPage()
 {
-    saveSettings();
 }
 
 bool TabPage::load(QString const & uri)
@@ -65,6 +65,9 @@ bool TabPage::load(QString const & uri)
     QGridLayout * layout = new QGridLayout(this);
     layout->setContentsMargins(0, 4, 0, 4);
     layout->addWidget(view->getWidget());
+
+    connect(view, SIGNAL(signalUserChangedDisplay()), SLOT(slotSaveSettings()));
+    connect(this, SIGNAL(signalUserChangedZoom(int)), SLOT(slotSaveSettings()));
 
     return view->load(file_uri);
 }
@@ -87,21 +90,13 @@ int TabPage::getZoom() const
 void TabPage::slotZoomIn()
 {
     double zoom = view->getZoom() + TabPage::zoom_step;
-    if (!zoomIsValid(zoom))
-        return;
-
-    view->setZoom(zoom);
-    signalZoomChanged(zoom);
+    slotSetZoom(zoom);
 }
 
 void TabPage::slotZoomOut()
 {
     double zoom = view->getZoom() - TabPage::zoom_step;
-    if (!zoomIsValid(zoom))
-        return;
-
-    view->setZoom(zoom);
-    signalZoomChanged(zoom);
+    slotSetZoom(zoom);
 }
 
 void TabPage::slotSetZoom(int zoom)
@@ -110,26 +105,25 @@ void TabPage::slotSetZoom(int zoom)
         return;
 
     view->setZoom(zoom);
+    signalUserChangedZoom(zoom);
 }
 
-void TabPage::loadSettings()
+void TabPage::slotLoadSettings()
 {
     settings.beginGroup(getUri());
     view->setZoom(settings.value("zoom", 0).toDouble());
     view->setScrollDimensions(settings.value("scroll_dimensions", QPoint(0, 0)).toPoint());
     settings.endGroup();
-
-    signalZoomChanged(view->getZoom());
 }
 
 void TabPage::slotReload()
 {
-    saveSettings();
+    slotSaveSettings();
     view->load(file_uri);
-    loadSettings();
+    slotLoadSettings();
 }
 
-void TabPage::saveSettings()
+void TabPage::slotSaveSettings()
 {
     settings.beginGroup(getUri());
     settings.setValue("zoom", view->getZoom());

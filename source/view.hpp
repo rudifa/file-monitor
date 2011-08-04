@@ -3,6 +3,7 @@
 #define VIEW_HPP
 
 #include <QPoint>
+#include <QObject>
 
 class QString;
 class QWidget;
@@ -16,10 +17,12 @@ struct ZoomParameters
     double initial;
 };
 
-class View
+class View : public QObject
 {
+    Q_OBJECT
+
 public:
-    View(ZoomParameters zoom_parameters);
+    View(QObject * parent, ZoomParameters zoom_parameters);
 
     virtual QWidget * getWidget() = 0;
     virtual bool load(QString const & file_uri) = 0;
@@ -29,6 +32,9 @@ public:
 
     virtual void setScrollDimensions(QPoint scroll_dimensions) = 0;
     virtual QPoint getScrollDimensions() const = 0;
+
+signals:
+    void signalUserChangedDisplay();
 
 protected:
     ZoomParameters zoom_parameters;

@@ -4,17 +4,14 @@
 
 #include "view.hpp"
 
-#include <QObject>
-
 class QLabel;
 class QScrollArea;
 
-class ImageView : public QObject, public View
+class ImageView : public View
 {
-    Q_OBJECT
-
 public:
     ImageView(QWidget * parent);
+    ~ImageView();
 
     QWidget * getWidget();
     bool load(QString const & file_uri);
@@ -22,9 +19,6 @@ public:
     void setZoom(double zoom);
     void setScrollDimensions(QPoint dimensions);
     QPoint getScrollDimensions() const;
-
-private slots:
-    void slotSetScroll();
 
 protected:
     QLabel * image_label;

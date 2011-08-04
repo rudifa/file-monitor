@@ -7,6 +7,7 @@
 
 class View;
 class QFileSystemWatcher;
+class QShowEvent;
 
 class TabPage : public QWidget
 {
@@ -23,31 +24,31 @@ public:
     QString getUri() const;
     QFileSystemWatcher * getFileWatcher();
     int getZoom() const;
-    void loadSettings();
 
     static double const zoom_min;
     static double const zoom_max;
     static double const zoom_step;
 
 signals:
-    void signalZoomChanged(int zoom);
+    void signalUserChangedZoom(int zoom);
     
 public slots:
     void slotZoomIn();
     void slotZoomOut();
     void slotSetZoom(int zoom);
+    void slotLoadSettings();
 
 private slots:
     void slotReload();
+    void slotSaveSettings();
 
 private:
     View * view;
+    View * createView(QString const & file_uri);
+
     QString file_uri;
     QFileSystemWatcher * file_watcher;
     QSettings settings;
-
-    void saveSettings();
-    View * createView(QString const & file_uri);
 
     bool zoomIsValid(double zoom) const;
 };

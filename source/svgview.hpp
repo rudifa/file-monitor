@@ -4,18 +4,15 @@
 
 #include "view.hpp"
 
-#include <QGraphicsView>
-
 class QWidget;
-class QWheelEvent;
-class QPaintEvent;
+class QGraphicsView;
+class QGraphicsItem;
 
-class SvgView : public QGraphicsView, public View
+class SvgView : public View
 {
-    Q_OBJECT
-
 public:
     SvgView(QWidget * parent);
+    ~SvgView();
 
     QWidget * getWidget();
     bool load(QString const & file_uri);
@@ -24,12 +21,8 @@ public:
     void setScrollDimensions(QPoint dimensions);
     QPoint getScrollDimensions() const;
 
-private slots:
-    void slotSetScroll();
-
 protected:
-    void paintEvent(QPaintEvent *event);
-
+    QGraphicsView * graphics_view;
     QGraphicsItem * graphics_item;
 };
 
