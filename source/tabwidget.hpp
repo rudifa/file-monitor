@@ -13,6 +13,7 @@ namespace Ui
 }
 
 class QSlider;
+class QMouseMoveEvent;
 class TabPage;
 class FileDisplay;
 
@@ -26,6 +27,8 @@ public:
 
     void updateTabConnections();
     void openFiles(QStringList file_uris);
+
+    void mouseMoveEvent(QMouseEvent * event);
 
 public slots:
     void slotLoadFile();

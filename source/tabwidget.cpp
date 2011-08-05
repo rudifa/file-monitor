@@ -11,6 +11,7 @@
 #include <QTimer>
 #include <QSlider>
 #include <QMessageBox>
+#include <QMouseEvent>
 
 #include <cassert>
 
@@ -20,6 +21,10 @@ TabWidget::TabWidget(Ui::MainWindow * ui, QWidget * parent)
     setDocumentMode(true);
     setMovable(true);
     setTabsClosable(true);
+
+    setMouseTracking(true);
+    tabBar()->setMouseTracking(true);
+
     connect(this, SIGNAL(tabCloseRequested(int)), SLOT(slotRemoveTab(int)));
     connect(this, SIGNAL(currentChanged(int)), SLOT(slotCurrentTabChanged()));
 
@@ -83,6 +88,21 @@ void TabWidget::openFiles(QStringList file_uris)
     setCurrentWidget(tab_page);
 }
 
+void TabWidget::mouseMoveEvent(QMouseEvent * event)
+{
+    QTabBar * tab_bar = tabBar();
+    // Update the status tip with the file uri if the user hovers over a tab.
+    if (tab_bar && tab_bar->tabAt(event->pos()) != -1)
+    {
+        QMainWindow * main_window = static_cast<QMainWindow *>(parent()->parent());
+        int tab_index = tab_bar->tabAt(event->pos());
+        QString tab_uri = tabUri(widget(tab_index));
+        main_window->statusBar()->showMessage(tab_uri);
+    }
+
+    return QTabWidget::mouseMoveEvent(event);
+}
+
 void TabWidget::slotRemoveTab(int index)
 {
     // When there are no tabs, the open dialog starts in lastOpenUri's directory.
@@ -107,9 +127,17 @@ void TabWidget::slotCurrentTabChanged()
 void TabWidget::slotFileChanged(QString changed_file_uri)
 {
     TabPage * tab_page = uriTabPage(changed_file_uri);
-    setCurrentWidget(tab_page);
+
+    // If the file has been deleted, remove it's tab.
+    QFileInfo file_info(changed_file_uri);
+    if (!file_info.exists())
+    {
+        slotRemoveTab(indexOf(tab_page));
+        return;
+    }
 
     // Give the application that is modifying this file a bit of time to finish.
+    setCurrentWidget(tab_page);
     QTimer::singleShot(20, tab_page, SLOT(slotReload()));
 }
 
