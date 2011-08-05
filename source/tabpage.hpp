@@ -6,7 +6,6 @@
 #include <QSettings>
 
 class View;
-class QFileSystemWatcher;
 class QShowEvent;
 
 class TabPage : public QWidget
@@ -22,7 +21,6 @@ public:
     bool load(QString const & uri);
     
     QString getUri() const;
-    QFileSystemWatcher * getFileWatcher();
     int getZoom() const;
 
     static double const zoom_min;
@@ -47,7 +45,6 @@ private:
     View * createView(QString const & file_uri);
 
     QString file_uri;
-    QFileSystemWatcher * file_watcher;
     QSettings settings;
 
     bool zoomIsValid(double zoom) const;

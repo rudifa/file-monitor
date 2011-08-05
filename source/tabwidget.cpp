@@ -4,6 +4,7 @@
 #include "ui_mainwindow.h"
 #include "tabpage.hpp"
 
+#include <QMainWindow>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
@@ -16,8 +17,12 @@
 #include <cassert>
 
 TabWidget::TabWidget(Ui::MainWindow * ui, QWidget * parent)
-    : QTabWidget(parent), ui(ui), zoom_slider(new QSlider(Qt::Horizontal, parent))
+    : QTabWidget(parent), ui(ui), zoom_slider(new QSlider(Qt::Horizontal, parent)),
+    file_watcher(new QFileSystemWatcher(this))
 {
+    // This is an undocumented interface that I'm using to get around an inode updating issue on ubuntu.
+    file_watcher->setObjectName(QLatin1String("_qt_autotest_force_engine_poller"));
+
     setDocumentMode(true);
     setMovable(true);
     setTabsClosable(true);
@@ -27,6 +32,7 @@ TabWidget::TabWidget(Ui::MainWindow * ui, QWidget * parent)
 
     connect(this, SIGNAL(tabCloseRequested(int)), SLOT(slotRemoveTab(int)));
     connect(this, SIGNAL(currentChanged(int)), SLOT(slotCurrentTabChanged()));
+    connect(file_watcher, SIGNAL(fileChanged(QString)), SLOT(slotFileChanged(QString)));
 
     zoom_slider->setToolTip(tr("Zoom Slider"));
     zoom_slider->setStatusTip(tr("Drag slider to zoom into or out of the current file."));
@@ -103,12 +109,15 @@ void TabWidget::mouseMoveEvent(QMouseEvent * event)
     return QTabWidget::mouseMoveEvent(event);
 }
 
-void TabWidget::slotRemoveTab(int index)
+void TabWidget::slotRemoveTab(int tab_index)
 {
     // When there are no tabs, the open dialog starts in lastOpenUri's directory.
     settings.setValue("lastOpenUri", tabUri(currentWidget()));
 
-    delete widget(index);
+    // Stop watching the file corresponding to this tab.
+    file_watcher->removePath(tabUri(widget(tab_index)));
+
+    delete widget(tab_index);
 }
 
 void TabWidget::slotCurrentTabChanged()
@@ -185,7 +194,8 @@ TabPage * TabWidget::loadFile(QString const & file_uri)
     }
 
     addTab(tab_page, file_info.fileName());
-    connect(tab_page->getFileWatcher(), SIGNAL(fileChanged(QString)), SLOT(slotFileChanged(QString)));
+    file_watcher->addPath(file_uri);
+
     return tab_page;
 }
 

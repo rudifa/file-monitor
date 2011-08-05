@@ -7,7 +7,6 @@
 #include "htmlview.hpp"
 #include "imageview.hpp"
 
-#include <QFileSystemWatcher>
 #include <QGridLayout>
 #include <qmath.h>
 
@@ -46,7 +45,7 @@ namespace
 }
 
 TabPage::TabPage(QWidget * parent)
-    : QWidget(parent), file_watcher(0)
+    : QWidget(parent)
 {
 }
 
@@ -62,9 +61,6 @@ bool TabPage::load(QString const & uri)
     view = createView(file_uri);
     setStatusTip(file_uri);
 
-    file_watcher = new QFileSystemWatcher(this);
-    file_watcher->addPath(file_uri);
-
     QGridLayout * layout = new QGridLayout(this);
     layout->setContentsMargins(0, 4, 0, 4);
     layout->addWidget(view->getWidget());
@@ -78,11 +74,6 @@ bool TabPage::load(QString const & uri)
 QString TabPage::getUri() const
 {
     return file_uri;
-}
-
-QFileSystemWatcher * TabPage::getFileWatcher()
-{
-    return file_watcher;
 }
 
 int TabPage::getZoom() const

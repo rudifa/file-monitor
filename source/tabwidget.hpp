@@ -16,6 +16,7 @@ class QSlider;
 class QMouseMoveEvent;
 class TabPage;
 class FileDisplay;
+class QFileSystemWatcher;
 
 class TabWidget : public QTabWidget
 {
@@ -35,7 +36,7 @@ public slots:
     void slotCloseCurrentTab();
 
 private slots:
-    void slotRemoveTab(int index);
+    void slotRemoveTab(int tab_index);
     void slotCurrentTabChanged();
     void slotFileChanged(QString changed_file_uri);
     void slotSynchronizeZoomSlider();
@@ -46,6 +47,7 @@ private:
     TabPage * uriTabPage(QString const & uri) const;
     QString tabUri(QWidget * tab_widget) const;
     QStringList allTabUris() const;
+    QFileSystemWatcher * file_watcher;
     QSettings settings;
 
     TabPage * loadFile(QString const & file_uri);
