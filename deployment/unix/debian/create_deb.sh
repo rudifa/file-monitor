@@ -5,22 +5,41 @@
 #  will not build the package itself.
 
 # Packages that are required to run this script:
-#  build-essential, qt4-dev-tools, libqt4-dev, dh-make, gnupg,
-#  pbuilder, debootstrap, devscripts
-#
+sudo apt-get install build-essential
+sudo apt-get install qt4-dev-tools
+sudo apt-get install libqt4-dev
+sudo apt-get install dh-make
+sudo apt-get install gnupg
+sudo apt-get install pbuilder
+sudo apt-get install debootstrap
+sudo apt-get install devscripts
+sudo apt-get install git-core
+
 # Make sure to create a key to replace the existing $MAINTAINER_GPG_KEY and
 #  make sure that this key is set to "default-key" in the .gnupg/options file.
-
 MAINTAINER_EMAIL=markturney@gmail.com
-MAINTAINER_GPG_KEY=AFD0D823
+MAINTAINER_GPG_KEY=140597E3
 # GPG key creation details - https://help.ubuntu.com/community/GnuPrivacyGuardHowto
 
 # Move to directory holding this script.
-SCRIPT_DIR=${0%/*}
-cd $SCRIPT_DIR
+SCRIPT_DIR=$(echo ${BASH_SOURCE[0]} | sed 's/\(.*\)\([\\\/][^\\\/]*$\)/\1/g')
+cd "${SCRIPT_DIR}"
 
 # Move to the project root.
 cd ../../../
+
+# Capture the version number of this project from the last git tag.
+GIT_TAGS=`git tag`
+LAST_VERSION=$(echo $GIT_TAGS | sed 's/\(v[0-9]\+\.[0-9]\+\.[0-9]\+ \)*v\([0-9]\+\.[0-9]\+\.[0-9]\+\)/-\2/g')
+
+# Capture the project name from the root directory's name.
+PROJECT_NAME=$(echo $PWD | sed 's/\/\([^\/]\+\/\)\+\(.*\)/\2/g')
+
+# Rename the root directory to include the version number (the debian packaging utilities require this).
+PROJECT_NAME_WITH_VERSION=${PROJECT_NAME}${LAST_VERSION}
+cd ../
+mv $PROJECT_NAME $PROJECT_NAME_WITH_VERSION
+cd $PROJECT_NAME_WITH_VERSION
 
 # Ensure file permissions are correct.
 find -type f -print0 | xargs -0 chmod 644
@@ -64,4 +83,9 @@ rm -rf _build
 rm -rf debian
 rm build-stamp
 rm configure-stamp
+
+# Rename the project directory by removing the version string.
+cd ../
+mv $PROJECT_NAME_WITH_VERSION $PROJECT_NAME
+cd $PROJECT_NAME
 

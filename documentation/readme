@@ -1,9 +1,9 @@
 
-File Monitor v1.0.0
-Updated 2010-05-31
+File Monitor v1.1.0
+Updated 2011-08-13
 
 Send all feedback/comments/problems to markturney@gmail.com
-Copyright 2010 Mark Turney, licensed under GPLv3 or later.
+Copyright 2011 Mark Turney, licensed under GPLv3 or later.
 
 
 
@@ -15,9 +15,10 @@ automatically redraws them when they are changed on disk.  This
 makes File Monitor a perfect logfile viewer, or a nice canvas upon
 which to display changing files.  
 
-File Monitor allows you to zoom into and otherwise navigate files of
-interest. Whenever a file is reloaded or closed and opened, all
-navigation settings are restored.
+To begin using File Monitor, either drag a file onto File Monitor
+or click the load file button.  File Monitor allows you to zoom
+into and navigate files of interest.  Whenever a file is reloaded
+or closed and opened, all navigation settings are restored.
 
 File Monitor supports the display of text, html, svg, and image
 file formats.
@@ -49,12 +50,12 @@ INSTALLATION
 ============
 
 Windows:
-- Download "file_monitor_setup.exe".
-- Double click the file_monitor_setup.exe file and follow the installation guide.
+- Download "file-monitor-1.1.0-installer.exe".
+- Double click the file-monitor-1.1.0-installer.exe file and follow the installation guide.
 
 Linux Package - GUI (Lucid and above - Qt 4.6 or greater required):
 - Download the .deb package for your architecture.
-    For example: file-monitor_1.0.0-1_amd64.deb is the .deb for x86-64 machines.
+    For example: file-monitor_1.1.0-1_amd64.deb is the .deb for x86-64 machines.
 - Double click on the .deb package and the "Package Installer" dialog will appear.
 - Click the "Install Package" button.
 - Enter your root password when prompted.
@@ -65,10 +66,10 @@ Linux Package - GUI (Lucid and above - Qt 4.6 or greater required):
     
 Linux Package - Command Line (Lucid and above - Qt 4.6 or greater required):
 - Download the .deb package for your architecture.
-    For example file-monitor_1.0.0-1_amd64.deb is the .deb for amd64 machines.
+    For example file-monitor_1.1.0-1_amd64.deb is the .deb for amd64 machines.
 - Open a shell and navigate to the directory containing the .deb file.
 - Type sudo dpkg -i followed by the name of the .deb.
-    For example: sudo dpkg -i file-monitor_1.0.0-1_amd64.deb
+    For example: sudo dpkg -i file-monitor_1.1.0-1_amd64.deb
 
     Note: If you are unable to install the Qt 4.6 libraries on your system, you
           will need to install from source.
@@ -80,9 +81,9 @@ From Source (Windows):
     http://qt.nokia.com/downloads
 - Ensure that the Qt bin directory (Qt/20xx/qt/bin) and the Qt Mingw bin
     directory (Qt/20xx/mingw/bin) is in your PATH environment variable.
-- Download "file_monitor_1.0.0.tar.gz".
-- Uncompress "file_monitor_1.0.0.tar.gz" into the directory
-    "file_monitor_1.0.0".
+- Download "file-monitor-1.1.0.tar.gz".
+- Uncompress "file-monitor-1.1.0.tar.gz" into the directory
+    "file-monitor".
 - Open a command prompt and navigate to this directory.
 - Type "qmake".  This will create the makefile for your system.
 - Type "mingw32-make release install".  This will compile and install
@@ -99,10 +100,10 @@ From Source (Unix):
 - Ensure that the Qt bin directory (Qt/20xx/qt/bin) is in your
     PATH environment variable.
 - Install a compilation toolchain (build-essential on linux).
-- Download "file_monitor_1.0.0.tar.gz".
-- Uncompress "file_monitor_1.0.0.tar.gz" into the directory
-    "file_monitor_1.0.0".
-- Open a shell and navigate to the "file_monitor_1.0.0" directory.
+- Download "file-monitor-1.1.0.tar.gz".
+- Uncompress "file-monitor-1.1.0.tar.gz" into the directory
+    "file-monitor".
+- Open a shell and navigate to the "file-monitor" directory.
 - Type "qmake".  This will create the makefile for your system.
 - Type "sudo make install".  This will build and install File Monitor
     on your system.
@@ -135,10 +136,10 @@ Source for Windows:
     links that you may have created which point to any of those files.
 
 Source for Unix:
-- Download "file_monitor_1.0.0.tar.gz".
-- Uncompress "file_monitor_1.0.0.tar.gz" into the directory
-    "file_monitor_1.0.0".
-- Open a shell and navigate to the "file_monitor_1.0.0" directory.
+- Download "file-monitor-1.1.0.tar.gz".
+- Uncompress "file-monitor-1.1.0.tar.gz" into the directory
+    "file-monitor".
+- Open a shell and navigate to the "file-monitor" directory.
 - Type "qmake".  This will create the makefile for your system.
 - Type "sudo make uninstall".  This will remove File Monitor and it's
     associated files from your system.
@@ -152,6 +153,10 @@ Mark Turney - Developer
 
 VERSION HISTORY
 ========================
+
+2011-08-13 v1.1.0
+	Added drag and drop to File Monitor.
+	Refactor and fixed a series of small bugs.
 
 2010-05-31 v1.0.0
     Initial release of File Monitor.

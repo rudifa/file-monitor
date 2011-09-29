@@ -1,4 +1,11 @@
 
+file-monitor (1.1.0)
+
+  * Added drag and drop to File Monitor.
+  * Refactor and fixed a series of small bugs.
+
+ -- Mark Turney <markturney@gmail.com>  Sat, 13 Aug 2011 19:04:20 -0700
+
 file-monitor (1.0.0)
 
   * Initial release of File Monitor.

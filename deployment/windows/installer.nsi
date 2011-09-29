@@ -1,9 +1,6 @@
 
-!define COMPANY_NAME "XmlSoft"
-!define APP_NAME "File Monitor"
-!define APP_DIR "${COMPANY_NAME}\${APP_NAME}"
-!define APP_FILE_BASE_NAME "file-monitor"
-!define APP_FILE_VERSION "1.0.0"
+!define APP_DIR "$%APP_COMPANY_NAME%\$%APP_NAME%"
+!define UNINSTALL_DIR "Software\Microsoft\Windows\CurrentVersion\Uninstall\$%APP_NAME%"
 
 SetCompressor /FINAL /SOLID lzma
 
@@ -15,10 +12,10 @@ SetCompressor /FINAL /SOLID lzma
 ;--------------------------------
 
 ; The name of the installer
-Name "${APP_NAME}"
+Name "$%APP_NAME%"
 
 ; The file to write
-OutFile "${APP_FILE_BASE_NAME}-${APP_FILE_VERSION}-installer.exe"
+OutFile "$%APP_INSTALLER_NAME%"
 
 ; The default installation directory
 InstallDir "$LOCALAPPDATA\${APP_DIR}"
@@ -27,8 +24,8 @@ InstallDir "$LOCALAPPDATA\${APP_DIR}"
 ; overwrite the old one automatically)
 InstallDirRegKey HKCU "Software\${APP_DIR}" "Install_Dir"
 
-; Request application privileges for Windows Vista
-RequestExecutionLevel admin
+;This will prevent UAC from asking the user for admin rights to install.
+RequestExecutionLevel user
 
 ;--------------------------------
 ;Interface Settings
@@ -133,7 +130,7 @@ RequestExecutionLevel admin
 
 ; Installer sections
 
-Section "${APP_NAME} (required)" SecApplication
+Section "$%APP_NAME% (required)" SecApplication
 
   SectionIn RO
  
@@ -141,7 +138,7 @@ Section "${APP_NAME} (required)" SecApplication
   SetOutPath $INSTDIR
  
   ; Put file there
-  File "${APP_FILE_BASE_NAME}.exe"
+  File "$%PROJECT_NAME%.exe"
   File "libgcc_s_dw2-1.dll"
   File "mingwm10.dll"
   File "QtCore4.dll"
@@ -153,15 +150,30 @@ Section "${APP_NAME} (required)" SecApplication
   File "phonon4.dll"
   File "license.txt"
   File "readme.txt"
+  File "$%PROJECT_NAME%.ico"
  
   ; Write the installation path into the registry
   WriteRegStr HKCU "SOFTWARE\${APP_DIR}" "Install_Dir" "$INSTDIR"
+  
+  !include "FileFunc.nsh"
+  ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2  ; Get size of all files in the install dir.
+  IntFmt $0 "0x%08X" $0  ; Convert decimal to DWORD.
  
   ; Write the uninstall keys for Windows
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" "DisplayName" "${COMPANY_NAME} - ${APP_NAME}"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" "NoModify" 1
-  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" "NoRepair" 1
+  WriteRegStr HKCU "${UNINSTALL_DIR}" "DisplayName" "$%APP_NAME%"
+  WriteRegStr HKCU "${UNINSTALL_DIR}" "Publisher" "$%APP_COMPANY_NAME%"
+  WriteRegStr HKCU "${UNINSTALL_DIR}" "RegOwner" "$%APP_COPYRIGHT_HOLDER%"
+  WriteRegStr HKCU "${UNINSTALL_DIR}" "DisplayIcon" '"$INSTDIR\$%PROJECT_NAME%.ico"'
+  WriteRegStr HKCU "${UNINSTALL_DIR}" "DisplayVersion" "$%APP_VERSION%"
+  WriteRegStr HKCU "${UNINSTALL_DIR}" "UninstallString" '"$INSTDIR\uninstall.exe"'
+  WriteRegStr HKCU "${UNINSTALL_DIR}" "InstallLocation" "$INSTDIR"
+  WriteRegStr HKCU "${UNINSTALL_DIR}" "Readme" "$INSTDIR\readme.txt"
+  WriteRegStr HKCU "${UNINSTALL_DIR}" "URLInfoAbout" "$%APP_LINK%"
+  WriteRegStr HKCU "${UNINSTALL_DIR}" "HelpLink" "$%APP_LINK%"
+  WriteRegStr HKCU "${UNINSTALL_DIR}" "URLUpdateInfo" "$%APP_DOWNLOAD_LINK%"
+  WriteRegDWORD HKCU "${UNINSTALL_DIR}" "EstimatedSize" "$0"
+  WriteRegDWORD HKCU "${UNINSTALL_DIR}" "NoModify" 1
+  WriteRegDWORD HKCU "${UNINSTALL_DIR}" "NoRepair" 1
   WriteUninstaller "uninstall.exe"
  
 SectionEnd
@@ -174,7 +186,7 @@ Section "Start Menu Shortcuts (required)" SecStartMenu
   CreateDirectory "$SMPROGRAMS\${APP_DIR}"
   CreateShortCut "$SMPROGRAMS\${APP_DIR}\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
   CreateShortCut "$SMPROGRAMS\${APP_DIR}\readme.lnk" "$INSTDIR\readme.txt" "" "$INSTDIR\readme.txt" 0
-  CreateShortCut "$SMPROGRAMS\${APP_DIR}\${APP_NAME}.lnk" "$INSTDIR\${APP_FILE_BASE_NAME}.exe" "" "$INSTDIR\${APP_FILE_BASE_NAME}.exe" 0
+  CreateShortCut "$SMPROGRAMS\${APP_DIR}\$%APP_NAME%.lnk" "$INSTDIR\$%PROJECT_NAME%.exe" "" "$INSTDIR\$%PROJECT_NAME%.exe" 0
 
 SectionEnd
 
@@ -188,17 +200,16 @@ SectionEnd
 ; Optional section (can be disabled by the user)
 Section "Desktop Shortcut" SecDesktop
 
-    CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\${APP_FILE_BASE_NAME}.exe" "" "$INSTDIR\${APP_FILE_BASE_NAME}.exe" 0
+    CreateShortCut "$DESKTOP\$%APP_NAME%.lnk" "$INSTDIR\$%PROJECT_NAME%.exe" "" "$INSTDIR\$%PROJECT_NAME%.exe" 0
   
 SectionEnd
 
 ; Optional section (can be disabled by the user)
 Section "Quick Launch Shortcut" SecQuick
 
-    CreateShortCut "$QUICKLAUNCH\${APP_NAME}.lnk" "$INSTDIR\${APP_FILE_BASE_NAME}.exe" "" "$INSTDIR\${APP_FILE_BASE_NAME}.exe" 0
+    CreateShortCut "$QUICKLAUNCH\$%APP_NAME%.lnk" "$INSTDIR\$%PROJECT_NAME%.exe" "" "$INSTDIR\$%PROJECT_NAME%.exe" 0
   
 SectionEnd
-
 
 ;--------------------------------
 ;Installer Functions
@@ -216,11 +227,11 @@ FunctionEnd
 Section "Uninstall"
  
   ; Remove registry keys
-  DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}"
+  DeleteRegKey HKCU "${UNINSTALL_DIR}"
   DeleteRegKey HKCU "SOFTWARE\${APP_DIR}"
 
   ; Remove files and uninstaller
-  Delete $INSTDIR\${APP_FILE_BASE_NAME}.exe
+  Delete $INSTDIR\$%PROJECT_NAME%.exe
   Delete $INSTDIR\libgcc_s_dw2-1.dll
   Delete $INSTDIR\mingwm10.dll
   Delete $INSTDIR\QtCore4.dll
@@ -232,8 +243,9 @@ Section "Uninstall"
   Delete $INSTDIR\phonon4.dll
   Delete $INSTDIR\license.txt
   Delete $INSTDIR\readme.txt
-  Delete "$DESKTOP\${APP_NAME}.lnk"
-  Delete "$QUICKLAUNCH\${APP_NAME}.lnk"
+  Delete $INSTDIR\$%PROJECT_NAME%.ico
+  Delete "$DESKTOP\$%APP_NAME%.lnk"
+  Delete "$QUICKLAUNCH\$%APP_NAME%.lnk"
   Delete $INSTDIR\uninstall.exe
 
   ; Remove shortcuts, if any
@@ -244,19 +256,17 @@ Section "Uninstall"
   RMDir /r "$INSTDIR"
   
   ; If there are no other directories in the company shortcut directory, remove the company shortcut directory.
-  ${If} ${FileExists} "$SMPROGRAMS\${COMPANY_NAME}\"
+  ${If} ${FileExists} "$SMPROGRAMS\$%APP_COMPANY_NAME%\"
   ${Else}
-    RMDir "$SMPROGRAMS\${COMPANY_NAME}"
+    RMDir "$SMPROGRAMS\$%APP_COMPANY_NAME%"
   ${EndIf}
   
   ; If there are no other directories in the company application directory, remove the company application directory.
-  ${If} ${FileExists} "$LOCALAPPDATA\${COMPANY_NAME}\"
+  ${If} ${FileExists} "$LOCALAPPDATA\$%APP_COMPANY_NAME%\"
   ${Else}
-    RMDir "$LOCALAPPDATA\${COMPANY_NAME}"
+    RMDir "$LOCALAPPDATA\$%APP_COMPANY_NAME%"
   ${EndIf}
 
-
-  
 SectionEnd
 
 ;--------------------------------
