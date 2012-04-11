@@ -12,7 +12,6 @@ class HtmlView : public View
 
 public:
     HtmlView(QWidget * parent);
-    ~HtmlView();
 
     QWidget * getWidget();
     bool load(QString const & file_uri);

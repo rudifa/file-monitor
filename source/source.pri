@@ -27,7 +27,8 @@ HEADERS += mainwindow.hpp \
     textview.hpp \
     htmlview.hpp \
     imageview.hpp \
-    utility.hpp
+    utility.hpp \
+    customgraphicsview.hpp
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -38,4 +39,5 @@ SOURCES += main.cpp \
     textview.cpp \
     htmlview.cpp \
     imageview.cpp \
-    utility.cpp
+    utility.cpp \
+    customgraphicsview.cpp

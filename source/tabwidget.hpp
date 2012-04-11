@@ -14,6 +14,7 @@ namespace Ui
 
 class QSlider;
 class QMouseMoveEvent;
+class QWheelEvent;
 class TabPage;
 class FileDisplay;
 class QFileSystemWatcher;

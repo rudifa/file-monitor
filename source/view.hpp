@@ -2,11 +2,12 @@
 #ifndef VIEW_HPP
 #define VIEW_HPP
 
-#include <QPoint>
 #include <QObject>
 
 class QString;
 class QWidget;
+class QPoint;
+class QWheelEvent;
 
 struct ZoomParameters
 {
@@ -33,13 +34,16 @@ public:
     virtual void setScrollDimensions(QPoint scroll_dimensions) = 0;
     virtual QPoint getScrollDimensions() const = 0;
 
+    void wheelEvent(QWheelEvent *event);
+
 signals:
     void signalUserChangedDisplay();
+    void signalZoomIn();
+    void signalZoomOut();
 
 protected:
     ZoomParameters zoom_parameters;
     double absolute_zoom;
-    QPoint scroll_dimensions;
 };
 
 #endif

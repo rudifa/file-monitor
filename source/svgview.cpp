@@ -2,29 +2,40 @@
 #include "svgview.hpp"
 
 #include "tabpage.hpp"
+#include "customgraphicsview.hpp"
 
-#include <QGraphicsView>
 #include <QGraphicsSvgItem>
 #include <QScrollBar>
+#include <QWheelEvent>
 
 #include <cmath>
 #include <cassert>
 
+#include <QDebug>
+
 SvgView::SvgView(QWidget * parent)
-    : View(parent, ZoomParameters(.3, 1.5, 3)), graphics_view(new QGraphicsView(parent))
+    : View(parent, ZoomParameters(.3, 1.5, 3)), graphics_view(new CustomGraphicsView(parent))
 {
     graphics_view->setAcceptDrops(false);
     graphics_view->setScene(new QGraphicsScene(this));
     graphics_view->setTransformationAnchor(graphics_view->AnchorUnderMouse);
     graphics_view->setDragMode(graphics_view->ScrollHandDrag);
-    graphics_view->setViewportUpdateMode(graphics_view->FullViewportUpdate);
+    graphics_view->setViewportUpdateMode(graphics_view->SmartViewportUpdate);
 
     connect(graphics_view->verticalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
     connect(graphics_view->horizontalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
-}
+    connect(graphics_view, SIGNAL(signalZoomIn()), SIGNAL(signalZoomIn()));
+    connect(graphics_view, SIGNAL(signalZoomOut()), SIGNAL(signalZoomOut()));
 
-SvgView::~SvgView()
-{
+    QPixmap tilePixmap(16, 16);
+    tilePixmap.fill(Qt::white);
+    QPainter tilePainter(&tilePixmap);
+    QColor color(230, 230, 230);
+    tilePainter.fillRect(0, 0, 8, 8, color);
+    tilePainter.fillRect(8, 8, 8, 8, color);
+    tilePainter.end();
+
+    graphics_view->setBackgroundBrush(tilePixmap);
 }
 
 QWidget * SvgView::getWidget()

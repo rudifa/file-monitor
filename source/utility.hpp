@@ -2,9 +2,8 @@
 #ifndef UTILITY_HPP
 #define UTILITY_HPP
 
-#include <QString>
-
 class QApplication;
+class QString;
 
 namespace utility
 {

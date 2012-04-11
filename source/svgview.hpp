@@ -7,12 +7,14 @@
 class QWidget;
 class QGraphicsView;
 class QGraphicsItem;
+class QWheelEvent;
+
+class CustomGraphicsView;
 
 class SvgView : public View
 {
 public:
     SvgView(QWidget * parent);
-    ~SvgView();
 
     QWidget * getWidget();
     bool load(QString const & file_uri);
@@ -22,7 +24,7 @@ public:
     QPoint getScrollDimensions() const;
 
 protected:
-    QGraphicsView * graphics_view;
+    CustomGraphicsView * graphics_view;
     QGraphicsItem * graphics_item;
 };
 

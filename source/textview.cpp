@@ -19,11 +19,6 @@ TextView::TextView(QWidget * parent)
     connect(text_edit->horizontalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
 }
 
-TextView::~TextView()
-{
-
-}
-
 QWidget * TextView::getWidget()
 {
     return text_edit;

@@ -16,7 +16,6 @@ public:
     enum FileType { TEXT, HTML, SVG, IMAGE };
 
     TabPage(QWidget * parent = 0);
-    ~TabPage();
 
     bool load(QString const & uri);
     

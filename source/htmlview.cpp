@@ -20,10 +20,6 @@ HtmlView::HtmlView(QWidget * parent)
     connect(web_view->page(), SIGNAL(scrollRequested(int,int,QRect)), SIGNAL(signalUserChangedDisplay()));
 }
 
-HtmlView::~HtmlView()
-{
-}
-
 QWidget * HtmlView::getWidget()
 {
     return web_view;

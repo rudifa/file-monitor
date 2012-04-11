@@ -22,10 +22,16 @@ ImageView::ImageView(QWidget * parent)
 
     connect(graphics_view->verticalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
     connect(graphics_view->horizontalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
-}
 
-ImageView::~ImageView()
-{
+    QPixmap tilePixmap(64, 64);
+    tilePixmap.fill(Qt::white);
+    QPainter tilePainter(&tilePixmap);
+    QColor color(230, 230, 230);
+    tilePainter.fillRect(0, 0, 32, 32, color);
+    tilePainter.fillRect(32, 32, 32, 32, color);
+    tilePainter.end();
+
+    graphics_view->setBackgroundBrush(tilePixmap);
 }
 
 QWidget * ImageView::getWidget()
@@ -45,7 +51,7 @@ bool ImageView::load(QString const & file_uri)
 
     graphics_item = new QGraphicsPixmapItem(file_uri);
     graphics_item->setFlags(QGraphicsItem::ItemClipsToShape);
-    graphics_item->setCacheMode(QGraphicsItem::NoCache);
+    graphics_item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     graphics_item->setTransformationMode(Qt::SmoothTransformation);
     graphics_item->setZValue(0);
 

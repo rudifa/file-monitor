@@ -8,6 +8,7 @@
 #include "imageview.hpp"
 
 #include <QGridLayout>
+#include <QWheelEvent>
 #include <qmath.h>
 
 #include <cassert>
@@ -49,10 +50,6 @@ TabPage::TabPage(QWidget * parent)
 {
 }
 
-TabPage::~TabPage()
-{
-}
-
 bool TabPage::load(QString const & uri)
 {
     assert(!uri.isEmpty());
@@ -66,6 +63,8 @@ bool TabPage::load(QString const & uri)
     layout->addWidget(view->getWidget());
 
     connect(view, SIGNAL(signalUserChangedDisplay()), SLOT(slotSaveSettings()));
+    connect(view, SIGNAL(signalZoomIn()), SLOT(slotZoomIn()));
+    connect(view, SIGNAL(signalZoomOut()), SLOT(slotZoomOut()));
     connect(this, SIGNAL(signalUserChangedZoom(int)), SLOT(slotSaveSettings()));
 
     return view->load(file_uri);
@@ -104,17 +103,25 @@ void TabPage::slotSetZoom(int zoom)
 
 void TabPage::slotLoadSettings()
 {
+    view->blockSignals(true);
+
     settings.beginGroup(getUri());
     view->setZoom(settings.value("zoom", 0).toDouble());
     view->setScrollDimensions(settings.value("scroll_dimensions", QPoint(0, 0)).toPoint());
     settings.endGroup();
+
+    view->blockSignals(false);
 }
 
 void TabPage::slotReload()
 {
+    view->blockSignals(true);
+
     slotSaveSettings();
     view->load(file_uri);
     slotLoadSettings();
+
+    view->blockSignals(false);
 }
 
 void TabPage::slotSaveSettings()

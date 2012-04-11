@@ -12,7 +12,6 @@ class ImageView : public View
 {
 public:
     ImageView(QWidget * parent);
-    ~ImageView();
 
     QWidget * getWidget();
     bool load(QString const & file_uri);

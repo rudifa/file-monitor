@@ -10,7 +10,6 @@ class TextView : public View
 {
 public:
     TextView(QWidget * parent);
-    ~TextView();
 
     QWidget * getWidget();
     bool load(QString const & file_uri);
