@@ -3,11 +3,11 @@
 
 #include "ui_mainwindow.h"
 #include "tabpage.hpp"
+#include "filesystemwatcher.hpp"
 
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QFileInfo>
-#include <QFileSystemWatcher>
 #include <QStringList>
 #include <QTimer>
 #include <QSlider>
@@ -18,9 +18,10 @@
 
 TabWidget::TabWidget(Ui::MainWindow * ui, QWidget * parent)
     : QTabWidget(parent), ui(ui), zoom_slider(new QSlider(Qt::Horizontal, parent)),
-    file_watcher(new QFileSystemWatcher(this))
+    file_watcher(new FileSystemWatcher(this))
 {
     // This is an undocumented interface that I'm using to get around an inode updating issue on ubuntu.
+    // Qt5 will have a solution to this issue.
     file_watcher->setObjectName(QLatin1String("_qt_autotest_force_engine_poller"));
 
     setDocumentMode(true);
@@ -137,11 +138,12 @@ void TabWidget::slotFileChanged(QString changed_file_uri)
 {
     TabPage * tab_page = uriTabPage(changed_file_uri);
 
-    // If the file has been deleted, remove it's tab.
+    // If the file has been deleted, remove it's tab if the user has specified tab removal.
     QFileInfo file_info(changed_file_uri);
     if (!file_info.exists())
     {
-        slotRemoveTab(indexOf(tab_page));
+        if (ui->action_close_deleted_files->isChecked())
+            slotRemoveTab(indexOf(tab_page));
         return;
     }
 
@@ -193,6 +195,8 @@ TabPage * TabWidget::loadFile(QString const & file_uri)
         return 0;
     }
 
+    tab_page->enableTransparentBackground(ui->action_transparent_background->isChecked());
+
     addTab(tab_page, file_info.fileName());
     file_watcher->addPath(file_uri);
 
@@ -202,6 +206,15 @@ TabPage * TabWidget::loadFile(QString const & file_uri)
 void TabWidget::slotCloseCurrentTab()
 {
     slotRemoveTab(currentIndex());
+}
+
+void TabWidget::slotEnableTransparentBackground(bool enable)
+{
+    for (int i = 0; i < count(); ++i)
+    {
+        TabPage * tab_page = dynamic_cast<TabPage *>(widget(i));
+        tab_page->enableTransparentBackground(enable);
+    }
 }
 
 TabPage * TabWidget::uriTabPage(QString const & uri) const

@@ -114,7 +114,7 @@
        <normaloff>:/icons/text.png</normaloff>:/icons/text.png</iconset>
      </property>
      <addaction name="action_word_wrap"/>
-     <addaction name="action_scroll_bottom"/>
+     <addaction name="action_indent_xml"/>
     </widget>
     <widget class="QMenu" name="menu_common">
      <property name="title">
@@ -124,6 +124,7 @@
       <iconset resource="../resources.qrc">
        <normaloff>:/icons/common.png</normaloff>:/icons/common.png</iconset>
      </property>
+     <addaction name="action_jump_to_change"/>
      <addaction name="action_close_deleted_files"/>
     </widget>
     <addaction name="menu_images"/>
@@ -237,14 +238,6 @@
     <string>Word Wrap</string>
    </property>
   </action>
-  <action name="action_scroll_bottom">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Scroll Bottom</string>
-   </property>
-  </action>
   <action name="action_save_session">
    <property name="icon">
     <iconset resource="../resources.qrc">
@@ -275,6 +268,22 @@
    </property>
    <property name="text">
     <string>Close Deleted Files</string>
+   </property>
+  </action>
+  <action name="action_jump_to_change">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Jump To Change</string>
+   </property>
+  </action>
+  <action name="action_indent_xml">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Format XML</string>
    </property>
   </action>
  </widget>

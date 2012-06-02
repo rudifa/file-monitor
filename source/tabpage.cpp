@@ -70,6 +70,11 @@ bool TabPage::load(QString const & uri)
     return view->load(file_uri);
 }
 
+void TabPage::enableTransparentBackground(bool enable)
+{
+    view->enableTransparentBackground(enable);
+}
+
 QString TabPage::getUri() const
 {
     return file_uri;

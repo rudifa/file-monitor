@@ -1,6 +1,6 @@
 
-#ifndef FILE_SYSTEM_WATCHER_H
-#define FILE_SYSTEM_WATCHER_H
+#ifndef FILE_SYSTEM_WATCHER_HPP
+#define FILE_SYSTEM_WATCHER_HPP
 
 #include <QFileSystemWatcher>
 #include <QFileInfo>

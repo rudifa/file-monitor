@@ -27,14 +27,22 @@ MainWindow::MainWindow(QWidget * parent) :
     setContentsMargins(2, 0, 2, 0);
     connect(ui->action_file_open, SIGNAL(triggered()), tab_widget, SLOT(slotLoadFile()));
     connect(ui->action_file_close, SIGNAL(triggered()), tab_widget, SLOT(slotCloseCurrentTab()));
+    connect(ui->action_transparent_background, SIGNAL(toggled(bool)), tab_widget, SLOT(slotEnableTransparentBackground(bool)));
 
     // Window location and dimensions.
-    setGeometry(settings.value("appGeometry", QRect(100, 100, 500, 400)).toRect());
+    QRect default_dimensions(100, 100, 500, 400);
+    setGeometry(settings.value("appGeometry", default_dimensions).toRect());
+
+    // User defined settings.
+    ui->action_close_deleted_files->setChecked(settings.value("closeDeletedFiles", true).toBool());
+    ui->action_transparent_background->setChecked(settings.value("transparentBackground", true).toBool());
 }
 
 MainWindow::~MainWindow()
 {
     settings.setValue("appGeometry", geometry());
+    settings.setValue("closeDeletedFiles", ui->action_close_deleted_files->isChecked());
+    settings.setValue("transparentBackground", ui->action_transparent_background->isChecked());
     delete ui;
 }
 
@@ -75,7 +83,8 @@ void MainWindow::dropEvent(QDropEvent * event)
         QStringList path_list;
         QList<QUrl> url_list = mime_data->urls();
 
-        for (int i = 0; i < url_list.size() && i < 32; ++i)
+        int max_num_files = 32;
+        for (int i = 0; i < url_list.size() && i < max_num_files; ++i)
             path_list.append(url_list.at(i).toLocalFile());
 
         tab_widget->openFiles(path_list);

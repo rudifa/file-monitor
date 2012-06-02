@@ -15,7 +15,8 @@ int main(int argc, char *argv[])
     QTranslator translator;
     
     QString translation_uri = utility::locale::getSystemTranslationUri(app);
-    if (!translation_uri.isEmpty()) {
+    if (!translation_uri.isEmpty())
+    {
         translator.load(translation_uri);
         app.installTranslator(&translator);
     }

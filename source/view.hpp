@@ -3,6 +3,7 @@
 #define VIEW_HPP
 
 #include <QObject>
+#include <QPixmap>
 
 class QString;
 class QWidget;
@@ -34,7 +35,9 @@ public:
     virtual void setScrollDimensions(QPoint scroll_dimensions) = 0;
     virtual QPoint getScrollDimensions() const = 0;
 
-    void wheelEvent(QWheelEvent *event);
+    virtual void enableTransparentBackground(bool enable) { }
+
+//    void wheelEvent(QWheelEvent * event);
 
 signals:
     void signalUserChangedDisplay();
@@ -44,6 +47,7 @@ signals:
 protected:
     ZoomParameters zoom_parameters;
     double absolute_zoom;
+    QPixmap transparent_tile_pixmap;
 };
 
 #endif

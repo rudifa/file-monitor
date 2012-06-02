@@ -22,16 +22,6 @@ ImageView::ImageView(QWidget * parent)
 
     connect(graphics_view->verticalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
     connect(graphics_view->horizontalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
-
-    QPixmap tilePixmap(64, 64);
-    tilePixmap.fill(Qt::white);
-    QPainter tilePainter(&tilePixmap);
-    QColor color(230, 230, 230);
-    tilePainter.fillRect(0, 0, 32, 32, color);
-    tilePainter.fillRect(32, 32, 32, 32, color);
-    tilePainter.end();
-
-    graphics_view->setBackgroundBrush(tilePixmap);
 }
 
 QWidget * ImageView::getWidget()
@@ -83,4 +73,9 @@ QPoint ImageView::getScrollDimensions() const
     int horizontal_scroll = graphics_view->horizontalScrollBar()->value();
     int vertical_scroll = graphics_view->verticalScrollBar()->value();
     return QPoint(horizontal_scroll, vertical_scroll);
+}
+
+void ImageView::enableTransparentBackground(bool enable)
+{
+    graphics_view->setBackgroundBrush(enable ? QBrush(transparent_tile_pixmap) : Qt::NoBrush);
 }

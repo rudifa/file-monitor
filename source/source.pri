@@ -28,7 +28,8 @@ HEADERS += mainwindow.hpp \
     htmlview.hpp \
     imageview.hpp \
     utility.hpp \
-    customgraphicsview.hpp
+    customgraphicsview.hpp \
+    filesystemwatcher.hpp
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -40,4 +41,5 @@ SOURCES += main.cpp \
     htmlview.cpp \
     imageview.cpp \
     utility.cpp \
-    customgraphicsview.cpp
+    customgraphicsview.cpp \
+    filesystemwatcher.cpp

@@ -5,8 +5,6 @@
 #include <QTabWidget>
 #include <QSettings>
 
-#include <set>
-
 namespace Ui
 {
     class MainWindow;
@@ -17,7 +15,7 @@ class QMouseMoveEvent;
 class QWheelEvent;
 class TabPage;
 class FileDisplay;
-class QFileSystemWatcher;
+class FileSystemWatcher;
 
 class TabWidget : public QTabWidget
 {
@@ -35,6 +33,7 @@ public:
 public slots:
     void slotLoadFile();
     void slotCloseCurrentTab();
+    void slotEnableTransparentBackground(bool enable);
 
 private slots:
     void slotRemoveTab(int tab_index);
@@ -48,7 +47,7 @@ private:
     TabPage * uriTabPage(QString const & uri) const;
     QString tabUri(QWidget * tab_widget) const;
     QStringList allTabUris() const;
-    QFileSystemWatcher * file_watcher;
+    FileSystemWatcher * file_watcher;
     QSettings settings;
 
     TabPage * loadFile(QString const & file_uri);

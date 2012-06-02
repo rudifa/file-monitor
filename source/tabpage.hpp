@@ -18,6 +18,7 @@ public:
     TabPage(QWidget * parent = 0);
 
     bool load(QString const & uri);
+    void enableTransparentBackground(bool enable);
     
     QString getUri() const;
     int getZoom() const;

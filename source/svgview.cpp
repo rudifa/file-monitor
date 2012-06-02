@@ -26,16 +26,6 @@ SvgView::SvgView(QWidget * parent)
     connect(graphics_view->horizontalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
     connect(graphics_view, SIGNAL(signalZoomIn()), SIGNAL(signalZoomIn()));
     connect(graphics_view, SIGNAL(signalZoomOut()), SIGNAL(signalZoomOut()));
-
-    QPixmap tilePixmap(16, 16);
-    tilePixmap.fill(Qt::white);
-    QPainter tilePainter(&tilePixmap);
-    QColor color(230, 230, 230);
-    tilePainter.fillRect(0, 0, 8, 8, color);
-    tilePainter.fillRect(8, 8, 8, 8, color);
-    tilePainter.end();
-
-    graphics_view->setBackgroundBrush(tilePixmap);
 }
 
 QWidget * SvgView::getWidget()
@@ -86,4 +76,9 @@ QPoint SvgView::getScrollDimensions() const
     int horizontal_scroll = graphics_view->horizontalScrollBar()->value();
     int vertical_scroll = graphics_view->verticalScrollBar()->value();
     return QPoint(horizontal_scroll, vertical_scroll);
+}
+
+void SvgView::enableTransparentBackground(bool enable)
+{
+    graphics_view->setBackgroundBrush(enable ? QBrush(transparent_tile_pixmap) : Qt::NoBrush);
 }

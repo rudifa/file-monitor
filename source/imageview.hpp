@@ -20,6 +20,8 @@ public:
     void setScrollDimensions(QPoint dimensions);
     QPoint getScrollDimensions() const;
 
+    virtual void enableTransparentBackground(bool enable);
+
 protected:
     QGraphicsView * graphics_view;
     QGraphicsPixmapItem * graphics_item;
