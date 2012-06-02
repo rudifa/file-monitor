@@ -4,5 +4,11 @@
         <file>icons/file_close.png</file>
         <file>icons/file_zoom_in.png</file>
         <file>icons/file_zoom_out.png</file>
+        <file>icons/session_load.png</file>
+        <file>icons/session_save.png</file>
+        <file>icons/text.png</file>
+        <file>icons/image.png</file>
+        <file>icons/about.png</file>
+        <file>icons/common.png</file>
     </qresource>
 </RCC>
