@@ -18,6 +18,9 @@ mac {
 
 DEFINES += QT_NO_CAST_TO_ASCII QT_STRICT_ITERATORS
 
+QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -Wall
+
 DESTDIR = _build/.compiled
 
 RESOURCES += resources.qrc

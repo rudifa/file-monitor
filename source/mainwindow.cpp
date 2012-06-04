@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget * parent) :
     connect(ui->action_file_open, SIGNAL(triggered()), tab_widget, SLOT(slotLoadFile()));
     connect(ui->action_file_close, SIGNAL(triggered()), tab_widget, SLOT(slotCloseCurrentTab()));
     connect(ui->action_transparent_background, SIGNAL(toggled(bool)), tab_widget, SLOT(slotEnableTransparentBackground(bool)));
+    connect(ui->action_word_wrap, SIGNAL(toggled(bool)), tab_widget, SLOT(slotWordWrap(bool)));
+    connect(ui->action_indent_xml, SIGNAL(toggled(bool)), tab_widget, SLOT(slotIndentXML(bool)));
 
     // Window location and dimensions.
     QRect default_dimensions(100, 100, 500, 400);
@@ -36,6 +38,8 @@ MainWindow::MainWindow(QWidget * parent) :
     // User defined settings.
     ui->action_close_deleted_files->setChecked(settings.value("closeDeletedFiles", true).toBool());
     ui->action_transparent_background->setChecked(settings.value("transparentBackground", true).toBool());
+    ui->action_word_wrap->setChecked(settings.value("wordWrap", true).toBool());
+    ui->action_indent_xml->setChecked(settings.value("indentXML", true).toBool());
 }
 
 MainWindow::~MainWindow()
@@ -43,6 +47,8 @@ MainWindow::~MainWindow()
     settings.setValue("appGeometry", geometry());
     settings.setValue("closeDeletedFiles", ui->action_close_deleted_files->isChecked());
     settings.setValue("transparentBackground", ui->action_transparent_background->isChecked());
+    settings.setValue("wordWrap", ui->action_word_wrap->isChecked());
+    settings.setValue("indentXML", ui->action_indent_xml->isChecked());
     delete ui;
 }
 

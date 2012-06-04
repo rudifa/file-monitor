@@ -9,7 +9,9 @@ INCLUDEPATH += $${PWD}
 DEPENDPATH += $${PWD}
 
 QT += svg \
-    webkit
+    webkit \
+    network \
+    xml
 
 # Share object files for faster compiling
 RCC_DIR     = $${DESTDIR}

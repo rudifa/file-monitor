@@ -18,8 +18,15 @@ public:
     void setScrollDimensions(QPoint dimensions);
     QPoint getScrollDimensions() const;
 
+    virtual void wordWrap(bool word_wrap);
+    virtual void indentXML(bool indent);
+
 protected:
     QTextEdit * text_edit;
+
+    QString unformatted_content;
+    bool indent_xml;
+    void formatAndInsertContent(QString const & content, bool indent);
 };
 
 #endif

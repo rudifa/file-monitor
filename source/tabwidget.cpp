@@ -14,6 +14,7 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 
+#include <algorithm>
 #include <cassert>
 
 TabWidget::TabWidget(Ui::MainWindow * ui, QWidget * parent)
@@ -60,7 +61,8 @@ TabWidget::~TabWidget()
 void TabWidget::updateTabConnections()
 {
     // Update tab connections.
-    for (int i = 0; i < count(); ++i) {
+    for (int i = 0; i < count(); ++i)
+    {
         TabPage * tab_page = dynamic_cast<TabPage *>(widget(i));
         assert(tab_page);
         if (i == currentIndex())
@@ -196,11 +198,27 @@ TabPage * TabWidget::loadFile(QString const & file_uri)
     }
 
     tab_page->enableTransparentBackground(ui->action_transparent_background->isChecked());
+    tab_page->wordWrap(ui->action_word_wrap->isChecked());
+    tab_page->indentXML(ui->action_indent_xml->isChecked());
 
     addTab(tab_page, file_info.fileName());
     file_watcher->addPath(file_uri);
 
     return tab_page;
+}
+
+std::vector<TabPage *> TabWidget::tabPages()
+{
+    std::vector<TabPage *> tab_pages;
+
+    for (int i = 0; i < count(); ++i)
+    {
+        TabPage * tab_page = dynamic_cast<TabPage *>(widget(i));
+        if (tab_page)
+            tab_pages.push_back(tab_page);
+    }
+
+    return tab_pages;
 }
 
 void TabWidget::slotCloseCurrentTab()
@@ -210,11 +228,20 @@ void TabWidget::slotCloseCurrentTab()
 
 void TabWidget::slotEnableTransparentBackground(bool enable)
 {
-    for (int i = 0; i < count(); ++i)
-    {
-        TabPage * tab_page = dynamic_cast<TabPage *>(widget(i));
-        tab_page->enableTransparentBackground(enable);
-    }
+    auto pages = tabPages();
+    std::for_each(pages.begin(), pages.end(), [enable](TabPage * page) { page->enableTransparentBackground(enable); });
+}
+
+void TabWidget::slotWordWrap(bool word_wrap)
+{
+    auto pages = tabPages();
+    std::for_each(pages.begin(), pages.end(), [word_wrap](TabPage * page) { page->wordWrap(word_wrap); });
+}
+
+void TabWidget::slotIndentXML(bool indent_xml)
+{
+    auto pages = tabPages();
+    std::for_each(pages.begin(), pages.end(), [indent_xml](TabPage * page) { page->indentXML(indent_xml); });
 }
 
 TabPage * TabWidget::uriTabPage(QString const & uri) const

@@ -33,7 +33,10 @@ public:
 public slots:
     void slotLoadFile();
     void slotCloseCurrentTab();
+
     void slotEnableTransparentBackground(bool enable);
+    void slotWordWrap(bool word_wrap);
+    void slotIndentXML(bool indent_xml);
 
 private slots:
     void slotRemoveTab(int tab_index);
@@ -51,6 +54,7 @@ private:
     QSettings settings;
 
     TabPage * loadFile(QString const & file_uri);
+    std::vector<TabPage *> tabPages();
 };
 
 #endif

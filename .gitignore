@@ -6,4 +6,4 @@ Makefile
 *.Release
 
 # Qt-Creator files
-*.pro.user
+*.pro.user*

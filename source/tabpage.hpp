@@ -18,7 +18,10 @@ public:
     TabPage(QWidget * parent = 0);
 
     bool load(QString const & uri);
+
     void enableTransparentBackground(bool enable);
+    void wordWrap(bool word_wrap);
+    void indentXML(bool indent_xml);
     
     QString getUri() const;
     int getZoom() const;

@@ -75,6 +75,16 @@ void TabPage::enableTransparentBackground(bool enable)
     view->enableTransparentBackground(enable);
 }
 
+void TabPage::wordWrap(bool word_wrap)
+{
+    view->wordWrap(word_wrap);
+}
+
+void TabPage::indentXML(bool indent_xml)
+{
+    view->indentXML(indent_xml);
+}
+
 QString TabPage::getUri() const
 {
     return file_uri;

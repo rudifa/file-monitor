@@ -6,12 +6,13 @@
 #include <QFile>
 #include <QTextStream>
 #include <QTimer>
+#include <QDomDocument>
 
 #include <cmath>
 #include <cassert>
 
 TextView::TextView(QWidget * parent)
-    : View(parent, ZoomParameters(.5, 8, 12)), text_edit(new QTextEdit(parent))
+    : View(parent, ZoomParameters(.5, 8, 12)), text_edit(new QTextEdit(parent)), indent_xml(false)
 {
     text_edit->setReadOnly(true);
 
@@ -31,9 +32,10 @@ bool TextView::load(QString const & file_uri)
         return false;
 
     QTextStream in(&file);
-    QString file_str = in.readAll();
+    unformatted_content = in.readAll();
 
-    text_edit->setText(file_str);
+    formatAndInsertContent(unformatted_content, indent_xml);
+
     return true;
 }
 
@@ -62,4 +64,30 @@ QPoint TextView::getScrollDimensions() const
     int horizontal_scroll = text_edit->horizontalScrollBar()->value();
     int vertical_scroll = text_edit->verticalScrollBar()->value();
     return QPoint(horizontal_scroll, vertical_scroll);
+}
+
+void TextView::wordWrap(bool word_wrap)
+{
+    auto word_wrap_mode = (word_wrap ? QTextOption::WordWrap : QTextOption::NoWrap);
+    text_edit->setWordWrapMode(word_wrap_mode);
+}
+
+void TextView::indentXML(bool indent)
+{
+    indent_xml = indent;
+    formatAndInsertContent(unformatted_content, indent_xml);
+}
+
+void TextView::formatAndInsertContent(QString const & content, bool indent)
+{
+    if (indent)
+    {
+        QDomDocument document;
+        if (document.setContent(content))
+            text_edit->setPlainText(document.toString(4));
+    }
+    else
+    {
+        text_edit->setPlainText(content);
+    }
 }
