@@ -10,5 +10,7 @@
         <file>icons/image.png</file>
         <file>icons/about.png</file>
         <file>icons/common.png</file>
+        <file>icons/file-monitor.xpm</file>
+        <file>icons/16x16/file-monitor.png</file>
     </qresource>
 </RCC>

@@ -10,6 +10,9 @@
 #include <QDropEvent>
 #include <QUrl>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QLabel>
 
 using namespace utility;
 
@@ -35,6 +38,7 @@ MainWindow::MainWindow(QWidget * parent) :
     connect(ui.action_indent_xml, SIGNAL(toggled(bool)), tab_widget, SLOT(slotIndentXML(bool)));
     connect(ui.action_save_session, SIGNAL(triggered()), SLOT(slotSaveSession()));
     connect(ui.action_restore_session, SIGNAL(triggered()), SLOT(slotRestoreSession()));
+    connect(ui.action_about_file_monitor, SIGNAL(triggered()), SLOT(slotAboutFileMonitor()));
 
     settings.beginGroup("global");
     loadSettings();
@@ -119,6 +123,42 @@ void MainWindow::slotRestoreSession()
 
     settings::loadSettingsFromFile(file_uri);
     tab_widget->loadSettings();
+}
+
+// TODO: look into refreshing this text when the application language changes.
+void MainWindow::slotAboutFileMonitor()
+{
+    auto content = QString("<img src=\":/icons/file-monitor.xpm\" style=\"float: left; \"/>"
+        "<p style=\"margin-left: 40px; margin-top: -20px;\">%1</p><p>%2</p><p>%3</p><p>%4</p><p>%5</p>")
+    .arg(tr("<b>File Monitor</b> is a cross-platform file viewer that automatically redraws files when they change on disk."))
+    .arg(tr("You can edit an HTML document in a simple text editor and watch it update in real-time using File Monitor."))
+    .arg(tr("If you are keeping track of 10 different log files, File Monitor will automatically switch to the most recently "
+           "modified file and take you to those changes."))
+    .arg(tr("Currently supported file types are text, html, svg, and raster image file formats (jpg, gif, png, bmp, etc)."))
+    .arg(tr("To learn more about File Monitor or to contribute, please visit our project page "
+        "<a href=\"http://code.google.com/p/file-monitor\">http://code.google.com/p/file-monitor</a>"));
+
+    auto about_dialog = new QDialog(QApplication::activeModalWidget());
+    about_dialog->setModal(true);
+    about_dialog->setWindowTitle(tr("About File Monitor"));
+    about_dialog->setWindowIcon(QIcon(":/icons/about.png"));
+
+    QGridLayout * layout = new QGridLayout(about_dialog);
+    layout->setSpacing(14);
+    about_dialog->setLayout(layout);
+
+    QLabel * about_text_label = new QLabel(content, about_dialog);
+    about_text_label->setWordWrap(true);
+    about_text_label->setTextFormat(Qt::RichText);
+    about_text_label->setOpenExternalLinks(true);
+    layout->addWidget(about_text_label, 0, 1, 1, 1, Qt::AlignTop);
+
+    QPushButton * about_close_button = new QPushButton(tr("&Close"), about_dialog);
+    layout->addWidget(about_close_button, 1, 1, 1, 2, Qt::AlignRight);
+    connect(about_close_button, SIGNAL(clicked()), about_dialog, SLOT(close()));
+
+    layout->setSizeConstraint(QLayout::SetFixedSize);
+    about_dialog->show();
 }
 
 void MainWindow::loadSettings()

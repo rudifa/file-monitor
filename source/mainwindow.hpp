@@ -33,6 +33,7 @@ protected:
 private slots:
     void slotSaveSession();
     void slotRestoreSession();
+    void slotAboutFileMonitor();
 
 private:
     Ui::MainWindow ui;
