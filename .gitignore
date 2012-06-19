@@ -7,3 +7,6 @@ Makefile
 
 # Qt-Creator files
 *.pro.user*
+
+# Unix files
+.directory

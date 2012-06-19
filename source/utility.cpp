@@ -5,8 +5,11 @@
 #include <QFileInfo>
 #include <QDirIterator>
 #include <QApplication>
+#include <QSettings>
 
 #include <cassert>
+
+using namespace utility;
 
 namespace
 {
@@ -28,8 +31,7 @@ namespace
 	// Locale directory could not be found.
 	return QString();
     }
-    QString languageLocaleToTranslationUri(QApplication const & app,
-        QString const & language_locale)
+    QString languageLocaleToTranslationUri(QApplication const & app, QString const & language_locale)
     {
         return getLocalesDirectory(app) + "/" + language_locale + ".qm";
     }
@@ -43,7 +45,7 @@ namespace
     }
 }
 
-QString utility::locale::getSystemTranslationUri(QApplication const & app)
+QString locale::getSystemTranslationUri(QApplication const & app)
 {
     // Convert from Qt to xml:lang language-locale convention.
     QString xml_lang = QLocaleToXmlLangString(QLocale::system());
@@ -58,7 +60,8 @@ QString utility::locale::getSystemTranslationUri(QApplication const & app)
     QString language = langFromXmlLangString(xml_lang);
     QString translations_directory = getLocalesDirectory(app);
     QDirIterator it(translations_directory);
-    while (it.hasNext()) {
+    while (it.hasNext())
+    {
         it.next();
         QString file_base_name = it.fileInfo().baseName();
         if (file_base_name.startsWith(language))
@@ -67,3 +70,30 @@ QString utility::locale::getSystemTranslationUri(QApplication const & app)
 
     return QString();
 }
+
+void settings::saveSettingsToFile(QString const & file_uri)
+{
+    QSettings global_settings;
+    QSettings file_settings(file_uri, QSettings::IniFormat);
+
+    auto keys = global_settings.allKeys();
+    for (auto it = keys.begin(); it != keys.end(); ++it)
+        file_settings.setValue(*it, global_settings.value(*it));
+}
+
+bool settings::loadSettingsFromFile(QString const & file_uri)
+{
+    QSettings file_settings(file_uri, QSettings::IniFormat);
+    auto temp_keys = file_settings.allKeys();
+    if (temp_keys.isEmpty())
+        return false;
+
+    QSettings global_settings;
+    global_settings.clear();
+
+    for (auto it = temp_keys.begin(); it != temp_keys.end(); ++it)
+        global_settings.setValue(*it, file_settings.value(*it));
+
+    return true;
+}
+

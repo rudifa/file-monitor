@@ -11,8 +11,6 @@
 #include <cmath>
 #include <cassert>
 
-#include <QDebug>
-
 SvgView::SvgView(QWidget * parent)
     : View(parent, ZoomParameters(.3, 1.5, 3)), graphics_view(new CustomGraphicsView(parent))
 {

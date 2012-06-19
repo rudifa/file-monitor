@@ -50,6 +50,11 @@ TabPage::TabPage(QWidget * parent)
 {
 }
 
+TabPage::~TabPage()
+{
+    saveSettings();
+}
+
 bool TabPage::load(QString const & uri)
 {
     assert(!uri.isEmpty());
@@ -62,10 +67,11 @@ bool TabPage::load(QString const & uri)
     layout->setContentsMargins(0, 4, 0, 4);
     layout->addWidget(view->getWidget());
 
-    connect(view, SIGNAL(signalUserChangedDisplay()), SLOT(slotSaveSettings()));
     connect(view, SIGNAL(signalZoomIn()), SLOT(slotZoomIn()));
     connect(view, SIGNAL(signalZoomOut()), SLOT(slotZoomOut()));
-    connect(this, SIGNAL(signalUserChangedZoom(int)), SLOT(slotSaveSettings()));
+
+    settings.beginGroup("files/" + getUri());
+    slotLoadSettings();
 
     return view->load(file_uri);
 }
@@ -118,33 +124,21 @@ void TabPage::slotSetZoom(int zoom)
 
 void TabPage::slotLoadSettings()
 {
-    view->blockSignals(true);
-
-    settings.beginGroup(getUri());
     view->setZoom(settings.value("zoom", 0).toDouble());
     view->setScrollDimensions(settings.value("scroll_dimensions", QPoint(0, 0)).toPoint());
-    settings.endGroup();
-
-    view->blockSignals(false);
 }
 
 void TabPage::slotReload()
 {
-    view->blockSignals(true);
-
-    slotSaveSettings();
+    saveSettings();
     view->load(file_uri);
     slotLoadSettings();
-
-    view->blockSignals(false);
 }
 
-void TabPage::slotSaveSettings()
+void TabPage::saveSettings()
 {
-    settings.beginGroup(getUri());
     settings.setValue("zoom", view->getZoom());
     settings.setValue("scroll_dimensions", view->getScrollDimensions());
-    settings.endGroup();
 }
 
 View * TabPage::createView(QString const & file_uri)

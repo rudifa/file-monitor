@@ -1,19 +1,22 @@
 
 #include "mainwindow.hpp"
-#include "ui_mainwindow.h"
 
 #include "tabwidget.hpp"
+#include "utility.hpp"
 
 #include <QSpacerItem>
 #include <QGridLayout>
 #include <QSlider>
 #include <QDropEvent>
 #include <QUrl>
+#include <QFileDialog>
+
+using namespace utility;
 
 MainWindow::MainWindow(QWidget * parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow)
+    QMainWindow(parent)
 {
-    ui->setupUi(this);
+    ui.setupUi(this);
 
     QWidget * central_widget = new QWidget(this);
     QGridLayout * grid_layout = new QGridLayout(central_widget);
@@ -25,31 +28,21 @@ MainWindow::MainWindow(QWidget * parent) :
     setCentralWidget(central_widget);
 
     setContentsMargins(2, 0, 2, 0);
-    connect(ui->action_file_open, SIGNAL(triggered()), tab_widget, SLOT(slotLoadFile()));
-    connect(ui->action_file_close, SIGNAL(triggered()), tab_widget, SLOT(slotCloseCurrentTab()));
-    connect(ui->action_transparent_background, SIGNAL(toggled(bool)), tab_widget, SLOT(slotEnableTransparentBackground(bool)));
-    connect(ui->action_word_wrap, SIGNAL(toggled(bool)), tab_widget, SLOT(slotWordWrap(bool)));
-    connect(ui->action_indent_xml, SIGNAL(toggled(bool)), tab_widget, SLOT(slotIndentXML(bool)));
+    connect(ui.action_file_open, SIGNAL(triggered()), tab_widget, SLOT(slotLoadFile()));
+    connect(ui.action_file_close, SIGNAL(triggered()), tab_widget, SLOT(slotCloseCurrentTab()));
+    connect(ui.action_transparent_background, SIGNAL(toggled(bool)), tab_widget, SLOT(slotEnableTransparentBackground(bool)));
+    connect(ui.action_word_wrap, SIGNAL(toggled(bool)), tab_widget, SLOT(slotWordWrap(bool)));
+    connect(ui.action_indent_xml, SIGNAL(toggled(bool)), tab_widget, SLOT(slotIndentXML(bool)));
+    connect(ui.action_save_session, SIGNAL(triggered()), SLOT(slotSaveSession()));
+    connect(ui.action_restore_session, SIGNAL(triggered()), SLOT(slotRestoreSession()));
 
-    // Window location and dimensions.
-    QRect default_dimensions(100, 100, 500, 400);
-    setGeometry(settings.value("appGeometry", default_dimensions).toRect());
-
-    // User defined settings.
-    ui->action_close_deleted_files->setChecked(settings.value("closeDeletedFiles", true).toBool());
-    ui->action_transparent_background->setChecked(settings.value("transparentBackground", true).toBool());
-    ui->action_word_wrap->setChecked(settings.value("wordWrap", true).toBool());
-    ui->action_indent_xml->setChecked(settings.value("indentXML", true).toBool());
+    settings.beginGroup("global");
+    loadSettings();
 }
 
 MainWindow::~MainWindow()
 {
-    settings.setValue("appGeometry", geometry());
-    settings.setValue("closeDeletedFiles", ui->action_close_deleted_files->isChecked());
-    settings.setValue("transparentBackground", ui->action_transparent_background->isChecked());
-    settings.setValue("wordWrap", ui->action_word_wrap->isChecked());
-    settings.setValue("indentXML", ui->action_indent_xml->isChecked());
-    delete ui;
+    saveSettings();
 }
 
 // Add this kind of code to every widget with translatable strings when we want the app
@@ -57,9 +50,10 @@ MainWindow::~MainWindow()
 void MainWindow::changeEvent(QEvent * event)
 {
     QMainWindow::changeEvent(event);
-    switch (event->type()) {
+    switch (event->type())
+    {
     case QEvent::LanguageChange:
-        ui->retranslateUi(this);
+        ui.retranslateUi(this);
         break;
     default:
         break;
@@ -95,4 +89,58 @@ void MainWindow::dropEvent(QDropEvent * event)
 
         tab_widget->openFiles(path_list);
     }
+}
+
+void MainWindow::slotSaveSession()
+{
+    QString last_saved_session_uri("");
+
+    QString file_uri = QFileDialog::getSaveFileName(this, tr("Save Session"), last_saved_session_uri, tr("Session (*.ses)"));
+
+    if (file_uri.isEmpty())
+        return;
+
+    saveSettings();
+    settings::saveSettingsToFile(file_uri);
+}
+
+void MainWindow::slotRestoreSession()
+{
+    QString last_restored_session_uri("");
+
+    QString file_uri = QFileDialog::getOpenFileName(this, tr("Restore Session"),
+        last_restored_session_uri, tr("Session (*.ses)"));
+
+    if (file_uri.isEmpty())
+        return;
+
+    // When each tab page closes it overwrites the current QSettings.
+    tab_widget->closeAllTabPages();
+
+    settings::loadSettingsFromFile(file_uri);
+    tab_widget->loadSettings();
+}
+
+void MainWindow::loadSettings()
+{
+    // Window location and dimensions.
+    QRect default_dimensions(100, 100, 500, 400);
+    setGeometry(settings.value("app_geometry", default_dimensions).toRect());
+
+    // User defined settings.
+    ui.action_close_deleted_files->setChecked(settings.value("closeDeletedFiles", false).toBool());
+    ui.action_transparent_background->setChecked(settings.value("transparent_background", true).toBool());
+    ui.action_word_wrap->setChecked(settings.value("word_wrap", true).toBool());
+    ui.action_indent_xml->setChecked(settings.value("indentXML", true).toBool());
+}
+
+void MainWindow::saveSettings()
+{
+    settings.setValue("app_geometry", geometry());
+    settings.setValue("close_deleted_files", ui.action_close_deleted_files->isChecked());
+    settings.setValue("transparent_background", ui.action_transparent_background->isChecked());
+    settings.setValue("word_wrap", ui.action_word_wrap->isChecked());
+    settings.setValue("indent_xml", ui.action_indent_xml->isChecked());
+
+    tab_widget->saveSettings();
 }

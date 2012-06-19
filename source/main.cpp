@@ -5,6 +5,8 @@
 #include <QtGui/QApplication>
 #include <QTranslator>
 
+using namespace utility;
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setOrganizationName("XmlSoft");
@@ -14,7 +16,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     QTranslator translator;
     
-    QString translation_uri = utility::locale::getSystemTranslationUri(app);
+    QString translation_uri = locale::getSystemTranslationUri(app);
     if (!translation_uri.isEmpty())
     {
         translator.load(translation_uri);

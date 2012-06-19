@@ -83,6 +83,9 @@
     </property>
     <addaction name="action_file_open"/>
     <addaction name="action_file_close"/>
+    <addaction name="separator"/>
+    <addaction name="action_save_session"/>
+    <addaction name="action_restore_session"/>
    </widget>
    <widget class="QMenu" name="menu_edit">
     <property name="title">
@@ -137,15 +140,7 @@
     </property>
     <addaction name="action_about_file_monitor"/>
    </widget>
-   <widget class="QMenu" name="menuSession">
-    <property name="title">
-     <string>Session</string>
-    </property>
-    <addaction name="action_save_session"/>
-    <addaction name="action_load_session"/>
-   </widget>
    <addaction name="menu_file"/>
-   <addaction name="menuSession"/>
    <addaction name="menu_edit"/>
    <addaction name="menu_settings"/>
    <addaction name="menu_about"/>
@@ -250,16 +245,16 @@
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="action_load_session">
+  <action name="action_restore_session">
    <property name="icon">
     <iconset resource="../resources.qrc">
      <normaloff>:/icons/session_load.png</normaloff>:/icons/session_load.png</iconset>
    </property>
    <property name="text">
-    <string>Load Session</string>
+    <string>Restore Session</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+L</string>
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="action_close_deleted_files">

@@ -5,6 +5,8 @@
 #include <QMainWindow>
 #include <QSettings>
 
+#include "ui_mainwindow.h"
+
 namespace Ui
 {
     class MainWindow;
@@ -28,10 +30,17 @@ protected:
     void dragLeaveEvent(QDragLeaveEvent * event);
     void dropEvent(QDropEvent * event);
 
+private slots:
+    void slotSaveSession();
+    void slotRestoreSession();
+
 private:
-    Ui::MainWindow * ui;
+    Ui::MainWindow ui;
     TabWidget * tab_widget;
     QSettings settings;
+
+    void loadSettings();
+    void saveSettings();
 };
 
 #endif
