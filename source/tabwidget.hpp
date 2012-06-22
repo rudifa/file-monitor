@@ -5,25 +5,24 @@
 #include <QTabWidget>
 #include <QSettings>
 
-#include <cassert>
-
-#include "tabpage.hpp"
+#include <memory>
 
 namespace Ui { class MainWindow; }
 
 class QSlider;
 class QMouseMoveEvent;
 class QWheelEvent;
+
 class FileDisplay;
 class FileSystemWatcher;
+class TabPage;
 
 class TabWidget : public QTabWidget
 {
     Q_OBJECT
 
 public:    
-    explicit TabWidget(Ui::MainWindow const & ui, QWidget * parent = 0);
-    ~TabWidget();
+    explicit TabWidget(std::unique_ptr<Ui::MainWindow> const & ui, QWidget * parent = 0);
 
     void updateTabConnections();
     void openFiles(QStringList file_uris);
@@ -44,32 +43,23 @@ public slots:
 
 private slots:
     void slotRemoveTab(int tab_index);
-    void slotCurrentTabChanged();
+    void slotCurrentTabChanged(int new_index);
     void slotFileChanged(QString changed_file_uri);
     void slotSynchronizeZoomSlider();
 
 private:
-    Ui::MainWindow const & ui;
+    std::unique_ptr<Ui::MainWindow> const & ui;
     QSlider * zoom_slider;
     FileSystemWatcher * file_watcher;
     QSettings settings;
 
-
     TabPage * loadFile(QString const & file_uri);
 
-    inline TabPage * tabPage(QWidget * widget) const
-    {
-        // TabWidget should only have TabPage child Widgets.
-        assert(dynamic_cast<TabPage *>(widget));
-        return static_cast<TabPage *>(widget);
-    }
-
+    TabPage * tabPage(QWidget * widget) const;
     std::vector<TabPage *> allTabPages() const;
     TabPage * uriTabPage(QString const & uri) const;
-
-    inline QString tabUri(QWidget * tab_widget) const { return tabPage(tab_widget)->getUri(); }
+    QString tabUri(QWidget * tab_widget) const;
     QStringList allTabUris() const;
-
 };
 
 #endif

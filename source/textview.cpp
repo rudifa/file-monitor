@@ -80,14 +80,9 @@ void TextView::indentXML(bool indent)
 
 void TextView::formatAndInsertContent(QString const & content, bool indent)
 {
-    if (indent)
-    {
-        QDomDocument document;
-        if (document.setContent(content))
-            text_edit->setPlainText(document.toString(4));
-    }
+    QDomDocument document;
+    if (indent && document.setContent(content))
+        text_edit->setPlainText(document.toString(4));
     else
-    {
         text_edit->setPlainText(content);
-    }
 }

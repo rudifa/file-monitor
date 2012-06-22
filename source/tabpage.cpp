@@ -46,13 +46,8 @@ namespace
 }
 
 TabPage::TabPage(QWidget * parent)
-    : QWidget(parent)
+    : QWidget(parent), displayed_to_user(false)
 {
-}
-
-TabPage::~TabPage()
-{
-    saveSettings();
 }
 
 bool TabPage::load(QString const & uri)
@@ -71,8 +66,6 @@ bool TabPage::load(QString const & uri)
     connect(view, SIGNAL(signalZoomOut()), SLOT(slotZoomOut()));
 
     settings.beginGroup("files/" + getUri());
-    slotLoadSettings();
-
     return view->load(file_uri);
 }
 
@@ -124,19 +117,25 @@ void TabPage::slotSetZoom(int zoom)
 
 void TabPage::slotLoadSettings()
 {
+    if (!wasCurrentTab())
+        return;
+
     view->setZoom(settings.value("zoom", 0).toDouble());
     view->setScrollDimensions(settings.value("scroll_dimensions", QPoint(0, 0)).toPoint());
 }
 
 void TabPage::slotReload()
 {
-    saveSettings();
+    slotSaveSettings();
     view->load(file_uri);
     slotLoadSettings();
 }
 
-void TabPage::saveSettings()
+void TabPage::slotSaveSettings()
 {
+    if (!wasCurrentTab())
+        return;
+
     settings.setValue("zoom", view->getZoom());
     settings.setValue("scroll_dimensions", view->getScrollDimensions());
 }

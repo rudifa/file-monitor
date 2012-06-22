@@ -19,7 +19,8 @@ UI_DIR      = $${DESTDIR}
 MOC_DIR     = $${DESTDIR}
 OBJECTS_DIR = $${DESTDIR}
 
-FORMS += mainwindow.ui
+FORMS += mainwindow.ui \
+    aboutdialog.ui
 
 HEADERS += mainwindow.hpp \
     tabwidget.hpp \
@@ -31,7 +32,8 @@ HEADERS += mainwindow.hpp \
     imageview.hpp \
     utility.hpp \
     customgraphicsview.hpp \
-    filesystemwatcher.hpp
+    filesystemwatcher.hpp \
+    aboutdialog.hpp
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -44,4 +46,8 @@ SOURCES += main.cpp \
     imageview.cpp \
     utility.cpp \
     customgraphicsview.cpp \
-    filesystemwatcher.cpp
+    filesystemwatcher.cpp \
+    aboutdialog.cpp
+
+OTHER_FILES += \
+    settings.txt

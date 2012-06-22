@@ -27,7 +27,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../resources.qrc">
-    <normaloff>:/icons/16x16/file-monitor.png</normaloff>:/icons/16x16/file-monitor.png</iconset>
+    <normaloff>:/icons/file-monitor.xpm</normaloff>:/icons/file-monitor.xpm</iconset>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonIconOnly</enum>

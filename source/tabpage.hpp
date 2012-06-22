@@ -16,7 +16,6 @@ public:
     enum FileType { TEXT, HTML, SVG, IMAGE };
 
     TabPage(QWidget * parent = 0);
-    ~TabPage();
 
     bool load(QString const & uri);
 
@@ -27,11 +26,12 @@ public:
     QString getUri() const;
     int getZoom() const;
 
-    void saveSettings();
-
     static double const zoom_min;
     static double const zoom_max;
     static double const zoom_step;
+
+    inline bool wasCurrentTab() const { return displayed_to_user; }
+    inline void setCurrentTab() { displayed_to_user = true; }
 
 signals:
     void signalUserChangedZoom(int zoom);
@@ -40,6 +40,7 @@ public slots:
     void slotZoomIn();
     void slotZoomOut();
     void slotSetZoom(int zoom);
+    void slotSaveSettings();
     void slotLoadSettings();
 
 private slots:
@@ -51,6 +52,9 @@ private:
 
     QString file_uri;
     QSettings settings;
+
+    // true if this TabPage was the currentTab at least once.
+    bool displayed_to_user;
 
     bool zoomIsValid(double zoom) const;
 };

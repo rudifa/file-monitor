@@ -1,0 +1,49 @@
+
+When and how QSettings are saved and loaded within File Monitor.
+
+
+-- MainWindow --
+
+saveSettings
+1. application close (MainWindow dtor)
+2. sessionSave
+
+loadSettings
+1. application open (MainWindow ctor)
+2. sessionRestore
+
+
+-- TabWidget
+
+saveSettings
+1. application close (MainWindow dtor)
+2. sessionSave
+3. slotRemoveTab (last changed)
+
+loadSettings
+1. application open (MainWindow ctor)
+2. sessionRestore
+
+
+-- TabPage --
+
+saveSettings (only pages that have been currentTab)
+1. session save -> from MainWindow
+2. save on tab close -> TabWidget slotRemoveTab
+3. during a tab reload -> TabPage slotReload
+
+All Save Cases
+1. User closes a tab (individually or by closing the application)
+2. User changes a file
+3. User saves a session
+4. User closes application
+
+loadSettings (only pages that have been currentTab)
+1. when a tab is switched to -> TabWidget slotCurrentTabChanged
+2. during a tab reload -> TabPage slotReload
+
+All Load Cases
+1. User switches to tab.
+2. User changes file.
+3. User loads a session.
+4. User opens application

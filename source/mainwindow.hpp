@@ -5,12 +5,9 @@
 #include <QMainWindow>
 #include <QSettings>
 
-#include "ui_mainwindow.h"
+#include <memory>
 
-namespace Ui
-{
-    class MainWindow;
-}
+namespace Ui { class MainWindow; }
 
 class TabWidget;
 
@@ -36,7 +33,7 @@ private slots:
     void slotAboutFileMonitor();
 
 private:
-    Ui::MainWindow ui;
+    std::unique_ptr<Ui::MainWindow> ui;
     TabWidget * tab_widget;
     QSettings settings;
 
