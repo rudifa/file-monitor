@@ -2,6 +2,7 @@
 #include "imageview.hpp"
 
 #include "tabpage.hpp"
+#include "utility.hpp"
 
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
@@ -11,8 +12,10 @@
 #include <cmath>
 #include <cassert>
 
+using namespace utility;
+
 ImageView::ImageView(QWidget * parent)
-    : View(parent, ZoomParameters(.05, .3, 14)), graphics_view(new QGraphicsView(parent))
+    : View(parent, ZoomConfiguration(ZoomConfiguration::RampUp, .05, 50, 1)), graphics_view(new QGraphicsView(parent))
 {
     graphics_view->setAcceptDrops(false);
     graphics_view->setScene(new QGraphicsScene(this));
@@ -34,32 +37,34 @@ QWidget * ImageView::getWidget()
 
 bool ImageView::load(QString const & file_uri)
 {
-    QGraphicsScene * graphics_scene = graphics_view->scene();
-
-    graphics_scene->clear();
     graphics_view->resetTransform();
 
-    graphics_item = new QGraphicsPixmapItem(file_uri);
+    QGraphicsScene * graphics_scene = graphics_view->scene();
+    graphics_scene->clear();
+
+    graphics_item = new QGraphicsPixmapItem(QPixmap(file_uri));
     graphics_item->setFlags(QGraphicsItem::ItemClipsToShape);
-    graphics_item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    graphics_item->setTransformationMode(Qt::SmoothTransformation);
+    graphics_item->setCacheMode(QGraphicsItem::ItemCoordinateCache);
+    graphics_item->setTransformationMode(Qt::FastTransformation);
     graphics_item->setZValue(0);
 
     graphics_scene->addItem(graphics_item);
-    graphics_scene->setSceneRect(graphics_item->boundingRect());
+
+//    // TODO: Figure out why there is an extra 10 pixels (varies with zoom level)
+//    //  to the right and bottom of QPixmap inside QGraphicsScene and remove it.
+//    {
+//        QRectF graphics_item_size = graphics_item->boundingRect();
+//        graphics_item_size.adjust(0, 0, -13, -13);
+//        graphics_scene->setSceneRect(graphics_item_size);
+//    }
+
     return true;
 }
 
 void ImageView::setZoom(double zoom)
 {
-    if (zoom == 0.0)
-        zoom = zoom_parameters.initial;
-
-    double relative_zoom = zoom * zoom_parameters.scale + zoom_parameters.offset;
     graphics_view->resetTransform();
-    graphics_view->scale(relative_zoom, relative_zoom);
-
-    absolute_zoom = zoom;
+    graphics_view->scale(zoom, zoom);
 }
 
 void ImageView::setScrollDimensions(QPoint dimensions)

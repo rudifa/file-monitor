@@ -23,16 +23,9 @@ MainWindow::MainWindow(QWidget * parent) :
 {
     ui->setupUi(this);
 
-    QWidget * central_widget = new QWidget(this);
-    QGridLayout * grid_layout = new QGridLayout(central_widget);
-    grid_layout->setMargin(0);
-    grid_layout->addItem(new QSpacerItem(0, 4, QSizePolicy::Fixed, QSizePolicy::Fixed), 0, 0);
-
     tab_widget = new TabWidget(ui, this);
-    grid_layout->addWidget(tab_widget, 1, 0);
-    setCentralWidget(central_widget);
+    setCentralWidget(tab_widget);
 
-    setContentsMargins(2, 0, 2, 0);
     connect(ui->action_file_open, SIGNAL(triggered()), tab_widget, SLOT(slotLoadFile()));
     connect(ui->action_file_close, SIGNAL(triggered()), tab_widget, SLOT(slotCloseCurrentTab()));
     connect(ui->action_transparent_background, SIGNAL(toggled(bool)), tab_widget, SLOT(slotEnableTransparentBackground(bool)));

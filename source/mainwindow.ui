@@ -97,6 +97,7 @@
     </property>
     <addaction name="action_file_zoom_in"/>
     <addaction name="action_file_zoom_out"/>
+    <addaction name="action_file_zoom_reset"/>
    </widget>
    <widget class="QMenu" name="menu_settings">
     <property name="title">
@@ -283,6 +284,21 @@
    </property>
    <property name="text">
     <string>Format XML</string>
+   </property>
+  </action>
+  <action name="action_file_zoom_reset">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/file_zoom_reset.png</normaloff>:/icons/file_zoom_reset.png</iconset>
+   </property>
+   <property name="text">
+    <string>Reset Zoom</string>
+   </property>
+   <property name="statusTip">
+    <string>Reset the zoom of the current file.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+0</string>
    </property>
   </action>
  </widget>

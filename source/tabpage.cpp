@@ -58,8 +58,11 @@ bool TabPage::load(QString const & uri)
     view = createView(file_uri);
     setStatusTip(file_uri);
 
+    // TODO: remove this section next - add QScrollArea.
     QGridLayout * layout = new QGridLayout(this);
-    layout->setContentsMargins(0, 4, 0, 4);
+    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
     layout->addWidget(view->getWidget());
 
     connect(view, SIGNAL(signalZoomIn()), SLOT(slotZoomIn()));
@@ -89,21 +92,27 @@ QString TabPage::getUri() const
     return file_uri;
 }
 
-int TabPage::getZoom() const
+int TabPage::getPercentageZoom() const
 {
-    return round(view->getZoom());
+    return view->getPercentageZoom();
 }
 
 void TabPage::slotZoomIn()
 {
-    double zoom = view->getZoom() + TabPage::zoom_step;
+    double zoom = view->getPercentageZoom() + TabPage::zoom_step;
     slotSetZoom(zoom);
 }
 
 void TabPage::slotZoomOut()
 {
-    double zoom = view->getZoom() - TabPage::zoom_step;
+    double zoom = view->getPercentageZoom() - TabPage::zoom_step;
     slotSetZoom(zoom);
+}
+
+void TabPage::slotResetZoom()
+{
+    view->resetPercentageZoom();
+    signalUserChangedZoom(view->getPercentageZoom());
 }
 
 void TabPage::slotSetZoom(int zoom)
@@ -111,7 +120,7 @@ void TabPage::slotSetZoom(int zoom)
     if (!zoomIsValid(zoom))
         return;
 
-    view->setZoom(zoom);
+    view->setPercentageZoom(zoom);
     signalUserChangedZoom(zoom);
 }
 
@@ -120,7 +129,7 @@ void TabPage::slotLoadSettings()
     if (!wasCurrentTab())
         return;
 
-    view->setZoom(settings.value("zoom", 0).toDouble());
+    view->setPercentageZoom(settings.value("zoom", 0).toInt());
     view->setScrollDimensions(settings.value("scroll_dimensions", QPoint(0, 0)).toPoint());
 }
 
@@ -136,7 +145,7 @@ void TabPage::slotSaveSettings()
     if (!wasCurrentTab())
         return;
 
-    settings.setValue("zoom", view->getZoom());
+    settings.setValue("zoom", view->getPercentageZoom());
     settings.setValue("scroll_dimensions", view->getScrollDimensions());
 }
 

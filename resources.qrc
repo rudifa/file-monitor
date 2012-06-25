@@ -12,5 +12,6 @@
         <file>icons/common.png</file>
         <file>icons/file-monitor.xpm</file>
         <file>icons/16x16/file-monitor.png</file>
+        <file>icons/file_zoom_reset.png</file>
     </qresource>
 </RCC>

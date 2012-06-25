@@ -10,27 +10,33 @@ class QWidget;
 class QPoint;
 class QWheelEvent;
 
-struct ZoomParameters
-{
-    ZoomParameters(double scale, double offset, double initial)
-        : scale(scale), offset(offset), initial(initial) { }
-    double scale;
-    double offset;
-    double initial;
-};
-
 class View : public QObject
 {
     Q_OBJECT
 
 public:
-    View(QObject * parent, ZoomParameters zoom_parameters);
+    struct ZoomConfiguration
+    {
+        enum Type { Linear, RampUp };
+
+        ZoomConfiguration(Type type, double min_value, double max_value, double initial_value);
+        double percentZoomToViewZoom(int percent_zoom) const;
+        int viewZoomToPercentZoom(double view_zoom) const;
+
+        Type type;
+        double min_value;
+        double max_value;
+        double initial_value;
+    };
+
+    View(QObject * parent, ZoomConfiguration zoom_configuration);
 
     virtual QWidget * getWidget() = 0;
     virtual bool load(QString const & file_uri) = 0;
 
-    virtual void setZoom(double zoom) = 0;
-    double getZoom() const;
+    void setPercentageZoom(int percent_zoom);
+    int getPercentageZoom() const;
+    void resetPercentageZoom();
 
     virtual void setScrollDimensions(QPoint scroll_dimensions) = 0;
     virtual QPoint getScrollDimensions() const = 0;
@@ -47,9 +53,12 @@ signals:
     void signalZoomOut();
 
 protected:
-    ZoomParameters zoom_parameters;
-    double absolute_zoom;
     QPixmap transparent_tile_pixmap;
+
+    ZoomConfiguration zoom_configuration;
+    int current_percent_zoom;
+
+    virtual void setZoom(double zoom) = 0;
 };
 
 #endif

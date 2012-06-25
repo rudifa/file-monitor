@@ -24,7 +24,7 @@ public:
     void indentXML(bool indent_xml);
     
     QString getUri() const;
-    int getZoom() const;
+    int getPercentageZoom() const;
 
     static double const zoom_min;
     static double const zoom_max;
@@ -39,6 +39,7 @@ signals:
 public slots:
     void slotZoomIn();
     void slotZoomOut();
+    void slotResetZoom();
     void slotSetZoom(int zoom);
     void slotSaveSettings();
     void slotLoadSettings();

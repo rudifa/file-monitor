@@ -3,6 +3,7 @@
 
 #include "tabpage.hpp"
 #include "customgraphicsview.hpp"
+#include "utility.hpp"
 
 #include <QGraphicsSvgItem>
 #include <QScrollBar>
@@ -11,8 +12,10 @@
 #include <cmath>
 #include <cassert>
 
+using namespace utility;
+
 SvgView::SvgView(QWidget * parent)
-    : View(parent, ZoomParameters(.3, 1.5, 3)), graphics_view(new CustomGraphicsView(parent))
+    : View(parent, ZoomConfiguration(ZoomConfiguration::RampUp, .1, 500, 1)), graphics_view(new CustomGraphicsView(parent))
 {
     graphics_view->setAcceptDrops(false);
     graphics_view->setScene(new QGraphicsScene(this));
@@ -53,14 +56,8 @@ bool SvgView::load(QString const & file_uri)
 
 void SvgView::setZoom(double zoom)
 {
-    if (zoom == 0.0)
-        zoom = zoom_parameters.initial;
-
-    double relative_zoom = zoom * zoom_parameters.scale + zoom_parameters.offset;
     graphics_view->resetTransform();
-    graphics_view->scale(relative_zoom, relative_zoom);
-
-    absolute_zoom = zoom;
+    graphics_view->scale(zoom, zoom);
 }
 
 void SvgView::setScrollDimensions(QPoint dimensions)

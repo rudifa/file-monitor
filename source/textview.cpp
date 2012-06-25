@@ -1,6 +1,8 @@
 
 #include "textview.hpp"
 
+#include "utility.hpp"
+
 #include <QTextEdit>
 #include <QScrollBar>
 #include <QFile>
@@ -11,8 +13,10 @@
 #include <cmath>
 #include <cassert>
 
+using namespace utility;
+
 TextView::TextView(QWidget * parent)
-    : View(parent, ZoomParameters(.5, 8, 12)), text_edit(new QTextEdit(parent)), indent_xml(false)
+    : View(parent, ZoomConfiguration(ZoomConfiguration::Linear, 1, 100, 12)), text_edit(new QTextEdit(parent)), indent_xml(false)
 {
     text_edit->setReadOnly(true);
 
@@ -41,16 +45,9 @@ bool TextView::load(QString const & file_uri)
 
 void TextView::setZoom(double zoom)
 {
-    if (zoom == 0.0)
-        zoom = zoom_parameters.initial;
-
-    double relative_zoom = zoom * zoom_parameters.scale + zoom_parameters.offset;
-
     QFont current_font = text_edit->font();
-    current_font.setPixelSize(relative_zoom);
+    current_font.setPixelSize(math::round(zoom));
     text_edit->setFont(current_font);
-
-    absolute_zoom = zoom;
 }
 
 void TextView::setScrollDimensions(QPoint dimensions)

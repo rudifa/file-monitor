@@ -56,6 +56,7 @@ void TabWidget::updateTabConnections()
         {
             connect(ui->action_file_zoom_in, SIGNAL(triggered()), tab_page, SLOT(slotZoomIn()));
             connect(ui->action_file_zoom_out, SIGNAL(triggered()), tab_page, SLOT(slotZoomOut()));
+            connect(ui->action_file_zoom_reset, SIGNAL(triggered()), tab_page, SLOT(slotResetZoom()));
             connect(zoom_slider, SIGNAL(valueChanged(int)), tab_page, SLOT(slotSetZoom(int)));
             connect(tab_page, SIGNAL(signalUserChangedZoom(int)), zoom_slider, SLOT(setValue(int)));
         }
@@ -63,6 +64,7 @@ void TabWidget::updateTabConnections()
         {
             disconnect(ui->action_file_zoom_in, SIGNAL(triggered()), tab_page, SLOT(slotZoomIn()));
             disconnect(ui->action_file_zoom_out, SIGNAL(triggered()), tab_page, SLOT(slotZoomOut()));
+            disconnect(ui->action_file_zoom_reset, SIGNAL(triggered()), tab_page, SLOT(slotResetZoom()));
             disconnect(zoom_slider, SIGNAL(valueChanged(int)), tab_page, SLOT(slotSetZoom(int)));
             disconnect(tab_page, SIGNAL(signalUserChangedZoom(int)), zoom_slider, SLOT(setValue(int)));
         }
@@ -100,8 +102,8 @@ void TabWidget::mouseMoveEvent(QMouseEvent * event)
         auto tab_widget = widget(tab_index);
         if (tab_widget)
         {
-            assert(dynamic_cast<QMainWindow *>(parent()->parent()));
-            auto * main_window = static_cast<QMainWindow *>(parent()->parent());
+            assert(dynamic_cast<QMainWindow *>(parent()));
+            auto * main_window = static_cast<QMainWindow *>(parent());
             main_window->statusBar()->showMessage(tabUri(tab_widget));
         }
     }
@@ -129,12 +131,15 @@ void TabWidget::slotCurrentTabChanged(int new_index)
         return;
 
     auto * tab_page = tabPage(widget(new_index));
-    tab_page->setCurrentTab();
+    if (!tab_page->wasCurrentTab())
+    {
+        tab_page->setCurrentTab();
+
+        // Wait until the event loop has finished rendering the current page.
+        QTimer::singleShot(0, tab_page, SLOT(slotLoadSettings()));
+    }
 
     updateTabConnections();
-
-    // Wait until the event loop has finished rendering the current page.
-    QTimer::singleShot(0, tabPage(widget(new_index)), SLOT(slotLoadSettings()));
 }
 
 void TabWidget::slotFileChanged(QString changed_file_uri)
@@ -302,6 +307,6 @@ QStringList TabWidget::allTabUris() const
 void TabWidget::slotSynchronizeZoomSlider()
 {
     bool block_signals = zoom_slider->blockSignals(true);
-    zoom_slider->setValue(tabPage(widget(currentIndex()))->getZoom());
+    zoom_slider->setValue(tabPage(widget(currentIndex()))->getPercentageZoom());
     zoom_slider->blockSignals(block_signals);
 }

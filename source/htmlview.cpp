@@ -1,6 +1,8 @@
 
 #include "htmlview.hpp"
 
+#include "utility.hpp"
+
 #include <QWebView>
 #include <QWebFrame>
 #include <QScrollBar>
@@ -10,11 +12,12 @@
 
 #include <cmath>
 #include <cassert>
-
 #include <utility>
 
+using namespace utility;
+
 HtmlView::HtmlView(QWidget * parent)
-    : View(parent, ZoomParameters(.03, .5, 17)), web_view(new QWebView(parent))
+    : View(parent, ZoomConfiguration(ZoomConfiguration::Linear, .25, 5, 1)), web_view(new QWebView(parent))
 {
     web_view->setAcceptDrops(false);
     connect(web_view->page(), SIGNAL(scrollRequested(int,int,QRect)), SIGNAL(signalUserChangedDisplay()));
@@ -34,13 +37,7 @@ bool HtmlView::load(QString const & file_uri)
 
 void HtmlView::setZoom(double zoom)
 {
-    if (zoom == 0.0)
-        zoom = zoom_parameters.initial;
-
-    double relative_zoom = zoom * zoom_parameters.scale + zoom_parameters.offset;
-    web_view->page()->currentFrame()->setZoomFactor(relative_zoom);
-
-    absolute_zoom = zoom;
+    web_view->page()->currentFrame()->setZoomFactor(zoom);
 }
 
 namespace
