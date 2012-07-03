@@ -26,15 +26,11 @@ public:
     QString getUri() const;
     int getPercentageZoom() const;
 
-    static double const zoom_min;
-    static double const zoom_max;
-    static double const zoom_step;
-
     inline bool wasCurrentTab() const { return displayed_to_user; }
     inline void setCurrentTab() { displayed_to_user = true; }
 
 signals:
-    void signalUserChangedZoom(int zoom);
+    void signalScaleChanged();
     
 public slots:
     void slotZoomIn();

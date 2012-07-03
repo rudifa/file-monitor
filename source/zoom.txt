@@ -1,0 +1,6 @@
+
+zoom vs. scale
+
+zoom is a measurement of the zoom slider which share a min, max, step, and invalid value across all file viewers.
+
+scale is a transformation measurement found within any one file viewer.

@@ -19,7 +19,7 @@ public:
     QWidget * getWidget();
     bool load(QString const & file_uri);
 
-    void setZoom(double zoom);
+    void setScale(double scale);
     void setScrollDimensions(QPoint dimensions);
     QPoint getScrollDimensions() const;
 

@@ -2,41 +2,28 @@
 #ifndef VIEW_HPP
 #define VIEW_HPP
 
-#include <QObject>
+#include "zoom.hpp"
+
+#include <QWidget>
 #include <QPixmap>
 
 class QString;
-class QWidget;
 class QPoint;
 class QWheelEvent;
 
-class View : public QObject
+class View : public QWidget
 {
     Q_OBJECT
 
 public:
-    struct ZoomConfiguration
-    {
-        enum Type { Linear, RampUp };
-
-        ZoomConfiguration(Type type, double min_value, double max_value, double initial_value);
-        double percentZoomToViewZoom(int percent_zoom) const;
-        int viewZoomToPercentZoom(double view_zoom) const;
-
-        Type type;
-        double min_value;
-        double max_value;
-        double initial_value;
-    };
-
-    View(QObject * parent, ZoomConfiguration zoom_configuration);
+    View(QWidget * parent, ViewScale view_scale);
 
     virtual QWidget * getWidget() = 0;
     virtual bool load(QString const & file_uri) = 0;
 
-    void setPercentageZoom(int percent_zoom);
-    int getPercentageZoom() const;
-    void resetPercentageZoom();
+    void setZoom(int zoom);
+    int getZoom() const;
+    void resetZoom();
 
     virtual void setScrollDimensions(QPoint scroll_dimensions) = 0;
     virtual QPoint getScrollDimensions() const = 0;
@@ -45,20 +32,19 @@ public:
     virtual void wordWrap(bool) { }
     virtual void indentXML(bool) { }
 
-//    void wheelEvent(QWheelEvent * event);
-
 signals:
-    void signalUserChangedDisplay();
-    void signalZoomIn();
-    void signalZoomOut();
+    void signalScaleChanged();
+
+protected slots:
+    void slotScaleChanged(double scale);
 
 protected:
     QPixmap transparent_tile_pixmap;
 
-    ZoomConfiguration zoom_configuration;
-    int current_percent_zoom;
+    ViewScale view_scale;
+    int current_zoom;
 
-    virtual void setZoom(double zoom) = 0;
+    virtual void setScale(double zoom) = 0;
 };
 
 #endif

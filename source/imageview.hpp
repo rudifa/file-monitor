@@ -8,6 +8,8 @@ class QWidget;
 class QGraphicsView;
 class QGraphicsPixmapItem;
 
+class CustomGraphicsView;
+
 class ImageView : public View
 {
 public:
@@ -16,14 +18,14 @@ public:
     QWidget * getWidget();
     bool load(QString const & file_uri);
 
-    void setZoom(double zoom);
+    void setScale(double zoom);
     void setScrollDimensions(QPoint dimensions);
     QPoint getScrollDimensions() const;
 
     virtual void enableTransparentBackground(bool enable);
 
 protected:
-    QGraphicsView * graphics_view;
+    CustomGraphicsView * graphics_view;
     QGraphicsPixmapItem * graphics_item;
 };
 

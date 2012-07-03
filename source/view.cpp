@@ -8,40 +8,8 @@
 
 using namespace utility;
 
-namespace
-{
-    int const user_invalid_percent = 0;
-    int const user_min_percent = 1;
-    int const user_max_percent = 100;
-}
-
-View::ZoomConfiguration::ZoomConfiguration(Type type, double min_value, double max_value, double initial_value)
-    : type(type), min_value(min_value), max_value(max_value), initial_value(initial_value)
-{
-}
-
-double View::ZoomConfiguration::percentZoomToViewZoom(int percent_zoom) const
-{
-    if (percent_zoom == user_invalid_percent)
-        return initial_value;
-
-    if (type == RampUp)
-        return math::rampUp(percent_zoom, user_min_percent, user_max_percent, min_value, max_value);
-    else
-        return math::scaleValueBetweenRanges(percent_zoom, user_min_percent, user_max_percent, min_value, max_value);
-}
-
-// needs work
-int View::ZoomConfiguration::viewZoomToPercentZoom(double view_zoom) const
-{
-    if (type == RampUp)
-        return math::inverseRampUp(view_zoom, min_value, max_value, user_min_percent, user_max_percent);
-    else
-        return math::scaleValueBetweenRanges(view_zoom, min_value, max_value, user_min_percent, user_max_percent);
-}
-
-View::View(QObject * parent, ZoomConfiguration zoom_parameters)
-    : QObject(parent), zoom_configuration(zoom_parameters), current_percent_zoom(0)
+View::View(QWidget * parent, ViewScale zoom_parameters)
+    : QWidget(parent), view_scale(zoom_parameters), current_zoom(0)
 {
     transparent_tile_pixmap = QPixmap(32, 32);
     transparent_tile_pixmap.fill(Qt::white);
@@ -52,35 +20,32 @@ View::View(QObject * parent, ZoomConfiguration zoom_parameters)
     tile_painter.end();
 }
 
-void View::setPercentageZoom(int percent_zoom)
+void View::setZoom(int zoom)
 {
-    double view_zoom = zoom_configuration.percentZoomToViewZoom(percent_zoom);
-    setZoom(view_zoom);
+    double scale = view_scale.zoomToScale(zoom);
+    setScale(scale);
 
-    current_percent_zoom = zoom_configuration.viewZoomToPercentZoom(view_zoom);
+    // We can't just use zoom in case we are being handed an invalid zoom (to jump to default).
+    slotScaleChanged(scale);
 }
 
-int View::getPercentageZoom() const
+int View::getZoom() const
 {
-    return current_percent_zoom;
+    return current_zoom;
 }
 
-void View::resetPercentageZoom()
+void View::resetZoom()
 {
-    setPercentageZoom(0);
+    setZoom(0);
 }
 
-//void View::wheelEvent(QWheelEvent *event)
-//{
-//    qDebug() << "what";
-
-//    if (event->modifiers().testFlag(Qt::ControlModifier))
-//    {
-
-//        qDebug() << event->delta();
-
-////        scaleView(pow((double)2, -event->delta() / 240.0));
-//    } else {
-////        QGraphicsView::wheelEvent(event);
-//    }
-//}
+// This only announces that the scale has been changed elsewhere, don't change the scale in here.
+void View::slotScaleChanged(double scale)
+{
+    int zoom = view_scale.scaleToZoom(scale);
+    if (zoom != current_zoom)
+    {
+        current_zoom = zoom;
+        signalScaleChanged();
+    }
+}

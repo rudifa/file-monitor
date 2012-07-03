@@ -13,10 +13,6 @@
 
 #include <cassert>
 
-double const TabPage::zoom_min = 1;
-double const TabPage::zoom_max = 100;
-double const TabPage::zoom_step = 2;
-
 namespace
 {
    TabPage::FileType getFileType(QString const & file_uri)
@@ -65,8 +61,7 @@ bool TabPage::load(QString const & uri)
     layout->setSpacing(0);
     layout->addWidget(view->getWidget());
 
-    connect(view, SIGNAL(signalZoomIn()), SLOT(slotZoomIn()));
-    connect(view, SIGNAL(signalZoomOut()), SLOT(slotZoomOut()));
+    connect(view, SIGNAL(signalScaleChanged()), SIGNAL(signalScaleChanged()));
 
     settings.beginGroup("files/" + getUri());
     return view->load(file_uri);
@@ -94,25 +89,24 @@ QString TabPage::getUri() const
 
 int TabPage::getPercentageZoom() const
 {
-    return view->getPercentageZoom();
+    return view->getZoom();
 }
 
 void TabPage::slotZoomIn()
 {
-    double zoom = view->getPercentageZoom() + TabPage::zoom_step;
+    double zoom = view->getZoom() + zoom::step;
     slotSetZoom(zoom);
 }
 
 void TabPage::slotZoomOut()
 {
-    double zoom = view->getPercentageZoom() - TabPage::zoom_step;
+    double zoom = view->getZoom() - zoom::step;
     slotSetZoom(zoom);
 }
 
 void TabPage::slotResetZoom()
 {
-    view->resetPercentageZoom();
-    signalUserChangedZoom(view->getPercentageZoom());
+    view->resetZoom();
 }
 
 void TabPage::slotSetZoom(int zoom)
@@ -120,8 +114,7 @@ void TabPage::slotSetZoom(int zoom)
     if (!zoomIsValid(zoom))
         return;
 
-    view->setPercentageZoom(zoom);
-    signalUserChangedZoom(zoom);
+    view->setZoom(zoom);
 }
 
 void TabPage::slotLoadSettings()
@@ -129,8 +122,12 @@ void TabPage::slotLoadSettings()
     if (!wasCurrentTab())
         return;
 
-    view->setPercentageZoom(settings.value("zoom", 0).toInt());
+    bool block_signals = blockSignals(true);
+
+    view->setZoom(settings.value("zoom", 0).toInt());
     view->setScrollDimensions(settings.value("scroll_dimensions", QPoint(0, 0)).toPoint());
+
+    blockSignals(block_signals);
 }
 
 void TabPage::slotReload()
@@ -145,7 +142,7 @@ void TabPage::slotSaveSettings()
     if (!wasCurrentTab())
         return;
 
-    settings.setValue("zoom", view->getPercentageZoom());
+    settings.setValue("zoom", view->getZoom());
     settings.setValue("scroll_dimensions", view->getScrollDimensions());
 }
 
@@ -168,5 +165,5 @@ View * TabPage::createView(QString const & file_uri)
 
 bool TabPage::zoomIsValid(double zoom) const
 {
-    return (zoom >= TabPage::zoom_min && zoom <= TabPage::zoom_max);
+    return (zoom >= zoom::min && zoom <= zoom::max);
 }

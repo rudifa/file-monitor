@@ -1,7 +1,7 @@
 
 #include "imageview.hpp"
 
-#include "tabpage.hpp"
+#include "customgraphicsview.hpp"
 #include "utility.hpp"
 
 #include <QGraphicsView>
@@ -15,16 +15,8 @@
 using namespace utility;
 
 ImageView::ImageView(QWidget * parent)
-    : View(parent, ZoomConfiguration(ZoomConfiguration::RampUp, .05, 50, 1)), graphics_view(new QGraphicsView(parent))
+    : View(parent, ViewScale(ViewScale::RampUp, .05, 50, 1)), graphics_view(new CustomGraphicsView(parent, view_scale))
 {
-    graphics_view->setAcceptDrops(false);
-    graphics_view->setScene(new QGraphicsScene(this));
-    graphics_view->setTransformationAnchor(graphics_view->AnchorUnderMouse);
-    graphics_view->setDragMode(graphics_view->ScrollHandDrag);
-    graphics_view->setViewportUpdateMode(graphics_view->FullViewportUpdate);
-
-    connect(graphics_view->verticalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
-    connect(graphics_view->horizontalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
 }
 
 QWidget * ImageView::getWidget()
@@ -50,8 +42,11 @@ bool ImageView::load(QString const & file_uri)
 
     graphics_scene->addItem(graphics_item);
 
+    connect(graphics_view, SIGNAL(signalScaleChanged(double)), SLOT(slotScaleChanged(double)));
+
 //    // TODO: Figure out why there is an extra 10 pixels (varies with zoom level)
 //    //  to the right and bottom of QPixmap inside QGraphicsScene and remove it.
+//    // --- This is a Linux issue (KDE for sure, I haven't checked GNOME).
 //    {
 //        QRectF graphics_item_size = graphics_item->boundingRect();
 //        graphics_item_size.adjust(0, 0, -13, -13);
@@ -61,10 +56,10 @@ bool ImageView::load(QString const & file_uri)
     return true;
 }
 
-void ImageView::setZoom(double zoom)
+void ImageView::setScale(double scale)
 {
     graphics_view->resetTransform();
-    graphics_view->scale(zoom, zoom);
+    graphics_view->scale(scale, scale);
 }
 
 void ImageView::setScrollDimensions(QPoint dimensions)

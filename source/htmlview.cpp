@@ -17,15 +17,17 @@
 using namespace utility;
 
 HtmlView::HtmlView(QWidget * parent)
-    : View(parent, ZoomConfiguration(ZoomConfiguration::Linear, .25, 5, 1)), web_view(new QWebView(parent))
+    : View(parent, ViewScale(ViewScale::Linear, .25, 5, 1)), web_view(new QWebView(parent))
 {
     web_view->setAcceptDrops(false);
-    connect(web_view->page(), SIGNAL(scrollRequested(int,int,QRect)), SIGNAL(signalUserChangedDisplay()));
 }
 
 QWidget * HtmlView::getWidget()
 {
-    return web_view;
+    QWidget * widget = dynamic_cast<QWidget *>(web_view);
+    assert(widget);
+
+    return widget;
 }
 
 bool HtmlView::load(QString const & file_uri)
@@ -35,9 +37,9 @@ bool HtmlView::load(QString const & file_uri)
     return true;
 }
 
-void HtmlView::setZoom(double zoom)
+void HtmlView::setScale(double scale)
 {
-    web_view->page()->currentFrame()->setZoomFactor(zoom);
+    web_view->page()->currentFrame()->setZoomFactor(scale);
 }
 
 namespace

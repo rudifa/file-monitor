@@ -4,6 +4,7 @@
 #include "ui_mainwindow.h"
 #include "filesystemwatcher.hpp"
 #include "tabpage.hpp"
+#include "zoom.hpp"
 
 #include <QMainWindow>
 #include <QFileDialog>
@@ -39,8 +40,8 @@ TabWidget::TabWidget(std::unique_ptr<Ui::MainWindow> const & ui, QWidget * paren
     zoom_slider->setToolTip(tr("Zoom Slider"));
     zoom_slider->setStatusTip(tr("Drag slider to zoom into or out of the current file."));
     zoom_slider->setMaximumWidth(400);
-    zoom_slider->setRange(TabPage::zoom_min, TabPage::zoom_max);
-    zoom_slider->setSingleStep(TabPage::zoom_step);
+    zoom_slider->setRange(zoom::min, zoom::max);
+    zoom_slider->setSingleStep(zoom::step);
     ui->tool_bar->insertWidget(ui->action_file_zoom_in, zoom_slider);
 
     settings.beginGroup("tabs");
@@ -58,7 +59,7 @@ void TabWidget::updateTabConnections()
             connect(ui->action_file_zoom_out, SIGNAL(triggered()), tab_page, SLOT(slotZoomOut()));
             connect(ui->action_file_zoom_reset, SIGNAL(triggered()), tab_page, SLOT(slotResetZoom()));
             connect(zoom_slider, SIGNAL(valueChanged(int)), tab_page, SLOT(slotSetZoom(int)));
-            connect(tab_page, SIGNAL(signalUserChangedZoom(int)), zoom_slider, SLOT(setValue(int)));
+            connect(tab_page, SIGNAL(signalScaleChanged()), this, SLOT(slotSynchronizeZoomSlider()));
         }
         else
         {
@@ -66,7 +67,7 @@ void TabWidget::updateTabConnections()
             disconnect(ui->action_file_zoom_out, SIGNAL(triggered()), tab_page, SLOT(slotZoomOut()));
             disconnect(ui->action_file_zoom_reset, SIGNAL(triggered()), tab_page, SLOT(slotResetZoom()));
             disconnect(zoom_slider, SIGNAL(valueChanged(int)), tab_page, SLOT(slotSetZoom(int)));
-            disconnect(tab_page, SIGNAL(signalUserChangedZoom(int)), zoom_slider, SLOT(setValue(int)));
+            disconnect(tab_page, SIGNAL(signalScaleChanged()), this, SLOT(slotSynchronizeZoomSlider()));
         }
     }
 
@@ -126,6 +127,8 @@ void TabWidget::slotRemoveTab(int tab_index)
 
 void TabWidget::slotCurrentTabChanged(int new_index)
 {
+    assert(count() > new_index);
+
     // If we have just closed the last tab.
     if (new_index == -1)
         return;
@@ -185,18 +188,19 @@ void TabWidget::loadSettings()
     for (int i = 0; i < document_uris.count(); ++i)
         loadFile(document_uris[i]);
 
-    int current_index = settings.value("current_tab_index", -1).toInt();
-    setCurrentIndex(current_index);
+    QString current_uri = settings.value("current_tab").toString();
+
+    setCurrentWidget(uriTabPage(current_uri));
 
     blockSignals(block_signals);
 
-    slotCurrentTabChanged(current_index);
+    slotCurrentTabChanged(currentIndex());
 }
 
 void TabWidget::saveSettings()
 {
     settings.setValue("open_tabs", allTabUris());
-    settings.setValue("current_tab_index", currentIndex());
+    settings.setValue("current_tab", tabUri(currentWidget()));
 
     auto pages = allTabPages();
     std::for_each(pages.begin(), pages.end(), [](TabPage * page) { page->slotSaveSettings(); });

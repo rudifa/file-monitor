@@ -33,7 +33,8 @@ HEADERS += mainwindow.hpp \
     utility.hpp \
     customgraphicsview.hpp \
     filesystemwatcher.hpp \
-    aboutdialog.hpp
+    aboutdialog.hpp \
+    zoom.hpp
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -47,7 +48,9 @@ SOURCES += main.cpp \
     utility.cpp \
     customgraphicsview.cpp \
     filesystemwatcher.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    zoom.cpp
 
 OTHER_FILES += \
-    settings.txt
+    settings.txt \
+    zoom.txt

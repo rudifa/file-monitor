@@ -1,6 +1,7 @@
 
 #include "textview.hpp"
 
+#include "zoom.hpp"
 #include "utility.hpp"
 
 #include <QTextEdit>
@@ -16,17 +17,18 @@
 using namespace utility;
 
 TextView::TextView(QWidget * parent)
-    : View(parent, ZoomConfiguration(ZoomConfiguration::Linear, 1, 100, 12)), text_edit(new QTextEdit(parent)), indent_xml(false)
+    : View(parent, ViewScale(ViewScale::Linear, zoom::min, zoom::max, 12)),
+      text_edit(new QTextEdit(parent)), indent_xml(false)
 {
     text_edit->setReadOnly(true);
-
-    connect(text_edit->verticalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
-    connect(text_edit->horizontalScrollBar(), SIGNAL(valueChanged(int)), SIGNAL(signalUserChangedDisplay()));
 }
 
 QWidget * TextView::getWidget()
 {
-    return text_edit;
+    QWidget * widget = dynamic_cast<QWidget *>(text_edit);
+    assert(widget);
+
+    return widget;
 }
 
 bool TextView::load(QString const & file_uri)
@@ -43,10 +45,10 @@ bool TextView::load(QString const & file_uri)
     return true;
 }
 
-void TextView::setZoom(double zoom)
+void TextView::setScale(double scale)
 {
     QFont current_font = text_edit->font();
-    current_font.setPixelSize(math::round(zoom));
+    current_font.setPixelSize(math::round(scale));
     text_edit->setFont(current_font);
 }
 
