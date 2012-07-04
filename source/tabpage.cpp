@@ -54,11 +54,7 @@ bool TabPage::load(QString const & uri)
     view = createView(file_uri);
     setStatusTip(file_uri);
 
-    // TODO: remove this section next - add QScrollArea.
     QGridLayout * layout = new QGridLayout(this);
-    layout->setMargin(0);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
     layout->addWidget(view->getWidget());
 
     connect(view, SIGNAL(signalScaleChanged()), SIGNAL(signalScaleChanged()));

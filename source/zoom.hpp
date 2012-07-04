@@ -2,6 +2,8 @@
 #ifndef ZOOM_HPP
 #define ZOOM_HPP
 
+class QWheelEvent;
+
 // Constants for the zoom scroll bar.
 namespace zoom
 {
@@ -9,6 +11,8 @@ namespace zoom
     double const min = 1;
     double const max = 10000;
     double const step = 100;
+
+    int getNumZoomSteps(QWheelEvent * event);
 }
 
 // Scaling behavior that needs to be specified for each view.

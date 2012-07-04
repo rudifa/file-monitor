@@ -4,7 +4,7 @@
 
 #include "view.hpp"
 
-class QTextEdit;
+class CustomTextEdit;
 
 class TextView : public View
 {
@@ -22,7 +22,7 @@ public:
     virtual void indentXML(bool indent);
 
 protected:
-    QTextEdit * text_edit;
+    CustomTextEdit * text_edit;
 
     QString unformatted_content;
     bool indent_xml;

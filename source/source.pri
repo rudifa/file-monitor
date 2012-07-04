@@ -34,7 +34,9 @@ HEADERS += mainwindow.hpp \
     customgraphicsview.hpp \
     filesystemwatcher.hpp \
     aboutdialog.hpp \
-    zoom.hpp
+    zoom.hpp \
+    customtextedit.hpp \
+    customwebview.hpp
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -49,7 +51,9 @@ SOURCES += main.cpp \
     customgraphicsview.cpp \
     filesystemwatcher.cpp \
     aboutdialog.cpp \
-    zoom.cpp
+    zoom.cpp \
+    customtextedit.cpp \
+    customwebview.cpp
 
 OTHER_FILES += \
     settings.txt \

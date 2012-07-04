@@ -25,17 +25,7 @@ void CustomGraphicsView::wheelEvent(QWheelEvent * event)
 {
     if (event->modifiers().testFlag(Qt::ControlModifier))
     {
-        // Common constants for most mice.
-        int const resolver_units_per_degree = 8;
-        int const degrees_per_scroll_step = 15;
-
-        // This multiplier allows us to traverse the scroll range at a reasonable speed.
-        int const zoom_steps_per_scroll_step = 2;
-
-        int scroll_degrees = event->delta() / resolver_units_per_degree;
-        int scroll_steps = scroll_degrees / degrees_per_scroll_step;
-        int zoom_steps = scroll_steps * zoom_steps_per_scroll_step;
-
+        int zoom_steps = zoom::getNumZoomSteps(event);
         if (zoom_steps == 0)
         {
             event->ignore();

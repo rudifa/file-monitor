@@ -1,15 +1,16 @@
 
 #include "textview.hpp"
 
+#include "customtextedit.hpp"
 #include "zoom.hpp"
 #include "utility.hpp"
 
-#include <QTextEdit>
 #include <QScrollBar>
 #include <QFile>
 #include <QTextStream>
 #include <QTimer>
 #include <QDomDocument>
+#include <QWheelEvent>
 
 #include <cmath>
 #include <cassert>
@@ -17,10 +18,9 @@
 using namespace utility;
 
 TextView::TextView(QWidget * parent)
-    : View(parent, ViewScale(ViewScale::Linear, zoom::min, zoom::max, 12)),
-      text_edit(new QTextEdit(parent)), indent_xml(false)
+    : View(parent, ViewScale(ViewScale::Linear, 1, 100, 12)),
+      text_edit(new CustomTextEdit(parent, view_scale)), indent_xml(false)
 {
-    text_edit->setReadOnly(true);
 }
 
 QWidget * TextView::getWidget()
@@ -42,14 +42,14 @@ bool TextView::load(QString const & file_uri)
 
     formatAndInsertContent(unformatted_content, indent_xml);
 
+    connect(text_edit, SIGNAL(signalScaleChanged(double)), SLOT(slotScaleChanged(double)));
+
     return true;
 }
 
 void TextView::setScale(double scale)
 {
-    QFont current_font = text_edit->font();
-    current_font.setPixelSize(math::round(scale));
-    text_edit->setFont(current_font);
+    text_edit->setScale(scale);
 }
 
 void TextView::setScrollDimensions(QPoint dimensions)

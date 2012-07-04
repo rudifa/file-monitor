@@ -15,6 +15,7 @@ class QFileInfo;
 class FileSystemWatcher : public QFileSystemWatcher
 {
     Q_OBJECT
+
 public:
     explicit FileSystemWatcher(QObject * parent = 0);
 

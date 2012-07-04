@@ -1,6 +1,7 @@
 
 #include "htmlview.hpp"
 
+#include "customwebview.hpp"
 #include "utility.hpp"
 
 #include <QWebView>
@@ -17,9 +18,8 @@
 using namespace utility;
 
 HtmlView::HtmlView(QWidget * parent)
-    : View(parent, ViewScale(ViewScale::Linear, .25, 5, 1)), web_view(new QWebView(parent))
+    : View(parent, ViewScale(ViewScale::Linear, .25, 5, 1)), web_view(new CustomWebView(parent, view_scale))
 {
-    web_view->setAcceptDrops(false);
 }
 
 QWidget * HtmlView::getWidget()
@@ -34,12 +34,14 @@ bool HtmlView::load(QString const & file_uri)
 {
     web_view->setUrl(file_uri);
 
+    connect(web_view, SIGNAL(signalScaleChanged(double)), SLOT(slotScaleChanged(double)));
+
     return true;
 }
 
 void HtmlView::setScale(double scale)
 {
-    web_view->page()->currentFrame()->setZoomFactor(scale);
+    web_view->setScale(scale);
 }
 
 namespace

@@ -4,7 +4,7 @@
 
 #include "view.hpp"
 
-class QWebView;
+class CustomWebView;
 
 class HtmlView : public View
 {
@@ -24,7 +24,7 @@ private slots:
     void slotSetScroll();
 
 protected:
-    QWebView * web_view;
+    CustomWebView * web_view;
 };
 
 #endif

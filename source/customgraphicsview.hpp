@@ -9,6 +9,7 @@
 class CustomGraphicsView : public QGraphicsView
 {
     Q_OBJECT
+
 public:
     explicit CustomGraphicsView(QWidget * parent, ViewScale const & view_scale);
     virtual void wheelEvent(QWheelEvent * event);
@@ -18,7 +19,6 @@ signals:
 
 private:
     ViewScale const & view_scale;
-
     double getCurrentScale() const;
 };
 

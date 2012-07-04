@@ -28,7 +28,7 @@ namespace
             return QString(PKGDATADIR) + locales_dir;
         #endif
 
-    //TODO: Log this failure.
+        // TODO: Log this failure.
         // Locale directory could not be found.
         return QString();
     }
