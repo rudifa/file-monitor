@@ -69,10 +69,10 @@
    <addaction name="action_file_open"/>
    <addaction name="action_file_close"/>
    <addaction name="separator"/>
-   <addaction name="action_file_zoom_out"/>
-   <addaction name="action_file_zoom_in"/>
+   <addaction name="action_edit_zoom_out"/>
+   <addaction name="action_edit_zoom_in"/>
   </widget>
-  <widget class="QMenuBar" name="menuBar">
+  <widget class="QMenuBar" name="menu_bar">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -83,39 +83,35 @@
    </property>
    <widget class="QMenu" name="menu_file">
     <property name="title">
-     <string>File</string>
+     <string>&amp;File</string>
     </property>
     <addaction name="action_file_open"/>
-    <addaction name="action_file_close"/>
+    <addaction name="action_file_open_recent"/>
     <addaction name="separator"/>
-    <addaction name="action_save_session"/>
-    <addaction name="action_restore_session"/>
+    <addaction name="action_file_close"/>
+    <addaction name="action_file_close_others"/>
+    <addaction name="action_file_close_all"/>
+    <addaction name="separator"/>
+    <addaction name="action_quit"/>
    </widget>
    <widget class="QMenu" name="menu_edit">
     <property name="title">
-     <string>Edit</string>
+     <string>&amp;Edit</string>
     </property>
-    <addaction name="action_file_zoom_in"/>
-    <addaction name="action_file_zoom_out"/>
-    <addaction name="action_file_zoom_reset"/>
+    <addaction name="action_edit_zoom_in"/>
+    <addaction name="action_edit_zoom_out"/>
+    <addaction name="action_edit_zoom_reset"/>
+    <addaction name="separator"/>
+    <addaction name="action_edit_find"/>
+    <addaction name="action_edit_select_all"/>
    </widget>
    <widget class="QMenu" name="menu_settings">
     <property name="title">
-     <string>Settings</string>
+     <string>Se&amp;ttings</string>
     </property>
-    <widget class="QMenu" name="menu_images">
-     <property name="title">
-      <string>Images</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../resources.qrc">
-       <normaloff>:/icons/image.png</normaloff>:/icons/image.png</iconset>
-     </property>
-     <addaction name="action_transparent_background"/>
-    </widget>
     <widget class="QMenu" name="menu_text">
      <property name="title">
-      <string>Text</string>
+      <string>&amp;Text</string>
      </property>
      <property name="icon">
       <iconset resource="../resources.qrc">
@@ -123,16 +119,26 @@
      </property>
      <addaction name="action_word_wrap"/>
      <addaction name="action_indent_xml"/>
+     <addaction name="action_scroll_to_bottom"/>
+    </widget>
+    <widget class="QMenu" name="menu_images">
+     <property name="title">
+      <string>&amp;Images</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../resources.qrc">
+       <normaloff>:/icons/image.png</normaloff>:/icons/image.png</iconset>
+     </property>
+     <addaction name="action_transparent_background"/>
     </widget>
     <widget class="QMenu" name="menu_common">
      <property name="title">
-      <string>Common</string>
+      <string>&amp;Common</string>
      </property>
      <property name="icon">
       <iconset resource="../resources.qrc">
        <normaloff>:/icons/common.png</normaloff>:/icons/common.png</iconset>
      </property>
-     <addaction name="action_jump_to_change"/>
      <addaction name="action_close_deleted_files"/>
     </widget>
     <addaction name="menu_images"/>
@@ -141,11 +147,19 @@
    </widget>
    <widget class="QMenu" name="menu_about">
     <property name="title">
-     <string>About</string>
+     <string>&amp;About</string>
     </property>
     <addaction name="action_about_file_monitor"/>
    </widget>
+   <widget class="QMenu" name="menu_session">
+    <property name="title">
+     <string>&amp;Session</string>
+    </property>
+    <addaction name="action_session_save_as"/>
+    <addaction name="action_session_open"/>
+   </widget>
    <addaction name="menu_file"/>
+   <addaction name="menu_session"/>
    <addaction name="menu_edit"/>
    <addaction name="menu_settings"/>
    <addaction name="menu_about"/>
@@ -156,10 +170,13 @@
      <normaloff>:/icons/file_open.png</normaloff>:/icons/file_open.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Open File</string>
+    <string>&amp;Open</string>
+   </property>
+   <property name="toolTip">
+    <string>Open File</string>
    </property>
    <property name="statusTip">
-    <string>Open a new file.</string>
+    <string>Open a file into a new tab.</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -171,7 +188,10 @@
      <normaloff>:/icons/file_close.png</normaloff>:/icons/file_close.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Close File</string>
+    <string>&amp;Close</string>
+   </property>
+   <property name="toolTip">
+    <string>Close File</string>
    </property>
    <property name="statusTip">
     <string>Close the current file.</string>
@@ -180,31 +200,37 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="action_file_zoom_in">
+  <action name="action_edit_zoom_in">
    <property name="icon">
     <iconset resource="../resources.qrc">
      <normaloff>:/icons/file_zoom_in.png</normaloff>:/icons/file_zoom_in.png</iconset>
    </property>
    <property name="text">
+    <string>Zoom &amp;In</string>
+   </property>
+   <property name="toolTip">
     <string>Zoom In</string>
    </property>
    <property name="statusTip">
-    <string>Zoom into the current file.</string>
+    <string>Zoom into current file.</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+=</string>
    </property>
   </action>
-  <action name="action_file_zoom_out">
+  <action name="action_edit_zoom_out">
    <property name="icon">
     <iconset resource="../resources.qrc">
      <normaloff>:/icons/file_zoom_out.png</normaloff>:/icons/file_zoom_out.png</iconset>
    </property>
    <property name="text">
+    <string>Zoom &amp;Out</string>
+   </property>
+   <property name="toolTip">
     <string>Zoom Out</string>
    </property>
    <property name="statusTip">
-    <string>Zoom out of the current file.</string>
+    <string>Zoom out of current file.</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+-</string>
@@ -216,7 +242,10 @@
      <normaloff>:/icons/about.png</normaloff>:/icons/about.png</iconset>
    </property>
    <property name="text">
-    <string>About File Monitor</string>
+    <string>&amp;About File Monitor</string>
+   </property>
+   <property name="statusTip">
+    <string>Learn more about File Monitor.</string>
    </property>
   </action>
   <action name="action_transparent_background">
@@ -227,7 +256,13 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Transparent Background</string>
+    <string>&amp;Transparent Background</string>
+   </property>
+   <property name="toolTip">
+    <string>Make Background Transparent</string>
+   </property>
+   <property name="statusTip">
+    <string>Fill the transparent areas of images with a tile pattern.</string>
    </property>
   </action>
   <action name="action_word_wrap">
@@ -235,28 +270,52 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Word Wrap</string>
+    <string>&amp;Word Wrap</string>
+   </property>
+   <property name="toolTip">
+    <string>Word wrap</string>
+   </property>
+   <property name="statusTip">
+    <string>Wrap words within text files.</string>
    </property>
   </action>
-  <action name="action_save_session">
+  <action name="action_session_save_as">
    <property name="icon">
     <iconset resource="../resources.qrc">
-     <normaloff>:/icons/session_save.png</normaloff>:/icons/session_save.png</iconset>
+     <normaloff>:/icons/session_save_as.png</normaloff>:/icons/session_save_as.png</iconset>
    </property>
    <property name="text">
+    <string>&amp;Save As</string>
+   </property>
+   <property name="iconText">
+    <string>Save</string>
+   </property>
+   <property name="toolTip">
     <string>Save Session</string>
+   </property>
+   <property name="statusTip">
+    <string>Save the current set of open files (session) to a session file.</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="action_restore_session">
+  <action name="action_session_open">
    <property name="icon">
     <iconset resource="../resources.qrc">
-     <normaloff>:/icons/session_load.png</normaloff>:/icons/session_load.png</iconset>
+     <normaloff>:/icons/session_open.png</normaloff>:/icons/session_open.png</iconset>
    </property>
    <property name="text">
-    <string>Restore Session</string>
+    <string>&amp;Open</string>
+   </property>
+   <property name="iconText">
+    <string>Open</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Session</string>
+   </property>
+   <property name="statusTip">
+    <string>Open a previously saved set of open files (session) from a session file.</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
@@ -267,15 +326,13 @@
     <bool>true</bool>
    </property>
    <property name="text">
+    <string>&amp;Close Deleted Files</string>
+   </property>
+   <property name="toolTip">
     <string>Close Deleted Files</string>
    </property>
-  </action>
-  <action name="action_jump_to_change">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Jump To Change</string>
+   <property name="statusTip">
+    <string>Automatically close a file's tab if it is deleted on disk.</string>
    </property>
   </action>
   <action name="action_indent_xml">
@@ -283,15 +340,24 @@
     <bool>true</bool>
    </property>
    <property name="text">
+    <string>&amp;Format XML</string>
+   </property>
+   <property name="toolTip">
     <string>Format XML</string>
    </property>
+   <property name="statusTip">
+    <string>Cleanly indent and format XML files.</string>
+   </property>
   </action>
-  <action name="action_file_zoom_reset">
+  <action name="action_edit_zoom_reset">
    <property name="icon">
     <iconset resource="../resources.qrc">
      <normaloff>:/icons/file_zoom_reset.png</normaloff>:/icons/file_zoom_reset.png</iconset>
    </property>
    <property name="text">
+    <string>&amp;Reset Zoom</string>
+   </property>
+   <property name="toolTip">
     <string>Reset Zoom</string>
    </property>
    <property name="statusTip">
@@ -299,6 +365,118 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+0</string>
+   </property>
+  </action>
+  <action name="action_file_open_recent">
+   <property name="text">
+    <string>Open &amp;Recent</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Recent</string>
+   </property>
+   <property name="statusTip">
+    <string>Browse recently opened files.</string>
+   </property>
+  </action>
+  <action name="action_file_close_others">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/file_close_others.png</normaloff>:/icons/file_close_others.png</iconset>
+   </property>
+   <property name="text">
+    <string>Close O&amp;thers</string>
+   </property>
+   <property name="toolTip">
+    <string>Close Others</string>
+   </property>
+   <property name="statusTip">
+    <string>Close all files other than current file.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+W</string>
+   </property>
+  </action>
+  <action name="action_quit">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/file_quit.png</normaloff>:/icons/file_quit.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+   <property name="toolTip">
+    <string>Quit</string>
+   </property>
+   <property name="statusTip">
+    <string>Close this application.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="action_scroll_to_bottom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Scroll To Bottom</string>
+   </property>
+   <property name="toolTip">
+    <string>Scroll To Bottom</string>
+   </property>
+   <property name="statusTip">
+    <string>Scroll to the bottom of text files (that are not XML) when they change on disk.</string>
+   </property>
+  </action>
+  <action name="action_edit_select_all">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/edit_select_all.png</normaloff>:/icons/edit_select_all.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select &amp;All</string>
+   </property>
+   <property name="iconText">
+    <string>Select All</string>
+   </property>
+   <property name="toolTip">
+    <string>Select All Text</string>
+   </property>
+   <property name="statusTip">
+    <string>Select all text in the current file.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="action_edit_find">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/edit_find.png</normaloff>:/icons/edit_find.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Find</string>
+   </property>
+   <property name="toolTip">
+    <string>Find Text</string>
+   </property>
+   <property name="statusTip">
+    <string>Find text within the current file.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="action_file_close_all">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/file_close_all.png</normaloff>:/icons/file_close_all.png</iconset>
+   </property>
+   <property name="text">
+    <string>Close &amp;All</string>
+   </property>
+   <property name="statusTip">
+    <string>Close all open files.</string>
    </property>
   </action>
  </widget>

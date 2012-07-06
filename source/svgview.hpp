@@ -17,7 +17,7 @@ public:
     SvgView(QWidget * parent);
 
     QWidget * getWidget();
-    bool load(QString const & file_uri);
+    bool load(QString const & file_uri, bool is_reload = false);
 
     void setScale(double scale);
     void setScrollDimensions(QPoint dimensions);

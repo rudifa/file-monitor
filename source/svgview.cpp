@@ -27,7 +27,7 @@ QWidget * SvgView::getWidget()
     return widget;
 }
 
-bool SvgView::load(QString const & file_uri)
+bool SvgView::load(QString const & file_uri, bool)
 {
     QGraphicsScene * graphics_scene = graphics_view->scene();
 

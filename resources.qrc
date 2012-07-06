@@ -4,8 +4,6 @@
         <file>icons/file_close.png</file>
         <file>icons/file_zoom_in.png</file>
         <file>icons/file_zoom_out.png</file>
-        <file>icons/session_load.png</file>
-        <file>icons/session_save.png</file>
         <file>icons/text.png</file>
         <file>icons/image.png</file>
         <file>icons/about.png</file>
@@ -13,5 +11,12 @@
         <file>icons/file-monitor.xpm</file>
         <file>icons/16x16/file-monitor.png</file>
         <file>icons/file_zoom_reset.png</file>
+        <file>icons/file_quit.png</file>
+        <file>icons/edit_find.png</file>
+        <file>icons/edit_select_all.png</file>
+        <file>icons/file_close_others.png</file>
+        <file>icons/file_close_all.png</file>
+        <file>icons/session_open.png</file>
+        <file>icons/session_save_as.png</file>
     </qresource>
 </RCC>

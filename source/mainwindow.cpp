@@ -28,11 +28,15 @@ MainWindow::MainWindow(QWidget * parent) :
 
     connect(ui->action_file_open, SIGNAL(triggered()), tab_widget, SLOT(slotLoadFile()));
     connect(ui->action_file_close, SIGNAL(triggered()), tab_widget, SLOT(slotCloseCurrentTab()));
+    connect(ui->action_file_close_others, SIGNAL(triggered()), tab_widget, SLOT(slotCloseAllButCurrentTabPage()));
+    connect(ui->action_file_close_all, SIGNAL(triggered()), tab_widget, SLOT(slotCloseAllTabPages()));
+    connect(ui->action_quit, SIGNAL(triggered()), SLOT(close()));
     connect(ui->action_transparent_background, SIGNAL(toggled(bool)), tab_widget, SLOT(slotEnableTransparentBackground(bool)));
     connect(ui->action_word_wrap, SIGNAL(toggled(bool)), tab_widget, SLOT(slotWordWrap(bool)));
     connect(ui->action_indent_xml, SIGNAL(toggled(bool)), tab_widget, SLOT(slotIndentXML(bool)));
-    connect(ui->action_save_session, SIGNAL(triggered()), SLOT(slotSaveSession()));
-    connect(ui->action_restore_session, SIGNAL(triggered()), SLOT(slotRestoreSession()));
+    connect(ui->action_scroll_to_bottom, SIGNAL(toggled(bool)), tab_widget, SLOT(slotScrollToBottomOnChange(bool)));
+    connect(ui->action_session_save_as, SIGNAL(triggered()), SLOT(slotSaveSessionAs()));
+    connect(ui->action_session_open, SIGNAL(triggered()), SLOT(slotOpenSession()));
     connect(ui->action_about_file_monitor, SIGNAL(triggered()), SLOT(slotAboutFileMonitor()));
 
     settings.beginGroup("global");
@@ -90,7 +94,7 @@ void MainWindow::dropEvent(QDropEvent * event)
     }
 }
 
-void MainWindow::slotSaveSession()
+void MainWindow::slotSaveSessionAs()
 {
     QString last_saved_session_uri("");
 
@@ -103,7 +107,7 @@ void MainWindow::slotSaveSession()
     settings::saveSettingsToFile(file_uri);
 }
 
-void MainWindow::slotRestoreSession()
+void MainWindow::slotOpenSession()
 {
     QString last_restored_session_uri("");
 
@@ -114,7 +118,7 @@ void MainWindow::slotRestoreSession()
         return;
 
     // When each tab page closes it overwrites the current QSettings.
-    tab_widget->closeAllTabPages();
+    tab_widget->slotCloseAllTabPages();
 
     settings::loadSettingsFromFile(file_uri);
     loadSettings();
@@ -137,6 +141,7 @@ void MainWindow::loadSettings()
     ui->action_transparent_background->setChecked(settings.value("transparent_background", true).toBool());
     ui->action_word_wrap->setChecked(settings.value("word_wrap", true).toBool());
     ui->action_indent_xml->setChecked(settings.value("indentXML", true).toBool());
+    ui->action_scroll_to_bottom->setChecked(settings.value("scrollToBottom", false).toBool());
 
     tab_widget->loadSettings();
 }
@@ -148,6 +153,7 @@ void MainWindow::saveSettings()
     settings.setValue("transparent_background", ui->action_transparent_background->isChecked());
     settings.setValue("word_wrap", ui->action_word_wrap->isChecked());
     settings.setValue("indent_xml", ui->action_indent_xml->isChecked());
+    settings.setValue("scrollToBottom", ui->action_scroll_to_bottom->isChecked());
 
     tab_widget->saveSettings();
 }

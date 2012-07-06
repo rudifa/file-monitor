@@ -29,17 +29,18 @@ public:
     void saveSettings();
     void loadSettings();
 
-    void closeAllTabPages();
-
     void mouseMoveEvent(QMouseEvent * event);
 
 public slots:
     void slotLoadFile();
     void slotCloseCurrentTab();
+    void slotCloseAllButCurrentTabPage();
+    void slotCloseAllTabPages();
 
     void slotEnableTransparentBackground(bool enable);
     void slotWordWrap(bool word_wrap);
     void slotIndentXML(bool indent_xml);
+    void slotScrollToBottomOnChange(bool scroll_to_bottom);
 
 private slots:
     void slotRemoveTab(int tab_index);

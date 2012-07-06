@@ -19,7 +19,8 @@ using namespace utility;
 
 TextView::TextView(QWidget * parent)
     : View(parent, ViewScale(ViewScale::Linear, 1, 100, 12)),
-      text_edit(new CustomTextEdit(parent, view_scale)), indent_xml(false)
+      text_edit(new CustomTextEdit(parent, view_scale)),
+      indent_xml(false), scroll_to_bottom_on_change(false)
 {
 }
 
@@ -31,7 +32,7 @@ QWidget * TextView::getWidget()
     return widget;
 }
 
-bool TextView::load(QString const & file_uri)
+bool TextView::load(QString const & file_uri, bool is_reload)
 {
     QFile file(file_uri);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -43,6 +44,10 @@ bool TextView::load(QString const & file_uri)
     formatAndInsertContent(unformatted_content, indent_xml);
 
     connect(text_edit, SIGNAL(signalScaleChanged(double)), SLOT(slotScaleChanged(double)));
+
+    // Only scroll bottom if we are reloading non-xml content.
+    if (scroll_to_bottom_on_change && is_reload && !xml::isXML(unformatted_content))
+        QTimer::singleShot(0, this, SLOT(slotScrollToBottom()));
 
     return true;
 }
@@ -77,6 +82,11 @@ void TextView::indentXML(bool indent)
     formatAndInsertContent(unformatted_content, indent_xml);
 }
 
+void TextView::scrollToBottomOnChange(bool scroll_to_bottom)
+{
+    scroll_to_bottom_on_change = scroll_to_bottom;
+}
+
 void TextView::formatAndInsertContent(QString const & content, bool indent)
 {
     QDomDocument document;
@@ -84,4 +94,9 @@ void TextView::formatAndInsertContent(QString const & content, bool indent)
         text_edit->setPlainText(document.toString(4));
     else
         text_edit->setPlainText(content);
+}
+
+void TextView::slotScrollToBottom()
+{
+    text_edit->verticalScrollBar()->setSliderPosition(text_edit->verticalScrollBar()->maximumHeight());
 }

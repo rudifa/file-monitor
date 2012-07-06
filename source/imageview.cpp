@@ -27,7 +27,7 @@ QWidget * ImageView::getWidget()
     return widget;
 }
 
-bool ImageView::load(QString const & file_uri)
+bool ImageView::load(QString const & file_uri, bool)
 {
     graphics_view->resetTransform();
 

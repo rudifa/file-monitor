@@ -19,7 +19,7 @@ public:
     View(QWidget * parent, ViewScale view_scale);
 
     virtual QWidget * getWidget() = 0;
-    virtual bool load(QString const & file_uri) = 0;
+    virtual bool load(QString const & file_uri, bool is_reload = false) = 0;
 
     void setZoom(int zoom);
     int getZoom() const;
@@ -31,6 +31,7 @@ public:
     virtual void enableTransparentBackground(bool) { }
     virtual void wordWrap(bool) { }
     virtual void indentXML(bool) { }
+    virtual void scrollToBottomOnChange(bool) { }
 
 signals:
     void signalScaleChanged();

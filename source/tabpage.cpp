@@ -78,6 +78,11 @@ void TabPage::indentXML(bool indent_xml)
     view->indentXML(indent_xml);
 }
 
+void TabPage::scrollToBottomOnChange(bool scroll_to_bottom)
+{
+    view->scrollToBottomOnChange(scroll_to_bottom);
+}
+
 QString TabPage::getUri() const
 {
     return file_uri;
@@ -129,7 +134,7 @@ void TabPage::slotLoadSettings()
 void TabPage::slotReload()
 {
     slotSaveSettings();
-    view->load(file_uri);
+    view->load(file_uri, true);
     slotLoadSettings();
 }
 

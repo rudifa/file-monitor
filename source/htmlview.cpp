@@ -30,7 +30,7 @@ QWidget * HtmlView::getWidget()
     return widget;
 }
 
-bool HtmlView::load(QString const & file_uri)
+bool HtmlView::load(QString const & file_uri, bool)
 {
     web_view->setUrl(file_uri);
 

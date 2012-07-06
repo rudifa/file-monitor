@@ -22,6 +22,7 @@ public:
     void enableTransparentBackground(bool enable);
     void wordWrap(bool word_wrap);
     void indentXML(bool indent_xml);
+    void scrollToBottomOnChange(bool scroll_to_bottom);
     
     QString getUri() const;
     int getPercentageZoom() const;

@@ -28,8 +28,8 @@ protected:
     void dropEvent(QDropEvent * event);
 
 private slots:
-    void slotSaveSession();
-    void slotRestoreSession();
+    void slotSaveSessionAs();
+    void slotOpenSession();
     void slotAboutFileMonitor();
 
 private:

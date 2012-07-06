@@ -6,6 +6,7 @@
 #include <QDirIterator>
 #include <QApplication>
 #include <QSettings>
+#include <QDomDocument>
 
 #include <cmath>
 #include <cassert>
@@ -165,4 +166,10 @@ double math::inverseRampUp(double input, double input_min, double input_max, dou
         logit_function_output_min, logit_function_output_max, output_min, output_max);
 
     return scaled_logit_function_output;
+}
+
+bool xml::isXML(QString const & content)
+{
+    QDomDocument document;
+    return document.setContent(content);
 }

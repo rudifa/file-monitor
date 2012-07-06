@@ -37,12 +37,13 @@ TabWidget::TabWidget(std::unique_ptr<Ui::MainWindow> const & ui, QWidget * paren
     connect(this, SIGNAL(currentChanged(int)), SLOT(slotCurrentTabChanged(int)));
     connect(file_watcher, SIGNAL(fileChanged(QString)), SLOT(slotFileChanged(QString)));
 
-    zoom_slider->setToolTip(tr("Zoom Slider"));
-    zoom_slider->setStatusTip(tr("Drag slider to zoom into or out of the current file."));
+    QString tool_tip = tr("Drag slider to zoom into or out of the current file.");
+    zoom_slider->setToolTip(tool_tip);
+    zoom_slider->setStatusTip(tool_tip);
     zoom_slider->setMaximumWidth(400);
     zoom_slider->setRange(zoom::min, zoom::max);
     zoom_slider->setSingleStep(zoom::step);
-    ui->tool_bar->insertWidget(ui->action_file_zoom_in, zoom_slider);
+    ui->tool_bar->insertWidget(ui->action_edit_zoom_in, zoom_slider);
 
     settings.beginGroup("tabs");
 }
@@ -55,17 +56,17 @@ void TabWidget::updateTabConnections()
         TabPage * tab_page = tabPage(widget(i));
         if (i == currentIndex())
         {
-            connect(ui->action_file_zoom_in, SIGNAL(triggered()), tab_page, SLOT(slotZoomIn()));
-            connect(ui->action_file_zoom_out, SIGNAL(triggered()), tab_page, SLOT(slotZoomOut()));
-            connect(ui->action_file_zoom_reset, SIGNAL(triggered()), tab_page, SLOT(slotResetZoom()));
+            connect(ui->action_edit_zoom_in, SIGNAL(triggered()), tab_page, SLOT(slotZoomIn()));
+            connect(ui->action_edit_zoom_out, SIGNAL(triggered()), tab_page, SLOT(slotZoomOut()));
+            connect(ui->action_edit_zoom_reset, SIGNAL(triggered()), tab_page, SLOT(slotResetZoom()));
             connect(zoom_slider, SIGNAL(valueChanged(int)), tab_page, SLOT(slotSetZoom(int)));
             connect(tab_page, SIGNAL(signalScaleChanged()), this, SLOT(slotSynchronizeZoomSlider()));
         }
         else
         {
-            disconnect(ui->action_file_zoom_in, SIGNAL(triggered()), tab_page, SLOT(slotZoomIn()));
-            disconnect(ui->action_file_zoom_out, SIGNAL(triggered()), tab_page, SLOT(slotZoomOut()));
-            disconnect(ui->action_file_zoom_reset, SIGNAL(triggered()), tab_page, SLOT(slotResetZoom()));
+            disconnect(ui->action_edit_zoom_in, SIGNAL(triggered()), tab_page, SLOT(slotZoomIn()));
+            disconnect(ui->action_edit_zoom_out, SIGNAL(triggered()), tab_page, SLOT(slotZoomOut()));
+            disconnect(ui->action_edit_zoom_reset, SIGNAL(triggered()), tab_page, SLOT(slotResetZoom()));
             disconnect(zoom_slider, SIGNAL(valueChanged(int)), tab_page, SLOT(slotSetZoom(int)));
             disconnect(tab_page, SIGNAL(signalScaleChanged()), this, SLOT(slotSynchronizeZoomSlider()));
         }
@@ -87,7 +88,16 @@ void TabWidget::openFiles(QStringList file_uris)
     setCurrentWidget(tab_page);
 }
 
-void TabWidget::closeAllTabPages()
+void TabWidget::slotCloseAllButCurrentTabPage()
+{
+    while (count() > 1)
+    {
+        int index_to_remove = (currentIndex() == 0) ? 1 : 0;
+        slotRemoveTab(index_to_remove);
+    }
+}
+
+void TabWidget::slotCloseAllTabPages()
 {
     while (count())
         slotCloseCurrentTab();
@@ -237,6 +247,7 @@ TabPage * TabWidget::loadFile(QString const & file_uri)
     tab_page->enableTransparentBackground(ui->action_transparent_background->isChecked());
     tab_page->wordWrap(ui->action_word_wrap->isChecked());
     tab_page->indentXML(ui->action_indent_xml->isChecked());
+    tab_page->scrollToBottomOnChange(ui->action_scroll_to_bottom->isChecked());
 
     addTab(tab_page, file_info.fileName());
     file_watcher->addPath(file_uri);
@@ -248,6 +259,7 @@ TabPage * TabWidget::tabPage(QWidget * widget) const
 {
     // TabWidget should only have TabPage child Widgets.
     assert(dynamic_cast<TabPage *>(widget));
+
     return static_cast<TabPage *>(widget);
 }
 
@@ -284,6 +296,12 @@ void TabWidget::slotIndentXML(bool indent_xml)
     std::for_each(pages.begin(), pages.end(), [indent_xml](TabPage * page) { page->indentXML(indent_xml); });
 }
 
+void TabWidget::slotScrollToBottomOnChange(bool scroll_to_bottom)
+{
+    auto pages = allTabPages();
+    std::for_each(pages.begin(), pages.end(), [scroll_to_bottom](TabPage * page) { page->scrollToBottomOnChange(scroll_to_bottom); });
+}
+
 TabPage * TabWidget::uriTabPage(QString const & uri) const
 {
     for (int i = 0; i < count(); ++i)
@@ -310,6 +328,10 @@ QStringList TabWidget::allTabUris() const
 // Update the zoom slider using the current tab's zoom value.
 void TabWidget::slotSynchronizeZoomSlider()
 {
+    // This is called in a delayed manner and might be run when there are no more open tabs.
+    if (!count())
+        return;
+
     bool block_signals = zoom_slider->blockSignals(true);
     zoom_slider->setValue(tabPage(widget(currentIndex()))->getPercentageZoom());
     zoom_slider->blockSignals(block_signals);

@@ -30,6 +30,10 @@ namespace utility
         double rampUp(double input, double input_min, double input_max, double output_min, double output_max);
         double inverseRampUp(double input, double input_min, double input_max, double output_min, double output_max);
     }
+    namespace xml
+    {
+        bool isXML(QString const & content);
+    }
 }
 
 #endif
