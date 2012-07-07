@@ -8,6 +8,8 @@
 class View;
 class QShowEvent;
 
+namespace Ui { class MainWindow; }
+
 class TabPage : public QWidget
 {
     Q_OBJECT
@@ -15,7 +17,7 @@ class TabPage : public QWidget
 public:
     enum FileType { TEXT, HTML, SVG, IMAGE };
 
-    TabPage(QWidget * parent = 0);
+    TabPage(Ui::MainWindow const & ui, QWidget * parent = 0);
 
     bool load(QString const & uri);
 
@@ -25,6 +27,8 @@ public:
     void scrollToBottomOnChange(bool scroll_to_bottom);
     
     QString getUri() const;
+    bool isImage() const;
+
     int getPercentageZoom() const;
 
     inline bool wasCurrentTab() const { return displayed_to_user; }
@@ -37,6 +41,10 @@ public slots:
     void slotZoomIn();
     void slotZoomOut();
     void slotResetZoom();
+    void slotSelectAll();
+    void slotCopy();
+    void slotFind();
+
     void slotSetZoom(int zoom);
     void slotSaveSettings();
     void slotLoadSettings();
@@ -45,10 +53,12 @@ private slots:
     void slotReload();
 
 private:
+    Ui::MainWindow const & ui;
     View * view;
     View * createView(QString const & file_uri);
 
     QString file_uri;
+    FileType file_type;
     QSettings settings;
 
     // true if this TabPage was the currentTab at least once.

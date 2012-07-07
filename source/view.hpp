@@ -16,7 +16,7 @@ class View : public QWidget
     Q_OBJECT
 
 public:
-    View(QWidget * parent, ViewScale view_scale);
+    View(ViewScale view_scale, QWidget * parent);
 
     virtual QWidget * getWidget() = 0;
     virtual bool load(QString const & file_uri, bool is_reload = false) = 0;
@@ -32,6 +32,10 @@ public:
     virtual void wordWrap(bool) { }
     virtual void indentXML(bool) { }
     virtual void scrollToBottomOnChange(bool) { }
+
+    virtual void selectAll() { }
+    virtual void copy() { }
+    virtual void find() { }
 
 signals:
     void signalScaleChanged();

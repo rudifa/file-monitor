@@ -8,7 +8,7 @@
 
 using namespace utility;
 
-View::View(QWidget * parent, ViewScale zoom_parameters)
+View::View(ViewScale zoom_parameters, QWidget * parent)
     : QWidget(parent), view_scale(zoom_parameters), current_zoom(0)
 {
     transparent_tile_pixmap = QPixmap(32, 32);

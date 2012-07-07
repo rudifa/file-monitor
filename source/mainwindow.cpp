@@ -1,7 +1,6 @@
 
 #include "mainwindow.hpp"
 
-#include "ui_mainwindow.h"
 #include "tabwidget.hpp"
 #include "utility.hpp"
 #include "aboutdialog.hpp"
@@ -16,28 +15,29 @@
 #include <QPushButton>
 #include <QLabel>
 
+
 using namespace utility;
 
 MainWindow::MainWindow(QWidget * parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow())
+    QMainWindow(parent)
 {
-    ui->setupUi(this);
+    ui.setupUi(this);
 
     tab_widget = new TabWidget(ui, this);
     setCentralWidget(tab_widget);
 
-    connect(ui->action_file_open, SIGNAL(triggered()), tab_widget, SLOT(slotLoadFile()));
-    connect(ui->action_file_close, SIGNAL(triggered()), tab_widget, SLOT(slotCloseCurrentTab()));
-    connect(ui->action_file_close_others, SIGNAL(triggered()), tab_widget, SLOT(slotCloseAllButCurrentTabPage()));
-    connect(ui->action_file_close_all, SIGNAL(triggered()), tab_widget, SLOT(slotCloseAllTabPages()));
-    connect(ui->action_quit, SIGNAL(triggered()), SLOT(close()));
-    connect(ui->action_transparent_background, SIGNAL(toggled(bool)), tab_widget, SLOT(slotEnableTransparentBackground(bool)));
-    connect(ui->action_word_wrap, SIGNAL(toggled(bool)), tab_widget, SLOT(slotWordWrap(bool)));
-    connect(ui->action_indent_xml, SIGNAL(toggled(bool)), tab_widget, SLOT(slotIndentXML(bool)));
-    connect(ui->action_scroll_to_bottom, SIGNAL(toggled(bool)), tab_widget, SLOT(slotScrollToBottomOnChange(bool)));
-    connect(ui->action_session_save_as, SIGNAL(triggered()), SLOT(slotSaveSessionAs()));
-    connect(ui->action_session_open, SIGNAL(triggered()), SLOT(slotOpenSession()));
-    connect(ui->action_about_file_monitor, SIGNAL(triggered()), SLOT(slotAboutFileMonitor()));
+    connect(ui.action_file_open, SIGNAL(triggered()), tab_widget, SLOT(slotLoadFile()));
+    connect(ui.action_file_close, SIGNAL(triggered()), tab_widget, SLOT(slotCloseCurrentTab()));
+    connect(ui.action_file_close_others, SIGNAL(triggered()), tab_widget, SLOT(slotCloseAllButCurrentTabPage()));
+    connect(ui.action_file_close_all, SIGNAL(triggered()), tab_widget, SLOT(slotCloseAllTabPages()));
+    connect(ui.action_quit, SIGNAL(triggered()), SLOT(close()));
+    connect(ui.action_transparent_background, SIGNAL(toggled(bool)), tab_widget, SLOT(slotEnableTransparentBackground(bool)));
+    connect(ui.action_word_wrap, SIGNAL(toggled(bool)), tab_widget, SLOT(slotWordWrap(bool)));
+    connect(ui.action_indent_xml, SIGNAL(toggled(bool)), tab_widget, SLOT(slotIndentXML(bool)));
+    connect(ui.action_scroll_to_bottom, SIGNAL(toggled(bool)), tab_widget, SLOT(slotScrollToBottomOnChange(bool)));
+    connect(ui.action_session_save_as, SIGNAL(triggered()), SLOT(slotSaveSessionAs()));
+    connect(ui.action_session_open, SIGNAL(triggered()), SLOT(slotOpenSession()));
+    connect(ui.action_about_file_monitor, SIGNAL(triggered()), SLOT(slotAboutFileMonitor()));
 
     settings.beginGroup("global");
     loadSettings();
@@ -56,7 +56,7 @@ void MainWindow::changeEvent(QEvent * event)
     switch (event->type())
     {
     case QEvent::LanguageChange:
-        ui->retranslateUi(this);
+        ui.retranslateUi(this);
         break;
     default:
         break;
@@ -137,11 +137,11 @@ void MainWindow::loadSettings()
     setGeometry(settings.value("app_geometry", default_dimensions).toRect());
 
     // User defined settings.
-    ui->action_close_deleted_files->setChecked(settings.value("closeDeletedFiles", false).toBool());
-    ui->action_transparent_background->setChecked(settings.value("transparent_background", true).toBool());
-    ui->action_word_wrap->setChecked(settings.value("word_wrap", true).toBool());
-    ui->action_indent_xml->setChecked(settings.value("indentXML", true).toBool());
-    ui->action_scroll_to_bottom->setChecked(settings.value("scrollToBottom", false).toBool());
+    ui.action_close_deleted_files->setChecked(settings.value("closeDeletedFiles", false).toBool());
+    ui.action_transparent_background->setChecked(settings.value("transparent_background", true).toBool());
+    ui.action_word_wrap->setChecked(settings.value("word_wrap", true).toBool());
+    ui.action_indent_xml->setChecked(settings.value("indentXML", true).toBool());
+    ui.action_scroll_to_bottom->setChecked(settings.value("scrollToBottom", false).toBool());
 
     tab_widget->loadSettings();
 }
@@ -149,11 +149,11 @@ void MainWindow::loadSettings()
 void MainWindow::saveSettings()
 {
     settings.setValue("app_geometry", geometry());
-    settings.setValue("close_deleted_files", ui->action_close_deleted_files->isChecked());
-    settings.setValue("transparent_background", ui->action_transparent_background->isChecked());
-    settings.setValue("word_wrap", ui->action_word_wrap->isChecked());
-    settings.setValue("indent_xml", ui->action_indent_xml->isChecked());
-    settings.setValue("scrollToBottom", ui->action_scroll_to_bottom->isChecked());
+    settings.setValue("close_deleted_files", ui.action_close_deleted_files->isChecked());
+    settings.setValue("transparent_background", ui.action_transparent_background->isChecked());
+    settings.setValue("word_wrap", ui.action_word_wrap->isChecked());
+    settings.setValue("indent_xml", ui.action_indent_xml->isChecked());
+    settings.setValue("scrollToBottom", ui.action_scroll_to_bottom->isChecked());
 
     tab_widget->saveSettings();
 }

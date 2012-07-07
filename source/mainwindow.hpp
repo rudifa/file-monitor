@@ -2,12 +2,10 @@
 #ifndef MAIN_WINDOW_HPP
 #define MAIN_WINDOW_HPP
 
+#include "ui_mainwindow.h"
+
 #include <QMainWindow>
 #include <QSettings>
-
-#include <memory>
-
-namespace Ui { class MainWindow; }
 
 class TabWidget;
 
@@ -33,7 +31,7 @@ private slots:
     void slotAboutFileMonitor();
 
 private:
-    std::unique_ptr<Ui::MainWindow> ui;
+    Ui::MainWindow ui;
     TabWidget * tab_widget;
     QSettings settings;
 

@@ -1,6 +1,8 @@
 
 #include "customtextedit.hpp"
 
+#include "ui_mainwindow.h"
+#include "contextmenus.hpp"
 #include "utility.hpp"
 
 #include <QWheelEvent>
@@ -10,10 +12,13 @@
 
 using namespace utility;
 
-CustomTextEdit::CustomTextEdit(QWidget * parent, ViewScale const & view_scale)
-    : QTextEdit(parent), view_scale(view_scale)
+CustomTextEdit::CustomTextEdit(Ui::MainWindow const & ui, ViewScale const & view_scale, QWidget * parent)
+    : QTextEdit(parent), ui(ui), view_scale(view_scale)
 {
     setReadOnly(true);
+
+    setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this, SIGNAL(customContextMenuRequested(QPoint const &)), SLOT(slotShowContextMenu(QPoint const &)));
 }
 
 void CustomTextEdit::wheelEvent(QWheelEvent * event)
@@ -65,4 +70,10 @@ double CustomTextEdit::getCurrentScale() const
 {
     QFont current_font = font();
     return current_font.pixelSize();
+}
+
+void CustomTextEdit::slotShowContextMenu(QPoint const & position)
+{
+    TextContextMenu context_menu(ui);
+    context_menu.exec(mapToGlobal(position));
 }

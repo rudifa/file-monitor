@@ -1,6 +1,8 @@
 
 #include "customgraphicsview.hpp"
 
+#include "ui_mainwindow.h"
+#include "contextmenus.hpp"
 #include "utility.hpp"
 
 #include <QWheelEvent>
@@ -9,8 +11,8 @@
 
 using namespace utility;
 
-CustomGraphicsView::CustomGraphicsView(QWidget * parent, ViewScale const & view_scale)
-    : QGraphicsView(parent), view_scale(view_scale)
+CustomGraphicsView::CustomGraphicsView(Ui::MainWindow const & ui, ViewScale const & view_scale, QWidget * parent)
+    : QGraphicsView(parent), ui(ui), view_scale(view_scale)
 {
     setAlignment(Qt::AlignCenter);
     setAcceptDrops(false);
@@ -19,6 +21,9 @@ CustomGraphicsView::CustomGraphicsView(QWidget * parent, ViewScale const & view_
     setCacheMode(QGraphicsView::CacheBackground);
 
     setScene(new QGraphicsScene(this));
+
+    setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this, SIGNAL(customContextMenuRequested(QPoint const &)), SLOT(slotShowContextMenu(QPoint const &)));
 }
 
 void CustomGraphicsView::wheelEvent(QWheelEvent * event)
@@ -84,4 +89,10 @@ double CustomGraphicsView::getCurrentScale() const
 {
     // Because we are using a 1:1 ratio, the scale of either dimension can be used.
     return transform().m11();
+}
+
+void CustomGraphicsView::slotShowContextMenu(QPoint const & position)
+{
+    ImageContextMenu context_menu(ui);
+    context_menu.exec(mapToGlobal(position));
 }

@@ -36,7 +36,8 @@ HEADERS += mainwindow.hpp \
     aboutdialog.hpp \
     zoom.hpp \
     customtextedit.hpp \
-    customwebview.hpp
+    customwebview.hpp \
+    contextmenus.hpp
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -53,7 +54,8 @@ SOURCES += main.cpp \
     aboutdialog.cpp \
     zoom.cpp \
     customtextedit.cpp \
-    customwebview.cpp
+    customwebview.cpp \
+    contextmenus.cpp
 
 OTHER_FILES += \
     settings.txt \

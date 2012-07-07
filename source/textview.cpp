@@ -1,6 +1,7 @@
 
 #include "textview.hpp"
 
+#include "ui_mainwindow.h"
 #include "customtextedit.hpp"
 #include "zoom.hpp"
 #include "utility.hpp"
@@ -17,9 +18,9 @@
 
 using namespace utility;
 
-TextView::TextView(QWidget * parent)
-    : View(parent, ViewScale(ViewScale::Linear, 1, 100, 12)),
-      text_edit(new CustomTextEdit(parent, view_scale)),
+TextView::TextView(Ui::MainWindow const & ui, QWidget * parent)
+    : View(ViewScale(ViewScale::Linear, 1, 100, 12), parent),
+      text_edit(new CustomTextEdit(ui, view_scale, parent)),
       indent_xml(false), scroll_to_bottom_on_change(false)
 {
 }
@@ -85,6 +86,21 @@ void TextView::indentXML(bool indent)
 void TextView::scrollToBottomOnChange(bool scroll_to_bottom)
 {
     scroll_to_bottom_on_change = scroll_to_bottom;
+}
+
+void TextView::selectAll()
+{
+    text_edit->selectAll();
+}
+
+void TextView::copy()
+{
+    text_edit->copy();
+}
+
+void TextView::find()
+{
+
 }
 
 void TextView::formatAndInsertContent(QString const & content, bool indent)

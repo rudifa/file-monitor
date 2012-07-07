@@ -15,7 +15,7 @@
 
 namespace
 {
-   TabPage::FileType getFileType(QString const & file_uri)
+   TabPage::FileType determineFileType(QString const & file_uri)
    {
       int last_dot_index = file_uri.lastIndexOf('.');
       int last_slash_index = file_uri.lastIndexOf('/');
@@ -41,8 +41,8 @@ namespace
    }
 }
 
-TabPage::TabPage(QWidget * parent)
-    : QWidget(parent), displayed_to_user(false)
+TabPage::TabPage(Ui::MainWindow const & ui, QWidget * parent)
+    : QWidget(parent), ui(ui), displayed_to_user(false)
 {
 }
 
@@ -51,6 +51,7 @@ bool TabPage::load(QString const & uri)
     assert(!uri.isEmpty());
 
     file_uri = uri;
+    file_type = ::determineFileType(uri);
     view = createView(file_uri);
     setStatusTip(file_uri);
 
@@ -88,6 +89,11 @@ QString TabPage::getUri() const
     return file_uri;
 }
 
+bool TabPage::isImage() const
+{
+    return (file_type == TabPage::SVG || file_type == TabPage::IMAGE);
+}
+
 int TabPage::getPercentageZoom() const
 {
     return view->getZoom();
@@ -108,6 +114,21 @@ void TabPage::slotZoomOut()
 void TabPage::slotResetZoom()
 {
     view->resetZoom();
+}
+
+void TabPage::slotSelectAll()
+{
+    view->selectAll();
+}
+
+void TabPage::slotCopy()
+{
+    view->copy();
+}
+
+void TabPage::slotFind()
+{
+
 }
 
 void TabPage::slotSetZoom(int zoom)
@@ -149,18 +170,18 @@ void TabPage::slotSaveSettings()
 
 View * TabPage::createView(QString const & file_uri)
 {
-    switch (getFileType(file_uri))
+    switch (::determineFileType(file_uri))
     {
         case TabPage::HTML:
-            return new HtmlView(this);
+            return new HtmlView(ui, this);
         case TabPage::SVG:
-            return new SvgView(this);
+            return new SvgView(ui, this);
         case TabPage::IMAGE:
-            return new ImageView(this);
+            return new ImageView(ui, this);
         
         case TabPage::TEXT:
         default:
-            return new TextView(this);
+            return new TextView(ui, this);
     }
 }
 

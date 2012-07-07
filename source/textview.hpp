@@ -6,12 +6,14 @@
 
 class CustomTextEdit;
 
+namespace Ui { class MainWindow; }
+
 class TextView : public View
 {
     Q_OBJECT
 
 public:
-    TextView(QWidget * parent);
+    TextView(Ui::MainWindow const & ui, QWidget * parent);
 
     QWidget * getWidget();
     bool load(QString const & file_uri, bool is_reload = false);
@@ -23,6 +25,10 @@ public:
     virtual void wordWrap(bool word_wrap);
     virtual void indentXML(bool indent);
     virtual void scrollToBottomOnChange(bool scroll_to_bottom);
+
+    virtual void selectAll();
+    virtual void copy();
+    virtual void find();
 
 protected:
     CustomTextEdit * text_edit;

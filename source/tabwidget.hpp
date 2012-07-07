@@ -22,7 +22,7 @@ class TabWidget : public QTabWidget
     Q_OBJECT
 
 public:    
-    explicit TabWidget(std::unique_ptr<Ui::MainWindow> const & ui, QWidget * parent = 0);
+    explicit TabWidget(Ui::MainWindow const & ui, QWidget * parent = 0);
 
     void updateTabConnections();
     void openFiles(QStringList file_uris);
@@ -49,7 +49,7 @@ private slots:
     void slotSynchronizeZoomSlider();
 
 private:
-    std::unique_ptr<Ui::MainWindow> const & ui;
+    Ui::MainWindow const & ui;
     QSlider * zoom_slider;
     FileSystemWatcher * file_watcher;
     QSettings settings;
@@ -61,6 +61,8 @@ private:
     TabPage * uriTabPage(QString const & uri) const;
     QString tabUri(QWidget * tab_widget) const;
     QStringList allTabUris() const;
+
+    void updateActionEnables(bool is_image);
 };
 
 #endif

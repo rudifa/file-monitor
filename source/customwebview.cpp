@@ -1,6 +1,8 @@
 
 #include "customwebview.hpp"
 
+#include "ui_mainwindow.h"
+#include "contextmenus.hpp"
 #include "utility.hpp"
 
 #include <QWheelEvent>
@@ -8,13 +10,18 @@
 #include <QScrollBar>
 #include <QWebPage>
 #include <QWebFrame>
+#include <QMenu>
+#include <QAction>
 
 using namespace utility;
 
-CustomWebView::CustomWebView(QWidget * parent, ViewScale const & view_scale)
-    : QWebView(parent), view_scale(view_scale)
+CustomWebView::CustomWebView(Ui::MainWindow const & ui, ViewScale const & view_scale, QWidget * parent)
+    : QWebView(parent), ui(ui), view_scale(view_scale)
 {
     setAcceptDrops(false);
+
+    setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this, SIGNAL(customContextMenuRequested(QPoint const &)), SLOT(slotShowContextMenu(QPoint const &)));
 }
 
 // TODO: This is a duplicate of CustomTextEdit::wheelEvent and shares a ton
@@ -60,6 +67,12 @@ void CustomWebView::wheelEvent(QWheelEvent * event)
 void CustomWebView::setScale(double scale)
 {
     page()->currentFrame()->setZoomFactor(scale);
+}
+
+void CustomWebView::slotShowContextMenu(QPoint const & position)
+{
+    TextContextMenu context_menu(ui);
+    context_menu.exec(mapToGlobal(position));
 }
 
 double CustomWebView::getCurrentScale() const

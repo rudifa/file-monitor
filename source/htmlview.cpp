@@ -17,8 +17,8 @@
 
 using namespace utility;
 
-HtmlView::HtmlView(QWidget * parent)
-    : View(parent, ViewScale(ViewScale::Linear, .25, 5, 1)), web_view(new CustomWebView(parent, view_scale))
+HtmlView::HtmlView(Ui::MainWindow const & ui, QWidget * parent)
+    : View(ViewScale(ViewScale::Linear, .25, 5, 1), parent), web_view(new CustomWebView(ui, view_scale, parent))
 {
 }
 
@@ -72,4 +72,19 @@ void HtmlView::slotSetScroll()
 QPoint HtmlView::getScrollDimensions() const
 {
     return web_view->page()->currentFrame()->scrollPosition();
+}
+
+void HtmlView::selectAll()
+{
+    web_view->page()->triggerAction(QWebPage::SelectAll);
+}
+
+void HtmlView::copy()
+{
+    web_view->page()->triggerAction(QWebPage::Copy);
+}
+
+void HtmlView::find()
+{
+
 }

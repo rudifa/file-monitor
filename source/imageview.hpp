@@ -10,10 +10,12 @@ class QGraphicsPixmapItem;
 
 class CustomGraphicsView;
 
+namespace Ui { class MainWindow; }
+
 class ImageView : public View
 {
 public:
-    ImageView(QWidget * parent);
+    ImageView(Ui::MainWindow const & ui, QWidget * parent);
 
     QWidget * getWidget();
     bool load(QString const & file_uri, bool is_reload = false);

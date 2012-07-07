@@ -14,8 +14,8 @@
 
 using namespace utility;
 
-ImageView::ImageView(QWidget * parent)
-    : View(parent, ViewScale(ViewScale::RampUp, .05, 50, 1)), graphics_view(new CustomGraphicsView(parent, view_scale))
+ImageView::ImageView(Ui::MainWindow const & ui, QWidget * parent)
+    : View(ViewScale(ViewScale::RampUp, .05, 50, 1), parent), graphics_view(new CustomGraphicsView(ui, view_scale, parent))
 {
 }
 

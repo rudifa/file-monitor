@@ -11,10 +11,12 @@ class QWheelEvent;
 
 class CustomGraphicsView;
 
+namespace Ui { class MainWindow; }
+
 class SvgView : public View
 {
 public:
-    SvgView(QWidget * parent);
+    SvgView(Ui::MainWindow const & ui, QWidget * parent);
 
     QWidget * getWidget();
     bool load(QString const & file_uri, bool is_reload = false);
