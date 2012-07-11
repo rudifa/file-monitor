@@ -20,7 +20,7 @@ MOC_DIR     = $${DESTDIR}
 OBJECTS_DIR = $${DESTDIR}
 
 FORMS += mainwindow.ui \
-    aboutdialog.ui
+    finddialog.ui
 
 HEADERS += mainwindow.hpp \
     tabwidget.hpp \
@@ -33,11 +33,11 @@ HEADERS += mainwindow.hpp \
     utility.hpp \
     customgraphicsview.hpp \
     filesystemwatcher.hpp \
-    aboutdialog.hpp \
     zoom.hpp \
     customtextedit.hpp \
     customwebview.hpp \
-    contextmenus.hpp
+    contextmenus.hpp \
+    finddialog.hpp
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -51,11 +51,11 @@ SOURCES += main.cpp \
     utility.cpp \
     customgraphicsview.cpp \
     filesystemwatcher.cpp \
-    aboutdialog.cpp \
     zoom.cpp \
     customtextedit.cpp \
     customwebview.cpp \
-    contextmenus.cpp
+    contextmenus.cpp \
+    finddialog.cpp
 
 OTHER_FILES += \
     settings.txt \

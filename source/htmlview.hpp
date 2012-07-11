@@ -24,7 +24,10 @@ public:
 
     virtual void selectAll();
     virtual void copy();
-    virtual void find();
+
+public slots:
+    virtual void slotFindNext(QString const & text, bool case_sensitive);
+    virtual void slotFindPrevious(QString const & text, bool case_sensitive);
 
 private slots:
     void slotSetScroll();

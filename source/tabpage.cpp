@@ -56,11 +56,15 @@ bool TabPage::load(QString const & uri)
     setStatusTip(file_uri);
 
     QGridLayout * layout = new QGridLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(view->getWidget());
 
     connect(view, SIGNAL(signalScaleChanged()), SIGNAL(signalScaleChanged()));
+    connect(this, SIGNAL(signalFindNext(QString const &, bool)), view, SLOT(slotFindNext(QString const &, bool)));
+    connect(this, SIGNAL(signalFindPrevious(QString const &, bool)), view, SLOT(slotFindPrevious(QString const &, bool)));
 
-    settings.beginGroup("files/" + getUri());
+    QString file_path_delimiter("*");
+    settings.beginGroup("files/" + file_path_delimiter + getUri());
     return view->load(file_uri);
 }
 

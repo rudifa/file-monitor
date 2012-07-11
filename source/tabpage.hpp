@@ -36,6 +36,8 @@ public:
 
 signals:
     void signalScaleChanged();
+    void signalFindNext(QString const & text, bool case_sensitive);
+    void signalFindPrevious(QString const & text, bool case_sensitive);
     
 public slots:
     void slotZoomIn();

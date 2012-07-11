@@ -35,10 +35,13 @@ public:
 
     virtual void selectAll() { }
     virtual void copy() { }
-    virtual void find() { }
 
 signals:
     void signalScaleChanged();
+
+public slots:
+    virtual void slotFindNext(QString const &, bool) { }
+    virtual void slotFindPrevious(QString const &, bool) { }
 
 protected slots:
     void slotScaleChanged(double scale);

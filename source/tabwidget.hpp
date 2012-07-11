@@ -16,6 +16,7 @@ class QWheelEvent;
 class FileDisplay;
 class FileSystemWatcher;
 class TabPage;
+class FindDialog;
 
 class TabWidget : public QTabWidget
 {
@@ -33,6 +34,7 @@ public:
 
 public slots:
     void slotLoadFile();
+    void slotLoadFile(QString const & file_uri);
     void slotCloseCurrentTab();
     void slotCloseAllButCurrentTabPage();
     void slotCloseAllTabPages();
@@ -43,15 +45,18 @@ public slots:
     void slotScrollToBottomOnChange(bool scroll_to_bottom);
 
 private slots:
+    void slotOpenRecentFile();
     void slotRemoveTab(int tab_index);
     void slotCurrentTabChanged(int new_index);
     void slotFileChanged(QString changed_file_uri);
     void slotSynchronizeZoomSlider();
+    void slotFind();
 
 private:
     Ui::MainWindow const & ui;
     QSlider * zoom_slider;
     FileSystemWatcher * file_watcher;
+    FindDialog * find_dialog;
     QSettings settings;
 
     TabPage * loadFile(QString const & file_uri);
@@ -61,6 +66,9 @@ private:
     TabPage * uriTabPage(QString const & uri) const;
     QString tabUri(QWidget * tab_widget) const;
     QStringList allTabUris() const;
+
+    QStringList allRecentFiles() const;
+    void updateRecentFiles();
 
     void updateActionEnables(bool is_image);
 };

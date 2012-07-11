@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QSettings>
 #include <QDomDocument>
+#include <QStringList>
 
 #include <cmath>
 #include <cassert>
@@ -172,4 +173,28 @@ bool xml::isXML(QString const & content)
 {
     QDomDocument document;
     return document.setContent(content);
+}
+
+QStringList qt_extensions::operator - (QStringList lhs, QStringList const & rhs)
+{
+    for (int i = 0; i < rhs.count(); ++i)
+        lhs.removeAll(rhs[i]);
+
+    return lhs;
+}
+
+QStringList file::filesOnDisk(QStringList file_uris)
+{
+    static QFileInfo file_info;
+
+    QStringListIterator it(file_uris);
+    while (it.hasNext())
+    {
+        QString file_uri = it.next();
+        file_info.setFile(file_uri);
+        if (!file_info.exists())
+            file_uris.removeAll(file_uri);
+    }
+
+    return file_uris;
 }

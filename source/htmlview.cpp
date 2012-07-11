@@ -84,7 +84,38 @@ void HtmlView::copy()
     web_view->page()->triggerAction(QWebPage::Copy);
 }
 
-void HtmlView::find()
+void HtmlView::slotFindNext(QString const & text, bool case_sensitive)
 {
+    QWebPage::FindFlags find_flags = static_cast<QWebPage::FindFlags>(0);
+    if (case_sensitive)
+        find_flags = find_flags | QWebPage::FindCaseSensitively;
 
+    bool success = web_view->page()->findText(text, find_flags);
+
+    // We either didn't find the text or hit the last instance of the text.
+    if (!success)
+    {
+        // Wrap around by moving to the first instance of the text in the document.
+        find_flags = find_flags | QWebPage::FindBackward;
+        while (web_view->page()->findText(text, find_flags))
+            ;
+    }
+}
+
+void HtmlView::slotFindPrevious(QString const & text, bool case_sensitive)
+{
+    QWebPage::FindFlags find_flags = QWebPage::FindBackward;
+    if (case_sensitive)
+        find_flags = find_flags | QWebPage::FindCaseSensitively;
+
+    bool success = web_view->page()->findText(text, find_flags);
+
+    // We either didn't find the text or hit the first instance of the text.
+    if (!success)
+    {
+        // Wrap around by moving to the last instance of the text in the document.
+        find_flags = find_flags ^ QWebPage::FindBackward;
+        while (web_view->page()->findText(text, find_flags))
+            ;
+    }
 }

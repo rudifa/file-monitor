@@ -98,9 +98,45 @@ void TextView::copy()
     text_edit->copy();
 }
 
-void TextView::find()
+void TextView::slotFindNext(QString const & text, bool case_sensitive)
 {
+    QTextDocument::FindFlags find_flags = static_cast<QTextDocument::FindFlags>(0);
+    if (case_sensitive)
+        find_flags = find_flags | QTextDocument::FindCaseSensitively;
 
+    case_sensitive ? QTextDocument::FindCaseSensitively : static_cast<QTextDocument::FindFlags>(0);
+    bool success = text_edit->find(text, find_flags);
+
+    // We either didn't find the text or hit the last instance of the text.
+    if (!success)
+    {
+        // Wrap around by moving to the first instance of the text in the document.
+        find_flags = find_flags | QTextDocument::FindBackward;
+        while (text_edit->find(text, find_flags))
+            ;
+    }
+}
+
+void TextView::slotFindPrevious(QString const & text, bool case_sensitive)
+{
+    QTextDocument::FindFlags find_flags = QTextDocument::FindBackward;
+    if (case_sensitive)
+        find_flags = find_flags | QTextDocument::FindCaseSensitively;
+
+    bool success = text_edit->find(text, find_flags);
+
+    // We either didn't find the text or hit the first instance of the text.
+    if (!success)
+    {
+        // NOTE: If no text is selected, find previous fails.  We must find forward first.
+        if (text_edit->textCursor().selectedText().isEmpty())
+            text_edit->find(text);
+
+        // Wrap around by moving to the last instance of the text in the document.
+        find_flags = find_flags ^ QTextDocument::FindBackward;
+        while (text_edit->find(text, find_flags))
+            ;
+    }
 }
 
 void TextView::formatAndInsertContent(QString const & content, bool indent)

@@ -3,7 +3,6 @@
 
 #include "tabwidget.hpp"
 #include "utility.hpp"
-#include "aboutdialog.hpp"
 
 #include <QSpacerItem>
 #include <QGridLayout>
@@ -14,7 +13,6 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QLabel>
-
 
 using namespace utility;
 
@@ -126,8 +124,22 @@ void MainWindow::slotOpenSession()
 
 void MainWindow::slotAboutFileMonitor()
 {
-    AboutDialog about_dialog(QApplication::activeModalWidget());
-    about_dialog.exec();
+    QString file_monitor_project_url("http://code.google.com/p/file-monitor");
+    QString file_monitor_version("2.0.0");
+
+    auto about_content = QString("<h3>%1</h3><p>%2</p><p>%3</p><p>%4</p><p>%5</p><p>%6%7</p><hr /><p>%8</p><p>%9</p>")
+            .arg(tr("File Monitor - ") + file_monitor_version)
+    .arg(tr("File Monitor is a cross-platform file viewer that automatically redraws files when they change on disk."))
+    .arg(tr("You can edit an HTML document in a simple text editor and watch it update in real-time using File Monitor."))
+    .arg(tr("If you are keeping track of 10 different log files, File Monitor will automatically switch to the most recently "
+           "modified file and take you to those changes."))
+    .arg(tr("Currently supported file types are text, html, svg, and raster image file formats (jpg, gif, png, bmp, etc)."))
+    .arg(tr("To learn more about File Monitor or to contribute, please visit our project page "))
+    .arg("<a href=\"" + file_monitor_project_url + "\">" + file_monitor_project_url + "</a>")
+    .arg(tr("Copyright 2010-2012 Mark Turney.  All rights reserved."))
+    .arg(tr("This program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE."));
+
+    QMessageBox::about(this, tr("About File Monitor"), about_content);
 }
 
 void MainWindow::loadSettings()

@@ -5,6 +5,8 @@
 #include "filesystemwatcher.hpp"
 #include "tabpage.hpp"
 #include "zoom.hpp"
+#include "finddialog.hpp"
+#include "utility.hpp"
 
 #include <QMainWindow>
 #include <QFileDialog>
@@ -18,9 +20,12 @@
 #include <algorithm>
 #include <cassert>
 
+using namespace utility;
+using namespace qt_extensions;
+
 TabWidget::TabWidget(Ui::MainWindow const & ui, QWidget * parent)
     : QTabWidget(parent), ui(ui), zoom_slider(new QSlider(Qt::Horizontal, parent)),
-    file_watcher(new FileSystemWatcher(this))
+      file_watcher(new FileSystemWatcher(this)), find_dialog(new FindDialog(this))
 {
     // This is an undocumented interface that I'm using to get around an inode updating issue on ubuntu.
     // Qt5 will have a solution to this issue.
@@ -36,6 +41,7 @@ TabWidget::TabWidget(Ui::MainWindow const & ui, QWidget * parent)
     connect(this, SIGNAL(tabCloseRequested(int)), SLOT(slotRemoveTab(int)));
     connect(this, SIGNAL(currentChanged(int)), SLOT(slotCurrentTabChanged(int)));
     connect(file_watcher, SIGNAL(fileChanged(QString)), SLOT(slotFileChanged(QString)));
+    connect(ui.action_edit_find, SIGNAL(triggered()), SLOT(slotFind()));
 
     QString tool_tip = tr("Drag slider to zoom into or out of the current file.");
     zoom_slider->setToolTip(tool_tip);
@@ -64,6 +70,8 @@ void TabWidget::updateTabConnections()
             connect(ui.action_edit_find, SIGNAL(triggered()), tab_page, SLOT(slotFind()));
             connect(zoom_slider, SIGNAL(valueChanged(int)), tab_page, SLOT(slotSetZoom(int)));
             connect(tab_page, SIGNAL(signalScaleChanged()), this, SLOT(slotSynchronizeZoomSlider()));
+            connect(find_dialog, SIGNAL(signalFindNext(QString const &, bool)), tab_page, SIGNAL(signalFindNext(QString const &, bool)));
+            connect(find_dialog, SIGNAL(signalFindPrevious(QString const &, bool)), tab_page, SIGNAL(signalFindPrevious(QString const &, bool)));
         }
         else
         {
@@ -75,11 +83,15 @@ void TabWidget::updateTabConnections()
             disconnect(ui.action_edit_find, SIGNAL(triggered()), tab_page, SLOT(slotFind()));
             disconnect(zoom_slider, SIGNAL(valueChanged(int)), tab_page, SLOT(slotSetZoom(int)));
             disconnect(tab_page, SIGNAL(signalScaleChanged()), this, SLOT(slotSynchronizeZoomSlider()));
+            disconnect(find_dialog, SIGNAL(signalFindNext(QString const &, bool)), tab_page, SIGNAL(signalFindNext(QString const &, bool)));
+            disconnect(find_dialog, SIGNAL(signalFindPrevious(QString const &, bool)), tab_page, SIGNAL(signalFindPrevious(QString const &, bool)));
         }
     }
 
     auto * current_tab_page = tabPage(widget(currentIndex()));
     updateActionEnables(current_tab_page->isImage());
+
+    updateRecentFiles();
 
     // Wait until the event loop has finished rendering the current page.
     QTimer::singleShot(0, this, SLOT(slotSynchronizeZoomSlider()));
@@ -129,6 +141,13 @@ void TabWidget::mouseMoveEvent(QMouseEvent * event)
     }
 
     return QTabWidget::mouseMoveEvent(event);
+}
+
+void TabWidget::slotOpenRecentFile()
+{
+    QAction * action = qobject_cast<QAction *>(sender());
+    if (action)
+        slotLoadFile(action->text());
 }
 
 void TabWidget::slotRemoveTab(int tab_index)
@@ -193,6 +212,11 @@ void TabWidget::slotLoadFile()
     QString file_uri = QFileDialog::getOpenFileName(
         this, tr("Select File"), open_from_uri, tr("*.*"));
 
+    slotLoadFile(file_uri);
+}
+
+void TabWidget::slotLoadFile(QString const & file_uri)
+{
     TabPage * tab_page = loadFile(file_uri);
     if (tab_page)
         setCurrentWidget(tab_page);
@@ -211,6 +235,8 @@ void TabWidget::loadSettings()
 
     setCurrentWidget(uriTabPage(current_uri));
 
+    find_dialog->loadSettings();
+
     blockSignals(block_signals);
 
     slotCurrentTabChanged(currentIndex());
@@ -223,6 +249,8 @@ void TabWidget::saveSettings()
 
     auto pages = allTabPages();
     std::for_each(pages.begin(), pages.end(), [](TabPage * page) { page->slotSaveSettings(); });
+
+    find_dialog->saveSettings();
 }
 
 TabPage * TabWidget::loadFile(QString const & file_uri)
@@ -334,6 +362,44 @@ QStringList TabWidget::allTabUris() const
     return tab_page_uris;
 }
 
+// All recent files that are not open and are still on disk.
+QStringList TabWidget::allRecentFiles() const
+{
+    // Grab a list of all the files that we have attributes saved for.
+    QSettings global_settings;
+    global_settings.beginGroup("files");
+    QStringList file_uri_keys = global_settings.allKeys();
+
+    // Each key has a delimiter prefix and attribute suffix.  Remove these non-uri elements.
+    static QRegExp remove_file_attributes("(?:\\*)(.*)(?:\\/.*)");
+    file_uri_keys.replaceInStrings(remove_file_attributes, "\\1");
+
+    // Remove duplicate uris (each uri has multiple attributes).
+    file_uri_keys.removeDuplicates();
+
+    // Remove the tabs currently open.
+    QStringList file_uris = file_uri_keys - allTabUris();
+
+    // Remove any files that aren't on disk.
+    return file::filesOnDisk(file_uris);
+}
+
+void TabWidget::updateRecentFiles()
+{
+    ui.menu_file_open_recent->clear();
+
+    QStringList recent_but_closed_files = allRecentFiles();
+    for (int i = 0; i < recent_but_closed_files.count(); ++i)
+    {
+        auto * action = new QAction(recent_but_closed_files.at(i), this);
+        connect(action, SIGNAL(triggered()), this, SLOT(slotOpenRecentFile()));
+        ui.menu_file_open_recent->addAction(action);
+    }
+
+    if (ui.menu_file_open_recent->isEmpty())
+        ui.menu_file_open_recent->addAction(new QAction(tr("No Recent Files"), this));
+}
+
 void TabWidget::updateActionEnables(bool is_image)
 {
     ui.action_edit_select_all->setDisabled(is_image);
@@ -351,4 +417,9 @@ void TabWidget::slotSynchronizeZoomSlider()
     bool block_signals = zoom_slider->blockSignals(true);
     zoom_slider->setValue(tabPage(widget(currentIndex()))->getPercentageZoom());
     zoom_slider->blockSignals(block_signals);
+}
+
+void TabWidget::slotFind()
+{
+    find_dialog->show();
 }

@@ -8,6 +8,7 @@
 
 class QApplication;
 class QString;
+class QStringList;
 
 namespace utility
 {
@@ -33,6 +34,15 @@ namespace utility
     namespace xml
     {
         bool isXML(QString const & content);
+    }
+    namespace qt_extensions
+    {
+        QStringList operator - (QStringList lhs, QStringList const & rhs);
+    }
+    namespace file
+    {
+        // Return a list of only the uris that have a corresponding file on disk.
+        QStringList filesOnDisk(QStringList file_uris);
     }
 }
 
