@@ -31,6 +31,6 @@ find . -type f -name \*.sh -exec chmod +x {} \;
 cd ../
 
 # Create the source package while preserving permissions.
-tar -pcvf ${PROJECT_NAME}-${LAST_VERSION}.tar ${PROJECT_NAME}/*
+tar -pcvf ${PROJECT_NAME}-${LAST_VERSION}.tar ${PROJECT_NAME}/
 gzip ${PROJECT_NAME}-${LAST_VERSION}.tar
 
