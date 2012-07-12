@@ -68,9 +68,9 @@ bool TabPage::load(QString const & uri)
     return view->load(file_uri);
 }
 
-void TabPage::enableTransparentBackground(bool enable)
+void TabPage::makeBackgroundTransparent(bool transparent)
 {
-    view->enableTransparentBackground(enable);
+    view->makeBackgroundTransparent(transparent);
 }
 
 void TabPage::wordWrap(bool word_wrap)
@@ -132,7 +132,7 @@ void TabPage::slotCopy()
 
 void TabPage::slotSetZoom(int zoom)
 {
-    if (!zoomIsValid(zoom))
+    if (!zoom::isZoomValid(zoom))
         return;
 
     view->setZoom(zoom);
@@ -182,9 +182,4 @@ View * TabPage::createView(QString const & file_uri)
         default:
             return new TextView(ui, this);
     }
-}
-
-bool TabPage::zoomIsValid(double zoom) const
-{
-    return (zoom >= zoom::min && zoom <= zoom::max);
 }

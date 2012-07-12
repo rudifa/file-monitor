@@ -44,12 +44,6 @@ void HtmlView::setScale(double scale)
     web_view->setScale(scale);
 }
 
-namespace
-{
-    // Holds the desired scroll dimensions while the HTML control renders.
-    QPoint scroll_dimensions;
-}
-
 void HtmlView::setScrollDimensions(QPoint dimensions)
 {
     scroll_dimensions = dimensions;

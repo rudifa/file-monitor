@@ -44,14 +44,8 @@ bool ImageView::load(QString const & file_uri, bool)
 
     connect(graphics_view, SIGNAL(signalScaleChanged(double)), SLOT(slotScaleChanged(double)));
 
-//    // TODO: Figure out why there is an extra 10 pixels (varies with zoom level)
-//    //  to the right and bottom of QPixmap inside QGraphicsScene and remove it.
-//    // --- This is a Linux issue (KDE for sure, I haven't checked GNOME).
-//    {
-//        QRectF graphics_item_size = graphics_item->boundingRect();
-//        graphics_item_size.adjust(0, 0, -13, -13);
-//        graphics_scene->setSceneRect(graphics_item_size);
-//    }
+    // NOTE: There is a KDE bug on Kubuntu that results in an extra ~10 pixels (varies with zoom level)
+    //  to the right and bottom of QPixmap inside QGraphicsScene.
 
     return true;
 }
@@ -75,7 +69,7 @@ QPoint ImageView::getScrollDimensions() const
     return QPoint(horizontal_scroll, vertical_scroll);
 }
 
-void ImageView::enableTransparentBackground(bool enable)
+void ImageView::makeBackgroundTransparent(bool transparent)
 {
-    graphics_view->setBackgroundBrush(enable ? QBrush(transparent_tile_pixmap) : Qt::NoBrush);
+    graphics_view->setBackgroundBrush(transparent ? QBrush(transparent_tile_pixmap) : Qt::NoBrush);
 }

@@ -3,8 +3,11 @@
 #define UTILITY_HPP
 
 #include <QPointF>
+#include <QFileInfo>
 
 #include <cmath>
+#include <functional>
+#include <algorithm>
 
 class QApplication;
 class QString;
@@ -41,8 +44,35 @@ namespace utility
     }
     namespace file
     {
-        // Return a list of only the uris that have a corresponding file on disk.
-        QStringList filesOnDisk(QStringList file_uris);
+        struct OnDisk : public std::unary_function<QString, bool>
+        {
+            OnDisk(QFileInfo * file_info) : file_info(file_info) { }
+            inline bool operator () (QString const & file_uri) const
+            {
+                file_info->setFile(file_uri);
+                return file_info->exists();
+            }
+
+            QFileInfo * file_info;
+        };
+
+        // Return a collection of only the uris that have a corresponding file on disk.
+        template <typename T>
+        inline T clearUrisWithNoFileOnDisk(T file_uris)
+        {
+            static QFileInfo file_info;
+            file_uris.erase(std::remove_if(file_uris.begin(), file_uris.end(), std::not1(OnDisk(&file_info))), file_uris.end());
+            return file_uris;
+        }
+
+        // Return a collection of only the uris that do not have a corresponding file on disk.
+        template <typename T>
+        inline T clearUrisWithFileOnDisk(T file_uris)
+        {
+            static QFileInfo file_info;
+            file_uris.erase(std::remove_if(file_uris.begin(), file_uris.end(), OnDisk(&file_info)), file_uris.end());
+            return file_uris;
+        }
     }
 }
 

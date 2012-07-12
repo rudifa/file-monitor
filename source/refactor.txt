@@ -1,0 +1,8 @@
+
+Consider combining TabPage and View into a single class.
+
+Pros:
+TabPage does far too much call-forwarding to View that can be removed (fewer total lines).
+
+Cons:
+The resulting class will be a little more complex than either of it's progenitors and harder to understand.

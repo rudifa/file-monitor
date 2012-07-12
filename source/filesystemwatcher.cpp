@@ -1,9 +1,13 @@
 
 #include "filesystemwatcher.hpp"
 
+#include "utility.hpp"
+
 #include <QTimer>
 
 #include <algorithm>
+
+using namespace utility;
 
 FileSystemWatcher::FileSystemWatcher(QObject * parent) :
     QFileSystemWatcher(parent), deleted_files_timer(new QTimer(this)),
@@ -28,20 +32,6 @@ void FileSystemWatcher::slotFileChanged(QString file_uri)
     }
 }
 
-namespace
-{
-    struct OnDisk
-    {
-        OnDisk(QFileInfo * file_info) : file_info(file_info) { }
-        bool operator () (QString const & file_uri)
-        {
-            file_info->setFile(file_uri);
-            return file_info->exists();
-        }
-        QFileInfo * file_info;
-    };
-}
-
 void FileSystemWatcher::slotExamineDeletedFiles()
 {
     // If any of the deleted files have been restored, start watching them again.
@@ -53,9 +43,7 @@ void FileSystemWatcher::slotExamineDeletedFiles()
             addPath(file_uri);
     }
 
-    deleted_files.erase(
-        std::remove_if(deleted_files.begin(), deleted_files.end(), OnDisk(file_info)),
-        deleted_files.end());
+    file::clearUrisWithFileOnDisk(deleted_files);
 
     if (deleted_files.empty())
         deleted_files_timer->stop();

@@ -25,7 +25,7 @@ public:
     void setScrollDimensions(QPoint dimensions);
     QPoint getScrollDimensions() const;
 
-    virtual void enableTransparentBackground(bool enable);
+    virtual void makeBackgroundTransparent(bool transparent);
 
 protected:
     CustomGraphicsView * graphics_view;

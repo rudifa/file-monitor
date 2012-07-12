@@ -65,7 +65,7 @@ QPoint SvgView::getScrollDimensions() const
     return QPoint(horizontal_scroll, vertical_scroll);
 }
 
-void SvgView::enableTransparentBackground(bool enable)
+void SvgView::makeBackgroundTransparent(bool transparent)
 {
-    graphics_view->setBackgroundBrush(enable ? QBrush(transparent_tile_pixmap) : Qt::NoBrush);
+    graphics_view->setBackgroundBrush(transparent ? QBrush(transparent_tile_pixmap) : Qt::NoBrush);
 }

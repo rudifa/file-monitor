@@ -28,7 +28,7 @@ public:
     virtual void setScrollDimensions(QPoint scroll_dimensions) = 0;
     virtual QPoint getScrollDimensions() const = 0;
 
-    virtual void enableTransparentBackground(bool) { }
+    virtual void makeBackgroundTransparent(bool) { }
     virtual void wordWrap(bool) { }
     virtual void indentXML(bool) { }
     virtual void scrollToBottomOnChange(bool) { }

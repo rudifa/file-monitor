@@ -42,15 +42,10 @@ void CustomGraphicsView::wheelEvent(QWheelEvent * event)
 
         // Ensure we haven't stepped out of the zoom range.
         {
-            if (current_zoom == zoom::min && new_zoom <= zoom::min)
-                return;
-            if (current_zoom == zoom::max && new_zoom >= zoom::max)
+            if (!zoom::isZoomChangeValid(current_zoom, new_zoom))
                 return;
 
-            if (new_zoom < zoom::min)
-                new_zoom = zoom::min;
-            if (new_zoom > zoom::max)
-                new_zoom = zoom::max;
+            new_zoom = zoom::normalizeZoom(new_zoom);
         }
 
         auto new_scale = view_scale.zoomToScale(new_zoom);

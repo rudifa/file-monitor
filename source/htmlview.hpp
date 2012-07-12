@@ -34,6 +34,9 @@ private slots:
 
 protected:
     CustomWebView * web_view;
+
+    // Holds the desired scroll dimensions while the HTML control renders.
+    QPoint scroll_dimensions;
 };
 
 #endif

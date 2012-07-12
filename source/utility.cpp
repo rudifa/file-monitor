@@ -182,19 +182,3 @@ QStringList qt_extensions::operator - (QStringList lhs, QStringList const & rhs)
 
     return lhs;
 }
-
-QStringList file::filesOnDisk(QStringList file_uris)
-{
-    static QFileInfo file_info;
-
-    QStringListIterator it(file_uris);
-    while (it.hasNext())
-    {
-        QString file_uri = it.next();
-        file_info.setFile(file_uri);
-        if (!file_info.exists())
-            file_uris.removeAll(file_uri);
-    }
-
-    return file_uris;
-}

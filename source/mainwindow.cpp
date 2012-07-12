@@ -24,15 +24,7 @@ MainWindow::MainWindow(QWidget * parent) :
     tab_widget = new TabWidget(ui, this);
     setCentralWidget(tab_widget);
 
-    connect(ui.action_file_open, SIGNAL(triggered()), tab_widget, SLOT(slotLoadFile()));
-    connect(ui.action_file_close, SIGNAL(triggered()), tab_widget, SLOT(slotCloseCurrentTab()));
-    connect(ui.action_file_close_others, SIGNAL(triggered()), tab_widget, SLOT(slotCloseAllButCurrentTabPage()));
-    connect(ui.action_file_close_all, SIGNAL(triggered()), tab_widget, SLOT(slotCloseAllTabPages()));
     connect(ui.action_quit, SIGNAL(triggered()), SLOT(close()));
-    connect(ui.action_transparent_background, SIGNAL(toggled(bool)), tab_widget, SLOT(slotEnableTransparentBackground(bool)));
-    connect(ui.action_word_wrap, SIGNAL(toggled(bool)), tab_widget, SLOT(slotWordWrap(bool)));
-    connect(ui.action_indent_xml, SIGNAL(toggled(bool)), tab_widget, SLOT(slotIndentXML(bool)));
-    connect(ui.action_scroll_to_bottom, SIGNAL(toggled(bool)), tab_widget, SLOT(slotScrollToBottomOnChange(bool)));
     connect(ui.action_session_save_as, SIGNAL(triggered()), SLOT(slotSaveSessionAs()));
     connect(ui.action_session_open, SIGNAL(triggered()), SLOT(slotOpenSession()));
     connect(ui.action_about_file_monitor, SIGNAL(triggered()), SLOT(slotAboutFileMonitor()));

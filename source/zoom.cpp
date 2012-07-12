@@ -21,6 +21,33 @@ int zoom::getNumZoomSteps(QWheelEvent * event)
     return (scroll_steps * zoom_steps_per_scroll_step);
 }
 
+bool zoom::isZoomValid(int zoom)
+{
+    return (zoom >= zoom::min && zoom <= zoom::max);
+}
+
+bool zoom::isZoomChangeValid(int current_zoom, int next_zoom)
+{
+    if (current_zoom == zoom::min && next_zoom <= zoom::min)
+        return false;
+
+    if (current_zoom == zoom::max && next_zoom >= zoom::max)
+        return false;
+
+    return true;
+}
+
+int zoom::normalizeZoom(int zoom)
+{
+    if (zoom < zoom::min)
+        return zoom::min;
+
+    if (zoom > zoom::max)
+       return zoom::max;
+
+    return zoom;
+}
+
 ViewScale::ViewScale(Type type, double min_value, double max_value, double initial_value)
     : type(type), min(min_value), max(max_value), initial(initial_value)
 {

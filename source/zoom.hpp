@@ -13,6 +13,11 @@ namespace zoom
     double const step = 100;
 
     int getNumZoomSteps(QWheelEvent * event);
+
+    bool isZoomValid(int zoom);
+    bool isZoomChangeValid(int current_zoom, int next_zoom);
+
+    int normalizeZoom(int zoom);
 }
 
 // Scaling behavior that needs to be specified for each view.

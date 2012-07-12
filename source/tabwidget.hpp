@@ -33,13 +33,13 @@ public:
     void mouseMoveEvent(QMouseEvent * event);
 
 public slots:
-    void slotLoadFile();
-    void slotLoadFile(QString const & file_uri);
+    void slotOpenFile();
+    void slotOpenFile(QString const & file_uri);
     void slotCloseCurrentTab();
     void slotCloseAllButCurrentTabPage();
     void slotCloseAllTabPages();
 
-    void slotEnableTransparentBackground(bool enable);
+    void slotMakeBackgroundTransparent(bool transparent);
     void slotWordWrap(bool word_wrap);
     void slotIndentXML(bool indent_xml);
     void slotScrollToBottomOnChange(bool scroll_to_bottom);
@@ -67,7 +67,7 @@ private:
     QString tabUri(QWidget * tab_widget) const;
     QStringList allTabUris() const;
 
-    QStringList allRecentFiles() const;
+    QStringList allRecentlyClosedFilesOnDisk() const;
     void updateRecentFiles();
 
     void updateActionEnables(bool is_image);

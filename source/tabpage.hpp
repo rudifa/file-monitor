@@ -21,7 +21,7 @@ public:
 
     bool load(QString const & uri);
 
-    void enableTransparentBackground(bool enable);
+    void makeBackgroundTransparent(bool transparent);
     void wordWrap(bool word_wrap);
     void indentXML(bool indent_xml);
     void scrollToBottomOnChange(bool scroll_to_bottom);
@@ -64,8 +64,6 @@ private:
 
     // true if this TabPage was the currentTab at least once.
     bool displayed_to_user;
-
-    bool zoomIsValid(double zoom) const;
 };
 
 #endif

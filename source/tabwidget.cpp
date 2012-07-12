@@ -38,10 +38,20 @@ TabWidget::TabWidget(Ui::MainWindow const & ui, QWidget * parent)
     setMouseTracking(true);
     tabBar()->setMouseTracking(true);
 
+    connect(ui.action_file_open, SIGNAL(triggered()), SLOT(slotOpenFile()));
+    connect(ui.action_file_close, SIGNAL(triggered()), SLOT(slotCloseCurrentTab()));
+    connect(ui.action_file_close_others, SIGNAL(triggered()), SLOT(slotCloseAllButCurrentTabPage()));
+    connect(ui.action_file_close_all, SIGNAL(triggered()), SLOT(slotCloseAllTabPages()));
+    connect(ui.action_transparent_background, SIGNAL(toggled(bool)), SLOT(slotMakeBackgroundTransparent(bool)));
+    connect(ui.action_word_wrap, SIGNAL(toggled(bool)), SLOT(slotWordWrap(bool)));
+    connect(ui.action_indent_xml, SIGNAL(toggled(bool)), SLOT(slotIndentXML(bool)));
+    connect(ui.action_scroll_to_bottom, SIGNAL(toggled(bool)), SLOT(slotScrollToBottomOnChange(bool)));
+    connect(ui.action_edit_find, SIGNAL(triggered()), SLOT(slotFind()));
+
     connect(this, SIGNAL(tabCloseRequested(int)), SLOT(slotRemoveTab(int)));
     connect(this, SIGNAL(currentChanged(int)), SLOT(slotCurrentTabChanged(int)));
+
     connect(file_watcher, SIGNAL(fileChanged(QString)), SLOT(slotFileChanged(QString)));
-    connect(ui.action_edit_find, SIGNAL(triggered()), SLOT(slotFind()));
 
     QString tool_tip = tr("Drag slider to zoom into or out of the current file.");
     zoom_slider->setToolTip(tool_tip);
@@ -145,7 +155,7 @@ void TabWidget::slotOpenRecentFile()
 {
     QAction * action = qobject_cast<QAction *>(sender());
     if (action)
-        slotLoadFile(action->text());
+        slotOpenFile(action->text());
 }
 
 void TabWidget::slotRemoveTab(int tab_index)
@@ -200,7 +210,7 @@ void TabWidget::slotFileChanged(QString changed_file_uri)
     QTimer::singleShot(20, tab_page, SLOT(slotReload()));
 }
 
-void TabWidget::slotLoadFile()
+void TabWidget::slotOpenFile()
 {
     // The open dialog starts in the current uri, or last open uri's directory.
     QString open_from_uri = tabUri(currentWidget());
@@ -210,10 +220,10 @@ void TabWidget::slotLoadFile()
     QString file_uri = QFileDialog::getOpenFileName(
         this, tr("Select File"), open_from_uri, tr("*.*"));
 
-    slotLoadFile(file_uri);
+    slotOpenFile(file_uri);
 }
 
-void TabWidget::slotLoadFile(QString const & file_uri)
+void TabWidget::slotOpenFile(QString const & file_uri)
 {
     TabPage * tab_page = loadFile(file_uri);
     if (tab_page)
@@ -279,7 +289,7 @@ TabPage * TabWidget::loadFile(QString const & file_uri)
         return nullptr;
     }
 
-    tab_page->enableTransparentBackground(ui.action_transparent_background->isChecked());
+    tab_page->makeBackgroundTransparent(ui.action_transparent_background->isChecked());
     tab_page->wordWrap(ui.action_word_wrap->isChecked());
     tab_page->indentXML(ui.action_indent_xml->isChecked());
     tab_page->scrollToBottomOnChange(ui.action_scroll_to_bottom->isChecked());
@@ -313,10 +323,10 @@ void TabWidget::slotCloseCurrentTab()
     slotRemoveTab(currentIndex());
 }
 
-void TabWidget::slotEnableTransparentBackground(bool enable)
+void TabWidget::slotMakeBackgroundTransparent(bool transparent)
 {
     auto pages = allTabPages();
-    std::for_each(pages.begin(), pages.end(), [enable](TabPage * page) { page->enableTransparentBackground(enable); });
+    std::for_each(pages.begin(), pages.end(), [transparent](TabPage * page) { page->makeBackgroundTransparent(transparent); });
 }
 
 void TabWidget::slotWordWrap(bool word_wrap)
@@ -361,7 +371,7 @@ QStringList TabWidget::allTabUris() const
 }
 
 // All recent files that are not open and are still on disk.
-QStringList TabWidget::allRecentFiles() const
+QStringList TabWidget::allRecentlyClosedFilesOnDisk() const
 {
     // Grab a list of all the files that we have attributes saved for.
     QSettings global_settings;
@@ -379,23 +389,27 @@ QStringList TabWidget::allRecentFiles() const
     QStringList file_uris = file_uri_keys - allTabUris();
 
     // Remove any files that aren't on disk.
-    return file::filesOnDisk(file_uris);
+    return file::clearUrisWithNoFileOnDisk(file_uris);
 }
 
 void TabWidget::updateRecentFiles()
 {
     ui.menu_file_open_recent->clear();
 
-    QStringList recent_but_closed_files = allRecentFiles();
-    for (int i = 0; i < recent_but_closed_files.count(); ++i)
+    QStringList recent_files = allRecentlyClosedFilesOnDisk();
+    for (int i = 0; i < recent_files.count(); ++i)
     {
-        auto * action = new QAction(recent_but_closed_files.at(i), this);
+        auto * action = new QAction(recent_files.at(i), this);
         connect(action, SIGNAL(triggered()), this, SLOT(slotOpenRecentFile()));
         ui.menu_file_open_recent->addAction(action);
     }
 
     if (ui.menu_file_open_recent->isEmpty())
-        ui.menu_file_open_recent->addAction(new QAction(tr("No Recent Files"), this));
+    {
+        auto * recent_action = new QAction(tr("No Recent Files"), this);
+        recent_action->setStatusTip(tr("No recently closed files that are on disk were found."));
+        ui.menu_file_open_recent->addAction(recent_action);
+    }
 }
 
 void TabWidget::updateActionEnables(bool is_image)

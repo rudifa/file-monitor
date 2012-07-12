@@ -59,4 +59,5 @@ SOURCES += main.cpp \
 
 OTHER_FILES += \
     settings.txt \
-    zoom.txt
+    zoom.txt \
+    refactor.txt
