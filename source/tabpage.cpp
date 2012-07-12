@@ -56,7 +56,7 @@ bool TabPage::load(QString const & uri)
     setStatusTip(file_uri);
 
     QGridLayout * layout = new QGridLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setMargin(4);
     layout->addWidget(view->getWidget());
 
     connect(view, SIGNAL(signalScaleChanged()), SIGNAL(signalScaleChanged()));
@@ -128,11 +128,6 @@ void TabPage::slotSelectAll()
 void TabPage::slotCopy()
 {
     view->copy();
-}
-
-void TabPage::slotFind()
-{
-
 }
 
 void TabPage::slotSetZoom(int zoom)

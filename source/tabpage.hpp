@@ -45,7 +45,6 @@ public slots:
     void slotResetZoom();
     void slotSelectAll();
     void slotCopy();
-    void slotFind();
 
     void slotSetZoom(int zoom);
     void slotSaveSettings();

@@ -18,6 +18,7 @@ public:
     ~MainWindow();
 
 protected:
+    // TODO: Internationalization needs work!
     void changeEvent(QEvent * event);
 
     void dragEnterEvent(QDragEnterEvent * event);
@@ -26,6 +27,7 @@ protected:
     void dropEvent(QDropEvent * event);
 
 private slots:
+    // TODO: Consider abstracting away the session files with a "Session Manager".
     void slotSaveSessionAs();
     void slotOpenSession();
     void slotAboutFileMonitor();
