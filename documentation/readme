@@ -1,9 +1,9 @@
 
-File Monitor v1.1.0
-Updated 2011-08-13
+File Monitor v2.0.0
+Updated 2012-07-11
 
 Send all feedback/comments/problems to markturney@gmail.com
-Copyright 2011 Mark Turney, licensed under GPLv3 or later.
+Copyright 2012 Mark Turney, licensed under GPLv3 or later.
 
 
 
@@ -31,7 +31,7 @@ http://code.google.com/p/file-monitor
 LICENSING AND COST
 ==================
 
-File Monitor is a GPLv3 open source application and as such costs nothing to
+File Monitor is a GPLv3 free software application and as such costs nothing to
 use or distribute.  If you want to re-use the source code of File Monitor,
 you are bound to the GPLv3 license.  For more information on the GPLv3
 license, please open the license.txt file in the install directory or visit:
@@ -50,12 +50,12 @@ INSTALLATION
 ============
 
 Windows:
-- Download "file-monitor-1.1.0-installer.exe".
-- Double click the file-monitor-1.1.0-installer.exe file and follow the installation guide.
+- Download "file-monitor-2.0.0-installer.exe".
+- Double click the file-monitor-2.0.0-installer.exe file and follow the installation guide.
 
 Linux Package - GUI (Lucid and above - Qt 4.6 or greater required):
 - Download the .deb package for your architecture.
-    For example: file-monitor_1.1.0-1_amd64.deb is the .deb for x86-64 machines.
+    For example: file-monitor_2.0.0-1_amd64.deb is the .deb for x86-64 machines.
 - Double click on the .deb package and the "Package Installer" dialog will appear.
 - Click the "Install Package" button.
 - Enter your root password when prompted.
@@ -66,10 +66,10 @@ Linux Package - GUI (Lucid and above - Qt 4.6 or greater required):
     
 Linux Package - Command Line (Lucid and above - Qt 4.6 or greater required):
 - Download the .deb package for your architecture.
-    For example file-monitor_1.1.0-1_amd64.deb is the .deb for amd64 machines.
+    For example file-monitor_2.0.0-1_amd64.deb is the .deb for amd64 machines.
 - Open a shell and navigate to the directory containing the .deb file.
 - Type sudo dpkg -i followed by the name of the .deb.
-    For example: sudo dpkg -i file-monitor_1.1.0-1_amd64.deb
+    For example: sudo dpkg -i file-monitor_2.0.0-1_amd64.deb
 
     Note: If you are unable to install the Qt 4.6 libraries on your system, you
           will need to install from source.
@@ -81,8 +81,8 @@ From Source (Windows):
     http://qt.nokia.com/downloads
 - Ensure that the Qt bin directory (Qt/20xx/qt/bin) and the Qt Mingw bin
     directory (Qt/20xx/mingw/bin) is in your PATH environment variable.
-- Download "file-monitor-1.1.0.tar.gz".
-- Uncompress "file-monitor-1.1.0.tar.gz" into the directory
+- Download "file-monitor-2.0.0.tar.gz".
+- Uncompress "file-monitor-2.0.0.tar.gz" into the directory
     "file-monitor".
 - Open a command prompt and navigate to this directory.
 - Type "qmake".  This will create the makefile for your system.
@@ -100,8 +100,8 @@ From Source (Unix):
 - Ensure that the Qt bin directory (Qt/20xx/qt/bin) is in your
     PATH environment variable.
 - Install a compilation toolchain (build-essential on linux).
-- Download "file-monitor-1.1.0.tar.gz".
-- Uncompress "file-monitor-1.1.0.tar.gz" into the directory
+- Download "file-monitor-2.0.0.tar.gz".
+- Uncompress "file-monitor-2.0.0.tar.gz" into the directory
     "file-monitor".
 - Open a shell and navigate to the "file-monitor" directory.
 - Type "qmake".  This will create the makefile for your system.
@@ -136,8 +136,8 @@ Source for Windows:
     links that you may have created which point to any of those files.
 
 Source for Unix:
-- Download "file-monitor-1.1.0.tar.gz".
-- Uncompress "file-monitor-1.1.0.tar.gz" into the directory
+- Download "file-monitor-2.0.0.tar.gz".
+- Uncompress "file-monitor-2.0.0.tar.gz" into the directory
     "file-monitor".
 - Open a shell and navigate to the "file-monitor" directory.
 - Type "qmake".  This will create the makefile for your system.
@@ -153,6 +153,23 @@ Mark Turney - Developer
 
 VERSION HISTORY
 ========================
+
+2012-07-11 v2.0.0
+	Added 'select all', 'copy', and 'find' for text and html file types.
+	Added configurable transparent backgrounds, text word wrap,
+		and formatted XML content.
+	Added a feature that jumps to the bottom of a text file when it
+		is changed.  This feature is useful when examining log files.
+	Tabs can now be configured to remain open or to automatically
+		close if their corresponding files are deleted.
+	Sessions have been added which save all open tabs and settings
+		to a session file.
+	A new 'recent files' menu item lists recently closed files
+		that are opened by clicking on them.
+	Control + scroll zoom has been added to all file types.
+		Image types scroll directly into the mouse location.
+	Added 'zoom reset' and refined zoom movement and extents.
+	A large number of bug fixes, enhancements, and refactoring.
 
 2011-08-13 v1.1.0
 	Added drag and drop to File Monitor.

@@ -1,5 +1,5 @@
 
-If you are using Qt-Creator or another external build tool, set the build
-directory to this project's root directory (file-monitor).
+If you are using Qt-Creator or another external build tool, set the build directory
+to this project's root directory (file-monitor).  Make sure not to use a shadow build.
 
 All further instructions exists within the documentation directory.

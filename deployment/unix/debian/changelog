@@ -1,3 +1,17 @@
+file-monitor (2.0.0-1) unstable; urgency=low
+
+  * Added 'select all', 'copy', and 'find' for text and html file types.
+  * Added configurable transparent backgrounds, text word wrap, and formatted XML content.
+  * Added a feature that jumps to the bottom of a text file when it is changed.  This feature is useful when examining log files.
+  * Tabs can now be configured to remain open or to automatically close if their corresponding files are deleted.
+  * Sessions have been added which save all open tabs and settings to a session file.
+  * A new 'recent files' menu item lists recently closed files that are opened by clicking on them.
+  * Control + scroll zoom has been added to all file types.  Image types scroll directly into the mouse location.
+  * Added 'zoom reset' and refined zoom movement and extents.
+  * A large number of bug fixes, enhancements, and refactoring.
+
+ -- Mark Turney <markturney@gmail.com>  Wed, 11 Jul 2012 23:51:26 -0700
+
 file-monitor (1.1.0-1) unstable; urgency=low
 
   * Added drag and drop to File Monitor.
