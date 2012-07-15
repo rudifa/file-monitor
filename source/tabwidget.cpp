@@ -240,8 +240,9 @@ void TabWidget::loadSettings()
         loadFile(document_uris[i]);
 
     QString current_uri = settings.value("current_tab").toString();
-
-    setCurrentWidget(uriTabPage(current_uri));
+    auto * current_tab_page = uriTabPage(current_uri);
+    if (current_tab_page)
+        setCurrentWidget(current_tab_page);
 
     find_dialog->loadSettings();
 
@@ -253,7 +254,7 @@ void TabWidget::loadSettings()
 void TabWidget::saveSettings()
 {
     settings.setValue("open_tabs", allTabUris());
-    settings.setValue("current_tab", tabUri(currentWidget()));
+    settings.setValue("current_tab", count() ? tabUri(currentWidget()) : "");
 
     auto pages = allTabPages();
     std::for_each(pages.begin(), pages.end(), [](TabPage * page) { page->slotSaveSettings(); });
