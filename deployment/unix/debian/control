@@ -9,8 +9,11 @@ Homepage: http://code.google.com/p/file-monitor/
 Package: file-monitor
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: File Monitor is a viewer that auto-redraws when files change.
- File Monitor is a convenient canvas upon which to watch
- the changes that you make to a file from another program. 
- Currently supported file types are text, html, svg,
- and image file formats.
+Description: File Monitor is a file viewer that auto-redraws files when they change on disk.
+ File Monitor is a cross-platform viewer that displays files and 
+ automatically redraws them when they are changed on disk.  This 
+ makes File Monitor a perfect logfile viewer, or a nice canvas upon 
+ which to display changing image files.  If you are editing SVG files 
+ or HTML files programatically or by hand, File Monitor provides a 
+ real-time window into the results of each of your changes.
+ Currently supported file types are text, html, svg, and image formats.

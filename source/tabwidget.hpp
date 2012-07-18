@@ -65,6 +65,7 @@ private:
     std::vector<TabPage *> allTabPages() const;
     TabPage * uriTabPage(QString const & uri) const;
     QString tabUri(QWidget * tab_widget) const;
+    QString currentTabUri() const;
     QStringList allTabUris() const;
 
     QStringList allRecentlyClosedFilesOnDisk() const;

@@ -161,7 +161,7 @@ void TabWidget::slotOpenRecentFile()
 void TabWidget::slotRemoveTab(int tab_index)
 {
     // When there are no tabs, the open dialog starts in lastOpenUri's directory.
-    settings.setValue("lastOpenUri", tabUri(currentWidget()));
+    settings.setValue("lastOpenUri", currentTabUri());
 
     // Stop watching the file corresponding to this tab.
     file_watcher->removePath(tabUri(widget(tab_index)));
@@ -213,7 +213,7 @@ void TabWidget::slotFileChanged(QString changed_file_uri)
 void TabWidget::slotOpenFile()
 {
     // The open dialog starts in the current uri, or last open uri's directory.
-    QString open_from_uri = tabUri(currentWidget());
+    QString open_from_uri = currentTabUri();
     if (open_from_uri.isEmpty())
         open_from_uri = settings.value("lastOpenUri", "").toString();
 
@@ -254,7 +254,7 @@ void TabWidget::loadSettings()
 void TabWidget::saveSettings()
 {
     settings.setValue("open_tabs", allTabUris());
-    settings.setValue("current_tab", count() ? tabUri(currentWidget()) : "");
+    settings.setValue("current_tab", currentTabUri());
 
     auto pages = allTabPages();
     std::for_each(pages.begin(), pages.end(), [](TabPage * page) { page->slotSaveSettings(); });
@@ -360,6 +360,14 @@ TabPage * TabWidget::uriTabPage(QString const & uri) const
 QString TabWidget::tabUri(QWidget * tab_widget) const
 {
     return tabPage(tab_widget)->getUri();
+}
+
+QString TabWidget::currentTabUri() const
+{
+    if (count())
+        return tabUri(currentWidget());
+
+    return "";
 }
 
 QStringList TabWidget::allTabUris() const
