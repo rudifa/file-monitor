@@ -77,12 +77,13 @@ cp -r ../$PROJECT_NAME $INSTALL_SOURCE_DIR
 qmake
 mingw32-make release
 
-# Find the Qt bin directory.
+# Find the Qt and MinGW bin directories.
+MINGW_BIN_DIR=$(echo `which libstdc++-6.dll` | sed 's/\(.*\)\([\\\/][^\\\/]*$\)/\1/g')
 QT_BIN_DIR=$(echo `which QtCore4.dll` | sed 's/\(.*\)\([\\\/][^\\\/]*$\)/\1/g')
 
 # Copy the required dlls into the build directory.
+cp $MINGW_BIN_DIR/libstdc++-6.dll $BUILD_DIR
 cp $QT_BIN_DIR/libgcc_s_dw2-1.dll $BUILD_DIR
-cp $QT_BIN_DIR/libstdc++-6.dll $BUILD_DIR
 cp $QT_BIN_DIR/mingwm10.dll $BUILD_DIR
 cp $QT_BIN_DIR/QtCore4.dll $BUILD_DIR
 cp $QT_BIN_DIR/QtGui4.dll $BUILD_DIR

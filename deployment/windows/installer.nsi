@@ -139,6 +139,7 @@ Section "$%APP_NAME% (required)" SecApplication
  
   ; Put file there
   File "$%PROJECT_NAME%.exe"
+  File "libstdc++-6.dll"
   File "libgcc_s_dw2-1.dll"
   File "mingwm10.dll"
   File "QtCore4.dll"
@@ -146,6 +147,7 @@ Section "$%APP_NAME% (required)" SecApplication
   File "QtSvg4.dll"
   File "QtWebKit4.dll"
   File "QtNetwork4.dll"
+  File "QtXml4.dll"
   File "QtXmlPatterns4.dll"
   File "phonon4.dll"
   File "license.txt"
