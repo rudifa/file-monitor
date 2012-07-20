@@ -82,12 +82,14 @@ QT_BIN_DIR=$(echo `which QtCore4.dll` | sed 's/\(.*\)\([\\\/][^\\\/]*$\)/\1/g')
 
 # Copy the required dlls into the build directory.
 cp $QT_BIN_DIR/libgcc_s_dw2-1.dll $BUILD_DIR
+cp $QT_BIN_DIR/libstdc++-6.dll $BUILD_DIR
 cp $QT_BIN_DIR/mingwm10.dll $BUILD_DIR
 cp $QT_BIN_DIR/QtCore4.dll $BUILD_DIR
 cp $QT_BIN_DIR/QtGui4.dll $BUILD_DIR
 cp $QT_BIN_DIR/QtSvg4.dll $BUILD_DIR
 cp $QT_BIN_DIR/QtWebKit4.dll $BUILD_DIR
 cp $QT_BIN_DIR/QtNetwork4.dll $BUILD_DIR
+cp $QT_BIN_DIR/QtXml4.dll $BUILD_DIR
 cp $QT_BIN_DIR/QtXmlPatterns4.dll $BUILD_DIR
 cp $QT_BIN_DIR/phonon4.dll $BUILD_DIR
 cp $QT_BIN_DIR/QtWebKit4.dll $BUILD_DIR
