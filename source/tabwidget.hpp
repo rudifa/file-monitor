@@ -2,6 +2,7 @@
 #ifndef TAB_WIDGET_HPP
 #define TAB_WIDGET_HPP
 
+#include <QStringList>
 #include <QTabWidget>
 #include <QSettings>
 
@@ -33,8 +34,9 @@ public:
     void mouseMoveEvent(QMouseEvent * event);
 
 public slots:
-    void slotOpenFile();
     void slotOpenFile(QString const & file_uri);
+    void slotOpenFiles();
+    void slotOpenFiles(QStringList const & file_uris);
     void slotCloseCurrentTab();
     void slotCloseAllButCurrentTabPage();
     void slotCloseAllTabPages();
@@ -71,7 +73,7 @@ private:
     QStringList allRecentlyClosedFilesOnDisk() const;
     void updateRecentFiles();
 
-    void updateActionEnables(bool is_image);
+    void updateActionEnables();
 };
 
 #endif

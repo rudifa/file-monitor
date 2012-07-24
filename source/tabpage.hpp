@@ -27,7 +27,7 @@ public:
     void scrollToBottomOnChange(bool scroll_to_bottom);
     
     QString getUri() const;
-    bool isImage() const;
+    bool isText() const;
 
     int getPercentageZoom() const;
 

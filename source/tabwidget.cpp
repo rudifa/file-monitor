@@ -38,7 +38,7 @@ TabWidget::TabWidget(Ui::MainWindow const & ui, QWidget * parent)
     setMouseTracking(true);
     tabBar()->setMouseTracking(true);
 
-    connect(ui.action_file_open, SIGNAL(triggered()), SLOT(slotOpenFile()));
+    connect(ui.action_file_open, SIGNAL(triggered()), SLOT(slotOpenFiles()));
     connect(ui.action_file_close, SIGNAL(triggered()), SLOT(slotCloseCurrentTab()));
     connect(ui.action_file_close_others, SIGNAL(triggered()), SLOT(slotCloseAllButCurrentTabPage()));
     connect(ui.action_file_close_all, SIGNAL(triggered()), SLOT(slotCloseAllTabPages()));
@@ -62,6 +62,10 @@ TabWidget::TabWidget(Ui::MainWindow const & ui, QWidget * parent)
     ui.tool_bar->insertWidget(ui.action_edit_zoom_in, zoom_slider);
 
     settings.beginGroup("tabs");
+
+    // Update to default state before we load any files (in case we don't load any files).
+    updateActionEnables();
+    updateRecentFiles();
 }
 
 void TabWidget::updateTabConnections()
@@ -96,9 +100,7 @@ void TabWidget::updateTabConnections()
         }
     }
 
-    auto * current_tab_page = tabPage(widget(currentIndex()));
-    updateActionEnables(current_tab_page->isImage());
-
+    updateActionEnables();
     updateRecentFiles();
 
     // Wait until the event loop has finished rendering the current page.
@@ -176,16 +178,16 @@ void TabWidget::slotCurrentTabChanged(int new_index)
     assert(count() > new_index);
 
     // If we have just closed the last tab.
-    if (new_index == -1)
-        return;
-
-    auto * tab_page = tabPage(widget(new_index));
-    if (!tab_page->wasCurrentTab())
+    if (new_index != -1)
     {
-        tab_page->setCurrentTab();
+        auto * tab_page = tabPage(widget(new_index));
+        if (!tab_page->wasCurrentTab())
+        {
+            tab_page->setCurrentTab();
 
-        // Wait until the event loop has finished rendering the current page.
-        QTimer::singleShot(0, tab_page, SLOT(slotLoadSettings()));
+            // Wait until the event loop has finished rendering the current page.
+            QTimer::singleShot(0, tab_page, SLOT(slotLoadSettings()));
+        }
     }
 
     updateTabConnections();
@@ -210,24 +212,30 @@ void TabWidget::slotFileChanged(QString changed_file_uri)
     QTimer::singleShot(20, tab_page, SLOT(slotReload()));
 }
 
-void TabWidget::slotOpenFile()
+void TabWidget::slotOpenFile(QString const & file_uri)
+{
+    TabPage * tab_page = loadFile(file_uri);
+    if (tab_page)
+        setCurrentWidget(tab_page);
+}
+
+void TabWidget::slotOpenFiles()
 {
     // The open dialog starts in the current uri, or last open uri's directory.
     QString open_from_uri = currentTabUri();
     if (open_from_uri.isEmpty())
         open_from_uri = settings.value("lastOpenUri", "").toString();
 
-    QString file_uri = QFileDialog::getOpenFileName(
+    QStringList file_uris = QFileDialog::getOpenFileNames(
         this, tr("Select File"), open_from_uri, tr("*.*"));
 
-    slotOpenFile(file_uri);
+    slotOpenFiles(file_uris);
 }
 
-void TabWidget::slotOpenFile(QString const & file_uri)
+void TabWidget::slotOpenFiles(QStringList const & file_uris)
 {
-    TabPage * tab_page = loadFile(file_uri);
-    if (tab_page)
-        setCurrentWidget(tab_page);
+    for (int i = 0; i < file_uris.count(); ++i)
+        slotOpenFile(file_uris[i]);
 }
 
 void TabWidget::loadSettings()
@@ -421,11 +429,26 @@ void TabWidget::updateRecentFiles()
     }
 }
 
-void TabWidget::updateActionEnables(bool is_image)
+void TabWidget::updateActionEnables()
 {
-    ui.action_edit_select_all->setDisabled(is_image);
-    ui.action_edit_copy->setDisabled(is_image);
-    ui.action_edit_find->setDisabled(is_image);
+    bool open_files = (count() > 0);
+    bool is_text = open_files ? tabPage(widget(currentIndex()))->isText() : false;
+
+    ui.action_edit_copy->setEnabled(open_files && is_text);
+    ui.action_edit_find->setEnabled(open_files && is_text);
+    ui.action_edit_select_all->setEnabled(open_files && is_text);
+    ui.action_edit_find->setEnabled(open_files && is_text);
+
+    ui.action_file_close->setEnabled(open_files);
+    ui.action_file_close_all->setEnabled(open_files);
+    ui.action_session_save_as->setEnabled(open_files);
+
+    ui.action_edit_zoom_in->setEnabled(open_files);
+    ui.action_edit_zoom_out->setEnabled(open_files);
+    ui.action_edit_zoom_reset->setEnabled(open_files);
+    zoom_slider->setEnabled(open_files);
+
+    ui.action_file_close_others->setEnabled(count() > 1);
 }
 
 // Update the zoom slider using the current tab's zoom value.

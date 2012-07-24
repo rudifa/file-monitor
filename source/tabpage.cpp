@@ -93,9 +93,9 @@ QString TabPage::getUri() const
     return file_uri;
 }
 
-bool TabPage::isImage() const
+bool TabPage::isText() const
 {
-    return (file_type == TabPage::SVG || file_type == TabPage::IMAGE);
+    return (file_type == TabPage::TEXT || file_type == TabPage::HTML);
 }
 
 int TabPage::getPercentageZoom() const
