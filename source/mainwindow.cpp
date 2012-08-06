@@ -117,7 +117,7 @@ void MainWindow::slotOpenSession()
 void MainWindow::slotAboutFileMonitor()
 {
     QString file_monitor_project_url("http://code.google.com/p/file-monitor");
-    QString file_monitor_version("2.0.0");
+    QString file_monitor_version("2.1.0");
 
     auto about_content = QString("<h3>%1</h3><p>%2</p><p>%3</p><p>%4</p><p>%5</p><p>%6%7</p><hr /><p>%8</p><p>%9</p>")
             .arg(tr("File Monitor - ") + file_monitor_version)
