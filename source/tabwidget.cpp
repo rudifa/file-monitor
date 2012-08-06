@@ -81,6 +81,7 @@ void TabWidget::updateTabConnections()
             connect(ui.action_edit_zoom_reset, SIGNAL(triggered()), tab_page, SLOT(slotResetZoom()));
             connect(ui.action_edit_select_all, SIGNAL(triggered()), tab_page, SLOT(slotSelectAll()));
             connect(ui.action_edit_copy, SIGNAL(triggered()), tab_page, SLOT(slotCopy()));
+            connect(ui.action_file_reload, SIGNAL(triggered()), tab_page, SLOT(slotReload()));
             connect(zoom_slider, SIGNAL(valueChanged(int)), tab_page, SLOT(slotSetZoom(int)));
             connect(tab_page, SIGNAL(signalScaleChanged()), this, SLOT(slotSynchronizeZoomSlider()));
             connect(find_dialog, SIGNAL(signalFindNext(QString const &, bool)), tab_page, SIGNAL(signalFindNext(QString const &, bool)));
@@ -93,6 +94,7 @@ void TabWidget::updateTabConnections()
             disconnect(ui.action_edit_zoom_reset, SIGNAL(triggered()), tab_page, SLOT(slotResetZoom()));
             disconnect(ui.action_edit_select_all, SIGNAL(triggered()), tab_page, SLOT(slotSelectAll()));
             disconnect(ui.action_edit_copy, SIGNAL(triggered()), tab_page, SLOT(slotCopy()));
+            disconnect(ui.action_file_reload, SIGNAL(triggered()), tab_page, SLOT(slotReload()));
             disconnect(zoom_slider, SIGNAL(valueChanged(int)), tab_page, SLOT(slotSetZoom(int)));
             disconnect(tab_page, SIGNAL(signalScaleChanged()), this, SLOT(slotSynchronizeZoomSlider()));
             disconnect(find_dialog, SIGNAL(signalFindNext(QString const &, bool)), tab_page, SIGNAL(signalFindNext(QString const &, bool)));

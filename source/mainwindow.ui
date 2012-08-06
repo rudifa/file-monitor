@@ -93,6 +93,8 @@
     <addaction name="action_file_open"/>
     <addaction name="menu_file_open_recent"/>
     <addaction name="separator"/>
+    <addaction name="action_file_reload"/>
+    <addaction name="separator"/>
     <addaction name="action_file_close"/>
     <addaction name="action_file_close_others"/>
     <addaction name="action_file_close_all"/>
@@ -491,6 +493,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="action_file_reload">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/icons/file_reload.png</normaloff>:/icons/file_reload.png</iconset>
+   </property>
+   <property name="text">
+    <string>Re&amp;load</string>
+   </property>
+   <property name="statusTip">
+    <string>Manually reload the current file from disk.</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
    </property>
   </action>
  </widget>

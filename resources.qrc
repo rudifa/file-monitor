@@ -19,5 +19,6 @@
         <file>icons/session_open.png</file>
         <file>icons/session_save_as.png</file>
         <file>icons/edit_copy.png</file>
+        <file>icons/file_reload.png</file>
     </qresource>
 </RCC>
