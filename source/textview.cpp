@@ -110,6 +110,18 @@ void TextView::slotFindNext(QString const & text, bool case_sensitive)
     // We either didn't find the text or hit the last instance of the text.
     if (!success)
     {
+        // This addresses a bug in which find fails when the text to be found exists below a currently selected section.
+        if (text_edit->toPlainText().contains(text, case_sensitive ? Qt::CaseSensitive : Qt::CaseInsensitive))
+        {
+            // If nothing is selected, then this is a strange error case we have to figure out.
+            assert(!text_edit->textCursor().selectedText().isEmpty());
+
+            // Remove selection, find again, and bail if we found another (otherwise, fall through to "Find First" below).
+            text_edit->textCursor().clearSelection();
+            if (text_edit->find(text, find_flags))
+                return;
+        }
+
         // Wrap around by moving to the first instance of the text in the document.
         find_flags = find_flags | QTextDocument::FindBackward;
         while (text_edit->find(text, find_flags))
