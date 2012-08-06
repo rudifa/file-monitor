@@ -1,3 +1,11 @@
+file-monitor (2.1.0-1) unstable; urgency=low
+
+  * Fixed a series of bugs tied to an empty File Monitor with no open tabs.
+  * Fixed a 'Find Next' bug.
+  * Added a manual reload feature.
+
+ -- Mark Turney <markturney@gmail.com>  Sun, 05 Aug 2012 23:14:22 -0700
+
 file-monitor (2.0.0-1) unstable; urgency=low
 
   * Added 'select all', 'copy', and 'find' for text and html file types.

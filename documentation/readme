@@ -1,6 +1,6 @@
 
-File Monitor v2.0.0
-Updated 2012-07-11
+File Monitor v2.1.0
+Updated 2012-08-05
 
 Send all feedback/comments/problems to markturney@gmail.com
 Copyright 2012 Mark Turney, licensed under GPLv3 or later.
@@ -52,12 +52,12 @@ INSTALLATION
 ============
 
 Windows:
-- Download "file-monitor-2.0.0-installer.exe".
-- Double click the file-monitor-2.0.0-installer.exe file and follow the installation guide.
+- Download "file-monitor-2.1.0-installer.exe".
+- Double click the file-monitor-2.1.0-installer.exe file and follow the installation guide.
 
 Linux Package - GUI (Lucid and above - Qt 4.6 or greater required):
 - Download the .deb package for your architecture.
-    For example: file-monitor_2.0.0-1_amd64.deb is the .deb for x86-64 machines.
+    For example: file-monitor_2.1.0-1_amd64.deb is the .deb for x86-64 machines.
 - Double click on the .deb package and the "Package Installer" dialog will appear.
 - Click the "Install Package" button.
 - Enter your root password when prompted.
@@ -68,10 +68,10 @@ Linux Package - GUI (Lucid and above - Qt 4.6 or greater required):
     
 Linux Package - Command Line (Lucid and above - Qt 4.6 or greater required):
 - Download the .deb package for your architecture.
-    For example file-monitor_2.0.0-1_amd64.deb is the .deb for amd64 machines.
+    For example file-monitor_2.1.0-1_amd64.deb is the .deb for amd64 machines.
 - Open a shell and navigate to the directory containing the .deb file.
 - Type sudo dpkg -i followed by the name of the .deb.
-    For example: sudo dpkg -i file-monitor_2.0.0-1_amd64.deb
+    For example: sudo dpkg -i file-monitor_2.1.0-1_amd64.deb
 
     Note: If you are unable to install the Qt 4.6 libraries on your system, you
           will need to install from source.
@@ -83,8 +83,8 @@ From Source (Windows):
     http://qt.nokia.com/downloads
 - Ensure that the Qt bin directory (Qt/20xx/qt/bin) and the Qt Mingw bin
     directory (Qt/20xx/mingw/bin) is in your PATH environment variable.
-- Download "file-monitor-2.0.0.tar.gz".
-- Uncompress "file-monitor-2.0.0.tar.gz" into the directory
+- Download "file-monitor-2.1.0.tar.gz".
+- Uncompress "file-monitor-2.1.0.tar.gz" into the directory
     "file-monitor".
 - Open a command prompt and navigate to this directory.
 - Type "qmake".  This will create the makefile for your system.
@@ -102,8 +102,8 @@ From Source (Unix):
 - Ensure that the Qt bin directory (Qt/20xx/qt/bin) is in your
     PATH environment variable.
 - Install a compilation toolchain (build-essential on linux).
-- Download "file-monitor-2.0.0.tar.gz".
-- Uncompress "file-monitor-2.0.0.tar.gz" into the directory
+- Download "file-monitor-2.1.0.tar.gz".
+- Uncompress "file-monitor-2.1.0.tar.gz" into the directory
     "file-monitor".
 - Open a shell and navigate to the "file-monitor" directory.
 - Type "qmake".  This will create the makefile for your system.
@@ -138,8 +138,8 @@ Source for Windows:
     links that you may have created which point to any of those files.
 
 Source for Unix:
-- Download "file-monitor-2.0.0.tar.gz".
-- Uncompress "file-monitor-2.0.0.tar.gz" into the directory
+- Download "file-monitor-2.1.0.tar.gz".
+- Uncompress "file-monitor-2.1.0.tar.gz" into the directory
     "file-monitor".
 - Open a shell and navigate to the "file-monitor" directory.
 - Type "qmake".  This will create the makefile for your system.
@@ -155,6 +155,11 @@ Mark Turney - Developer
 
 VERSION HISTORY
 ========================
+
+2012-08-05 v2.1.0
+	Fixed a series of bugs tied to an empty File Monitor with no open tabs.
+	Fixed a 'Find Next' bug.
+	Added a manual reload feature.
 
 2012-07-11 v2.0.0
 	Added 'select all', 'copy', and 'find' for text and html file types.
