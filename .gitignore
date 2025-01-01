@@ -1,12 +1,17 @@
-
 # Build files
 _build
 Makefile
 *.Debug
 *.Release
+build/
 
 # Qt-Creator files
 *.pro.user*
 
 # Unix files
 .directory
+
+.codegpt
+
+# Mac files
+.DS_Store
