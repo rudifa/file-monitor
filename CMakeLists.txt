@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
 project(file-monitor VERSION 2.1.0 LANGUAGES CXX)
 
+# Add Homebrew Qt5 paths
+set(CMAKE_PREFIX_PATH "/opt/homebrew/opt/qt@5")
+link_directories("/opt/homebrew/opt/qt@5/lib")
+include_directories("/opt/homebrew/opt/qt@5/include")
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
@@ -8,7 +13,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 # Find Qt package
-find_package(Qt5 COMPONENTS Widgets Svg REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Svg Xml WebEngineWidgets REQUIRED)
 
 set(SOURCES
     source/main.cpp
@@ -26,6 +31,8 @@ set(SOURCES
     source/customtextedit.cpp
     source/contextmenus.cpp
     source/finddialog.cpp
+    source/htmlview.cpp
+    source/customwebview.cpp
 )
 
 set(HEADERS
@@ -54,6 +61,8 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${UI_FILES})
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt5::Widgets
     Qt5::Svg
+    Qt5::Xml
+    Qt5::WebEngineWidgets
 )
 
 # Include directories

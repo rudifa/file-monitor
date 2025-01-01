@@ -13,6 +13,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QLabel>
+#include <QMimeData>
 
 using namespace utility;
 

@@ -2,7 +2,7 @@
 #include "utility.hpp"
 #include "mainwindow.hpp"
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <QTranslator>
 
 using namespace utility;
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
     QTranslator translator;
-    
+
     QString translation_uri = locale::getSystemTranslationUri(app);
     if (!translation_uri.isEmpty())
     {
