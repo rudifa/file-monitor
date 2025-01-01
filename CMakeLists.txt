@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.16)
 project(file-monitor VERSION 2.1.0 LANGUAGES CXX)
 
+# Generate and create a relative symlink for compile_commands.json
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+execute_process(
+    COMMAND ${CMAKE_COMMAND} -E create_symlink
+    build/compile_commands.json
+    ${CMAKE_SOURCE_DIR}/compile_commands.json
+)
+
 # Add Homebrew Qt5 paths
 set(CMAKE_PREFIX_PATH "/opt/homebrew/opt/qt@5")
 link_directories("/opt/homebrew/opt/qt@5/lib")

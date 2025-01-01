@@ -50,14 +50,14 @@ void CustomGraphicsView::wheelEvent(QWheelEvent * event)
 
         auto new_scale = view_scale.zoomToScale(new_zoom);
 
-        auto mouse_position_before = mapToScene(event->pos());
+        auto mouse_position_before = mapToScene(event->position().toPoint());
 
         // Scale the view.
         resetTransform();
         scale(new_scale, new_scale);
 
         // Record how many pixels the mouse has moved (we want to move it back).
-        auto mouse_position_after = mapToScene(event->pos());
+        auto mouse_position_after = mapToScene(event->position().toPoint());
         auto mouse_delta = mouse_position_before - mouse_position_after;
 
         auto slider_position = QPointF(horizontalScrollBar()->value(), verticalScrollBar()->value());

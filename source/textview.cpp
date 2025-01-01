@@ -100,11 +100,11 @@ void TextView::copy()
 
 void TextView::slotFindNext(QString const & text, bool case_sensitive)
 {
-    QTextDocument::FindFlags find_flags = static_cast<QTextDocument::FindFlags>(0);
-    if (case_sensitive)
-        find_flags = find_flags | QTextDocument::FindCaseSensitively;
+    QTextDocument::FindFlags find_flags;
 
-    case_sensitive ? QTextDocument::FindCaseSensitively : static_cast<QTextDocument::FindFlags>(0);
+    if (case_sensitive)
+        find_flags |= QTextDocument::FindCaseSensitively;
+
     bool success = text_edit->find(text, find_flags);
 
     // We either didn't find the text or hit the last instance of the text.
@@ -123,12 +123,10 @@ void TextView::slotFindNext(QString const & text, bool case_sensitive)
         }
 
         // Wrap around by moving to the first instance of the text in the document.
-        find_flags = find_flags | QTextDocument::FindBackward;
-        while (text_edit->find(text, find_flags))
-            ;
+        text_edit->moveCursor(QTextCursor::Start);
+        text_edit->find(text, find_flags);
     }
 }
-
 void TextView::slotFindPrevious(QString const & text, bool case_sensitive)
 {
     QTextDocument::FindFlags find_flags = QTextDocument::FindBackward;

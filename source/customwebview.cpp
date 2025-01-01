@@ -68,12 +68,12 @@ void CustomWebView::paintEvent(QPaintEvent * event)
     if (hasVertical)
     {
         int margin_height = hasHorizontal ? height() - border_margin_width : height();
-        painter.fillRect(QRect(QPoint(max_x, 0), QSize(border_margin_width, margin_height)), palette().background().color());
+        painter.fillRect(QRect(QPoint(max_x, 0), QSize(border_margin_width, margin_height)), palette().window().color());
     }
     if (hasHorizontal)
     {
         int margin_width = hasVertical ? width() - border_margin_width : width();
-        painter.fillRect(QRect(QPoint(0, max_y), QSize(margin_width, border_margin_width)), palette().background().color());
+        painter.fillRect(QRect(QPoint(0, max_y), QSize(margin_width, border_margin_width)), palette().window().color());
     }
 }
 

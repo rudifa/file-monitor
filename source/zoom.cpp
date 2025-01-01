@@ -16,7 +16,7 @@ int zoom::getNumZoomSteps(QWheelEvent * event)
     // This multiplier allows us to traverse the scroll range at a reasonable speed.
     int const zoom_steps_per_scroll_step = 2;
 
-    int scroll_degrees = event->delta() / resolver_units_per_degree;
+    int scroll_degrees = event->angleDelta().y() / resolver_units_per_degree;
     int scroll_steps = scroll_degrees / degrees_per_scroll_step;
     return (scroll_steps * zoom_steps_per_scroll_step);
 }

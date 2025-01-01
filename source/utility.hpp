@@ -44,16 +44,15 @@ namespace utility
     }
     namespace file
     {
-        struct OnDisk : public std::unary_function<QString, bool>
+        struct OnDisk
         {
-            OnDisk(QFileInfo * file_info) : file_info(file_info) { }
-            inline bool operator () (QString const & file_uri) const
-            {
-                file_info->setFile(file_uri);
-                return file_info->exists();
-            }
+            // using argument_type = QString;
+            // using result_type = bool;
 
-            QFileInfo * file_info;
+            bool operator()(const QString &path) const
+            {
+                return QFileInfo(path).exists();
+            }
         };
 
         // Return a collection of only the uris that have a corresponding file on disk.
@@ -61,7 +60,13 @@ namespace utility
         inline T clearUrisWithNoFileOnDisk(T file_uris)
         {
             static QFileInfo file_info;
-            file_uris.erase(std::remove_if(file_uris.begin(), file_uris.end(), std::not1(OnDisk(&file_info))), file_uris.end());
+            file_uris.erase(
+                std::remove_if(
+                    file_uris.begin(),
+                    file_uris.end(),
+                    [](const QString &path)
+                    { return !OnDisk()(path); }),
+                file_uris.end());
             return file_uris;
         }
 
@@ -70,7 +75,9 @@ namespace utility
         inline T clearUrisWithFileOnDisk(T file_uris)
         {
             static QFileInfo file_info;
-            file_uris.erase(std::remove_if(file_uris.begin(), file_uris.end(), OnDisk(&file_info)), file_uris.end());
+            file_uris.erase(
+                std::remove_if(file_uris.begin(), file_uris.end(), OnDisk()),
+                file_uris.end());
             return file_uris;
         }
     }
