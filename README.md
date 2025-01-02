@@ -47,3 +47,7 @@ In the `build` directory, run:
 ```
 
 This opens a window with a file browser to select files to view.
+
+## Example `file-monitor` display
+
+![Example display](img/file-monitor-01.png)
