@@ -2,27 +2,23 @@
 #ifndef UTILITY_HPP
 #define UTILITY_HPP
 
-#include <QPointF>
-#include <QFileInfo>
+#include <QtCore>
+#include <QtGui>
 
 #include <cmath>
 #include <functional>
 #include <algorithm>
 
-class QApplication;
-class QString;
-class QStringList;
-
 namespace utility
 {
     namespace locale
     {
-        QString getSystemTranslationUri(QApplication const & app);
+        QString getSystemTranslationUri(QApplication const &app);
     }
     namespace settings
     {
-        void saveSettingsToFile(QString const & file_uri);
-        bool loadSettingsFromFile(QString const & file_uri);
+        void saveSettingsToFile(QString const &file_uri);
+        bool loadSettingsFromFile(QString const &file_uri);
     }
     namespace math
     {
@@ -36,11 +32,11 @@ namespace utility
     }
     namespace xml
     {
-        bool isXML(QString const & content);
+        bool isXML(QString const &content);
     }
     namespace qt_extensions
     {
-        QStringList operator - (QStringList lhs, QStringList const & rhs);
+        QStringList operator-(QStringList lhs, QStringList const &rhs);
     }
     namespace file
     {

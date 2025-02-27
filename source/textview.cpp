@@ -10,7 +10,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QTimer>
-#include <QDomDocument>
+#include <QtXml/QDomDocument>
 #include <QWheelEvent>
 
 #include <cmath>
@@ -18,22 +18,22 @@
 
 using namespace utility;
 
-TextView::TextView(Ui::MainWindow const & ui, QWidget * parent)
+TextView::TextView(Ui::MainWindow const &ui, QWidget *parent)
     : View(ViewScale(ViewScale::Linear, 1, 100, 12), parent),
       text_edit(new CustomTextEdit(ui, view_scale, parent)),
       indent_xml(false), scroll_to_bottom_on_change(false)
 {
 }
 
-QWidget * TextView::getWidget()
+QWidget *TextView::getWidget()
 {
-    QWidget * widget = dynamic_cast<QWidget *>(text_edit);
+    QWidget *widget = dynamic_cast<QWidget *>(text_edit);
     assert(widget);
 
     return widget;
 }
 
-bool TextView::load(QString const & file_uri, bool is_reload)
+bool TextView::load(QString const &file_uri, bool is_reload)
 {
     QFile file(file_uri);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -98,7 +98,7 @@ void TextView::copy()
     text_edit->copy();
 }
 
-void TextView::slotFindNext(QString const & text, bool case_sensitive)
+void TextView::slotFindNext(QString const &text, bool case_sensitive)
 {
     QTextDocument::FindFlags find_flags;
 
@@ -127,7 +127,7 @@ void TextView::slotFindNext(QString const & text, bool case_sensitive)
         text_edit->find(text, find_flags);
     }
 }
-void TextView::slotFindPrevious(QString const & text, bool case_sensitive)
+void TextView::slotFindPrevious(QString const &text, bool case_sensitive)
 {
     QTextDocument::FindFlags find_flags = QTextDocument::FindBackward;
     if (case_sensitive)
@@ -149,7 +149,7 @@ void TextView::slotFindPrevious(QString const & text, bool case_sensitive)
     }
 }
 
-void TextView::formatAndInsertContent(QString const & content, bool indent)
+void TextView::formatAndInsertContent(QString const &content, bool indent)
 {
     QDomDocument document;
     if (indent && document.setContent(content))

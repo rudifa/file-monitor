@@ -5,25 +5,32 @@ project(file-monitor VERSION 2.1.0 LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 execute_process(
     COMMAND ${CMAKE_COMMAND} -E create_symlink
-    build/compile_commands.json
+    ${CMAKE_BINARY_DIR}/compile_commands.json
     ${CMAKE_SOURCE_DIR}/compile_commands.json
 )
 
-# Add Homebrew Qt5 paths
-set(CMAKE_PREFIX_PATH "/opt/homebrew/opt/qt@5")
-link_directories("/opt/homebrew/opt/qt@5/lib")
-include_directories("/opt/homebrew/opt/qt@5/include")
-
-set(CMAKE_CXX_STANDARD 11)
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Enable Qt specific CMake features
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-# Find Qt package
-find_package(Qt5 COMPONENTS Widgets Svg Xml WebEngineWidgets REQUIRED)
+# Set Qt6 directory and prefix path
+set(Qt6_DIR "/Users/rudifarkas/Qt/6.8.2/macos/lib/cmake/Qt6")
+set(CMAKE_PREFIX_PATH "${Qt6_DIR}")
 
-set(SOURCES
+# Find required Qt packages
+find_package(Qt6 6.8.2 COMPONENTS Core Gui Widgets Svg SvgWidgets WebEngineWidgets Xml REQUIRED)
+
+# Set include directories
+include_directories(${CMAKE_SOURCE_DIR}/source)
+include_directories(${CMAKE_BINARY_DIR})
+
+# Define source files
+set(PROJECT_SOURCES
     source/main.cpp
     source/mainwindow.cpp
     source/tabwidget.cpp
@@ -43,7 +50,7 @@ set(SOURCES
     source/customwebview.cpp
 )
 
-set(HEADERS
+set(PROJECT_HEADERS
     source/mainwindow.hpp
     source/tabwidget.hpp
     source/tabpage.hpp
@@ -60,21 +67,33 @@ set(HEADERS
     source/finddialog.hpp
 )
 
-set(UI_FILES
+set(PROJECT_UI_FILES
     source/mainwindow.ui
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${UI_FILES})
-
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    Qt5::Widgets
-    Qt5::Svg
-    Qt5::Xml
-    Qt5::WebEngineWidgets
+# Add executable
+add_executable(${PROJECT_NAME}
+    ${PROJECT_SOURCES}
+    ${PROJECT_HEADERS}
+    ${PROJECT_UI_FILES}
 )
 
-# Include directories
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/source)
+# Link libraries
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Widgets
+    Qt6::Svg
+    Qt6::SvgWidgets
+    Qt6::WebEngineWidgets
+    Qt6::Xml
+)
+
+# Set target properties
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
+)
 
 # Install
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)

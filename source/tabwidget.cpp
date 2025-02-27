@@ -16,6 +16,7 @@
 #include <QSlider>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QRegularExpression>
 
 #include <algorithm>
 #include <cassert>
@@ -23,7 +24,7 @@
 using namespace utility;
 using namespace qt_extensions;
 
-TabWidget::TabWidget(Ui::MainWindow const & ui, QWidget * parent)
+TabWidget::TabWidget(Ui::MainWindow const &ui, QWidget *parent)
     : QTabWidget(parent), ui(ui), zoom_slider(new QSlider(Qt::Horizontal, parent)),
       file_watcher(new FileSystemWatcher(this)), find_dialog(new FindDialog(this))
 {
@@ -73,7 +74,7 @@ void TabWidget::updateTabConnections()
     // Update tab connections.
     for (int i = 0; i < count(); ++i)
     {
-        TabPage * tab_page = tabPage(widget(i));
+        TabPage *tab_page = tabPage(widget(i));
         if (i == currentIndex())
         {
             connect(ui.action_lock_zoom, SIGNAL(triggered()), tab_page, SLOT(slotZoomLock()));
@@ -119,7 +120,7 @@ void TabWidget::openFiles(QStringList file_uris)
     for (int i = 0; i < file_uris.size(); ++i)
         loadFile(file_uris[i]);
 
-    TabPage * tab_page = uriTabPage(file_uris.last());
+    TabPage *tab_page = uriTabPage(file_uris.last());
     setCurrentWidget(tab_page);
 }
 
@@ -138,9 +139,9 @@ void TabWidget::slotCloseAllTabPages()
         slotCloseCurrentTab();
 }
 
-void TabWidget::mouseMoveEvent(QMouseEvent * event)
+void TabWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    QTabBar * tab_bar = tabBar();
+    QTabBar *tab_bar = tabBar();
     // Update the status tip with the file uri if the user hovers over a tab.
     if (tab_bar && tab_bar->tabAt(event->pos()) != -1)
     {
@@ -149,7 +150,7 @@ void TabWidget::mouseMoveEvent(QMouseEvent * event)
         if (tab_widget)
         {
             assert(dynamic_cast<QMainWindow *>(parent()));
-            auto * main_window = static_cast<QMainWindow *>(parent());
+            auto *main_window = static_cast<QMainWindow *>(parent());
             main_window->statusBar()->showMessage(tabUri(tab_widget));
         }
     }
@@ -159,7 +160,7 @@ void TabWidget::mouseMoveEvent(QMouseEvent * event)
 
 void TabWidget::slotOpenRecentFile()
 {
-    QAction * action = qobject_cast<QAction *>(sender());
+    QAction *action = qobject_cast<QAction *>(sender());
     if (action)
         slotOpenFile(action->text());
 }
@@ -172,7 +173,7 @@ void TabWidget::slotRemoveTab(int tab_index)
     // Stop watching the file corresponding to this tab.
     file_watcher->removePath(tabUri(widget(tab_index)));
 
-    auto * tab_page = tabPage(widget(tab_index));
+    auto *tab_page = tabPage(widget(tab_index));
     tab_page->slotSaveSettings();
     delete tab_page;
 }
@@ -184,7 +185,7 @@ void TabWidget::slotCurrentTabChanged(int new_index)
     // If we have just closed the last tab.
     if (new_index != -1)
     {
-        auto * tab_page = tabPage(widget(new_index));
+        auto *tab_page = tabPage(widget(new_index));
         if (!tab_page->wasCurrentTab())
         {
             tab_page->setCurrentTab();
@@ -199,7 +200,7 @@ void TabWidget::slotCurrentTabChanged(int new_index)
 
 void TabWidget::slotFileChanged(QString changed_file_uri)
 {
-    TabPage * tab_page = uriTabPage(changed_file_uri);
+    TabPage *tab_page = uriTabPage(changed_file_uri);
 
     // If the file has been deleted, remove it's tab if the user has specified tab removal.
     QFileInfo file_info(changed_file_uri);
@@ -216,9 +217,9 @@ void TabWidget::slotFileChanged(QString changed_file_uri)
     QTimer::singleShot(20, tab_page, SLOT(slotReload()));
 }
 
-void TabWidget::slotOpenFile(QString const & file_uri)
+void TabWidget::slotOpenFile(QString const &file_uri)
 {
-    TabPage * tab_page = loadFile(file_uri);
+    TabPage *tab_page = loadFile(file_uri);
     if (tab_page)
         setCurrentWidget(tab_page);
 }
@@ -236,7 +237,7 @@ void TabWidget::slotOpenFiles()
     slotOpenFiles(file_uris);
 }
 
-void TabWidget::slotOpenFiles(QStringList const & file_uris)
+void TabWidget::slotOpenFiles(QStringList const &file_uris)
 {
     for (int i = 0; i < file_uris.count(); ++i)
         slotOpenFile(file_uris[i]);
@@ -252,7 +253,7 @@ void TabWidget::loadSettings()
         loadFile(document_uris[i]);
 
     QString current_uri = settings.value("current_tab").toString();
-    auto * current_tab_page = uriTabPage(current_uri);
+    auto *current_tab_page = uriTabPage(current_uri);
     if (current_tab_page)
         setCurrentWidget(current_tab_page);
 
@@ -269,14 +270,15 @@ void TabWidget::saveSettings()
     settings.setValue("current_tab", currentTabUri());
 
     auto pages = allTabPages();
-    std::for_each(pages.begin(), pages.end(), [](TabPage * page) { page->slotSaveSettings(); });
+    std::for_each(pages.begin(), pages.end(), [](TabPage *page)
+                  { page->slotSaveSettings(); });
 
     find_dialog->saveSettings();
 }
 
-TabPage * TabWidget::loadFile(QString const & file_uri)
+TabPage *TabWidget::loadFile(QString const &file_uri)
 {
-    TabPage* newTab = new TabPage(ui, this);  // Create a new TabPage
+    TabPage *newTab = new TabPage(ui, this); // Create a new TabPage
 
     if (file_uri.isEmpty())
         return nullptr;
@@ -288,18 +290,18 @@ TabPage * TabWidget::loadFile(QString const & file_uri)
     QString canonical_file_uri = file_info.canonicalFilePath();
 
     // If this file is already loaded, switch to that tab.
-    TabPage * loaded_tab_page = uriTabPage(canonical_file_uri);
+    TabPage *loaded_tab_page = uriTabPage(canonical_file_uri);
     if (loaded_tab_page)
     {
         setCurrentWidget(loaded_tab_page);
-        delete newTab;  // Delete the unused new tab
+        delete newTab; // Delete the unused new tab
         return loaded_tab_page;
     }
 
     if (!newTab->load(canonical_file_uri))
     {
         QMessageBox::warning(this, tr("File Error"), tr("This file could not be loaded."),
-            QMessageBox::Ok, QMessageBox::NoButton);
+                             QMessageBox::Ok, QMessageBox::NoButton);
         delete newTab;
         return nullptr;
     }
@@ -315,7 +317,7 @@ TabPage * TabWidget::loadFile(QString const & file_uri)
     return newTab;
 }
 
-TabPage * TabWidget::tabPage(QWidget * widget) const
+TabPage *TabWidget::tabPage(QWidget *widget) const
 {
     // TabWidget should only have TabPage child Widgets.
     assert(dynamic_cast<TabPage *>(widget));
@@ -341,28 +343,32 @@ void TabWidget::slotCloseCurrentTab()
 void TabWidget::slotMakeBackgroundTransparent(bool transparent)
 {
     auto pages = allTabPages();
-    std::for_each(pages.begin(), pages.end(), [transparent](TabPage * page) { page->makeBackgroundTransparent(transparent); });
+    std::for_each(pages.begin(), pages.end(), [transparent](TabPage *page)
+                  { page->makeBackgroundTransparent(transparent); });
 }
 
 void TabWidget::slotWordWrap(bool word_wrap)
 {
     auto pages = allTabPages();
-    std::for_each(pages.begin(), pages.end(), [word_wrap](TabPage * page) { page->wordWrap(word_wrap); });
+    std::for_each(pages.begin(), pages.end(), [word_wrap](TabPage *page)
+                  { page->wordWrap(word_wrap); });
 }
 
 void TabWidget::slotIndentXML(bool indent_xml)
 {
     auto pages = allTabPages();
-    std::for_each(pages.begin(), pages.end(), [indent_xml](TabPage * page) { page->indentXML(indent_xml); });
+    std::for_each(pages.begin(), pages.end(), [indent_xml](TabPage *page)
+                  { page->indentXML(indent_xml); });
 }
 
 void TabWidget::slotScrollToBottomOnChange(bool scroll_to_bottom)
 {
     auto pages = allTabPages();
-    std::for_each(pages.begin(), pages.end(), [scroll_to_bottom](TabPage * page) { page->scrollToBottomOnChange(scroll_to_bottom); });
+    std::for_each(pages.begin(), pages.end(), [scroll_to_bottom](TabPage *page)
+                  { page->scrollToBottomOnChange(scroll_to_bottom); });
 }
 
-TabPage * TabWidget::uriTabPage(QString const & uri) const
+TabPage *TabWidget::uriTabPage(QString const &uri) const
 {
     for (int i = 0; i < count(); ++i)
         if (uri == tabUri(widget(i)))
@@ -371,7 +377,7 @@ TabPage * TabWidget::uriTabPage(QString const & uri) const
     return nullptr;
 }
 
-QString TabWidget::tabUri(QWidget * tab_widget) const
+QString TabWidget::tabUri(QWidget *tab_widget) const
 {
     return tabPage(tab_widget)->getUri();
 }
@@ -402,7 +408,7 @@ QStringList TabWidget::allRecentlyClosedFilesOnDisk() const
     QStringList file_uri_keys = global_settings.allKeys();
 
     // Each key has a delimiter prefix and attribute suffix.  Remove these non-uri elements.
-    static QRegExp remove_file_attributes("(?:\\*)(.*)(?:\\/.*)");
+    static QRegularExpression remove_file_attributes("(?:\\*)(.*)(?:\\/.*)");
     file_uri_keys.replaceInStrings(remove_file_attributes, "\\1");
 
     // Remove duplicate uris (each uri has multiple attributes).
@@ -422,14 +428,14 @@ void TabWidget::updateRecentFiles()
     QStringList recent_files = allRecentlyClosedFilesOnDisk();
     for (int i = 0; i < recent_files.count(); ++i)
     {
-        auto * action = new QAction(recent_files.at(i), this);
+        auto *action = new QAction(recent_files.at(i), this);
         connect(action, SIGNAL(triggered()), this, SLOT(slotOpenRecentFile()));
         ui.menu_file_open_recent->addAction(action);
     }
 
     if (ui.menu_file_open_recent->isEmpty())
     {
-        auto * recent_action = new QAction(tr("No Recent Files"), this);
+        auto *recent_action = new QAction(tr("No Recent Files"), this);
         recent_action->setStatusTip(tr("No recently closed files that are on disk were found."));
         ui.menu_file_open_recent->addAction(recent_action);
     }

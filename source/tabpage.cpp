@@ -19,30 +19,31 @@
 
 namespace
 {
-   TabPage::FileType determineFileType(QString const & file_uri)
-   {
-      int last_dot_index = file_uri.lastIndexOf('.');
-      int last_slash_index = file_uri.lastIndexOf('/');
-      if (last_slash_index > last_dot_index || last_dot_index == -1)
-         return TabPage::TEXT;
+    TabPage::FileType determineFileType(QString const &file_uri)
+    {
+        int last_dot_index = file_uri.lastIndexOf('.');
+        int last_slash_index = file_uri.lastIndexOf('/');
+        if (last_slash_index > last_dot_index || last_dot_index == -1)
+            return TabPage::TEXT;
 
-      QString extension = file_uri.mid(last_dot_index + 1,
-         file_uri.size() - last_dot_index).toLower();
+        QString extension = file_uri.mid(last_dot_index + 1,
+                                         file_uri.size() - last_dot_index)
+                                .toLower();
 
-      if (extension == "html" || extension == "htm")
-         return TabPage::HTML;
-      if (extension == "svg")
-         return TabPage::SVG;
-      if (extension == "bmp" || extension == "gif" || extension == "jpg" ||
-          extension == "jpeg" || extension == "png" || extension == "pbm" ||
-          extension == "pgm" || extension == "ppm" || extension == "xbm" ||
-          extension == "xpm" || extension =="ico")
-      {
-          return TabPage::IMAGE;
-      }
+        if (extension == "html" || extension == "htm")
+            return TabPage::HTML;
+        if (extension == "svg")
+            return TabPage::SVG;
+        if (extension == "bmp" || extension == "gif" || extension == "jpg" ||
+            extension == "jpeg" || extension == "png" || extension == "pbm" ||
+            extension == "pgm" || extension == "ppm" || extension == "xbm" ||
+            extension == "xpm" || extension == "ico")
+        {
+            return TabPage::IMAGE;
+        }
 
-      return TabPage::TEXT;
-   }
+        return TabPage::TEXT;
+    }
 }
 
 TabPage::TabPage(Ui::MainWindow const &ui, TabWidget *tabWidget, QWidget *parent)
@@ -50,7 +51,7 @@ TabPage::TabPage(Ui::MainWindow const &ui, TabWidget *tabWidget, QWidget *parent
 {
 }
 
-bool TabPage::load(QString const & uri)
+bool TabPage::load(QString const &uri)
 {
     assert(!uri.isEmpty());
 
@@ -59,8 +60,8 @@ bool TabPage::load(QString const & uri)
     view = createView(file_uri);
     setStatusTip(file_uri);
 
-    QGridLayout * layout = new QGridLayout(this);
-    layout->setMargin(4);
+    QGridLayout *layout = new QGridLayout(this);
+    layout->setContentsMargins(4, 4, 4, 4);
     layout->addWidget(view->getWidget());
 
     connect(view, SIGNAL(signalScaleChanged()), SIGNAL(signalScaleChanged()));
@@ -117,7 +118,7 @@ void TabPage::applyZoomToAllTabs(int zoom)
 
     for (int i = 0; i < m_tabWidget->count(); ++i)
     {
-        TabPage* tabPage = qobject_cast<TabPage*>(m_tabWidget->widget(i));
+        TabPage *tabPage = qobject_cast<TabPage *>(m_tabWidget->widget(i));
         if (tabPage && tabPage != this)
         {
             tabPage->view->setZoom(zoom);
@@ -127,8 +128,9 @@ void TabPage::applyZoomToAllTabs(int zoom)
 
 void TabPage::slotZoomLock()
 {
-    MainWindow* mainWindow = qobject_cast<MainWindow*>(window());
-    if (!mainWindow) {
+    MainWindow *mainWindow = qobject_cast<MainWindow *>(window());
+    if (!mainWindow)
+    {
         // qDebug() << "Failed to get MainWindow instance";
         return;
     }
@@ -223,19 +225,19 @@ void TabPage::slotSaveSettings()
     settings.setValue("scroll_dimensions", view->getScrollDimensions());
 }
 
-View * TabPage::createView(QString const & file_uri)
+View *TabPage::createView(QString const &file_uri)
 {
     switch (::determineFileType(file_uri))
     {
-        case TabPage::HTML:
-            return new HtmlView(ui, this);
-        case TabPage::SVG:
-            return new SvgView(ui, this);
-        case TabPage::IMAGE:
-            return new ImageView(ui, this);
+    case TabPage::HTML:
+        return new HtmlView(ui, this);
+    case TabPage::SVG:
+        return new SvgView(ui, this);
+    case TabPage::IMAGE:
+        return new ImageView(ui, this);
 
-        case TabPage::TEXT:
-        default:
-            return new TextView(ui, this);
+    case TabPage::TEXT:
+    default:
+        return new TextView(ui, this);
     }
 }
