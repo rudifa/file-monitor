@@ -2,25 +2,35 @@
 #ifndef TAB_PAGE_HPP
 #define TAB_PAGE_HPP
 
-#include <QWidget>
 #include <QSettings>
+#include <QWidget>
 
 class View;
 class QShowEvent;
 
-namespace Ui { class MainWindow; }
+namespace Ui
+{
+class MainWindow;
+}
 
-class TabWidget; // Forward declaration
+class TabWidget;  // Forward declaration
 
 class TabPage : public QWidget
 {
     Q_OBJECT
 
-public:
-    enum FileType { TEXT, HTML, SVG, IMAGE };
-    TabPage(Ui::MainWindow const &ui, TabWidget *tabWidget, QWidget *parent = 0);
+   public:
+    enum FileType
+    {
+        TEXT,
+        HTML,
+        SVG,
+        IMAGE
+    };
+    TabPage(Ui::MainWindow const &ui, TabWidget *tabWidget,
+            QWidget *parent = 0);
 
-    bool load(QString const & uri);
+    bool load(QString const &uri);
 
     void makeBackgroundTransparent(bool transparent);
     void wordWrap(bool word_wrap);
@@ -37,12 +47,12 @@ public:
 
     void applyZoomToAllTabs(int zoom);
 
-signals:
+   signals:
     void signalScaleChanged();
-    void signalFindNext(QString const & text, bool case_sensitive);
-    void signalFindPrevious(QString const & text, bool case_sensitive);
+    void signalFindNext(QString const &text, bool case_sensitive);
+    void signalFindPrevious(QString const &text, bool case_sensitive);
 
-public slots:
+   public slots:
     void slotZoomLock();
     void slotZoomIn();
     void slotZoomOut();
@@ -54,13 +64,13 @@ public slots:
     void slotSaveSettings();
     void slotLoadSettings();
 
-private slots:
+   private slots:
     void slotReload();
 
-private:
-    Ui::MainWindow const & ui;
-    View * view;
-    View * createView(QString const & file_uri);
+   private:
+    Ui::MainWindow const &ui;
+    View *view;
+    View *createView(QString const &file_uri);
 
     QString file_uri;
     FileType file_type;

@@ -1,36 +1,39 @@
 
 #include "customwebview.hpp"
 
-#include "ui_mainwindow.h"
-#include "contextmenus.hpp"
-#include "utility.hpp"
-
-#include <QWheelEvent>
+#include <QAction>
+#include <QMenu>
+#include <QPainter>
 #include <QPointF>
 #include <QWebEnginePage>
-#include <QMenu>
-#include <QAction>
-#include <QPainter>
+#include <QWheelEvent>
+
+#include "contextmenus.hpp"
+#include "ui_mainwindow.h"
+#include "utility.hpp"
 
 using namespace utility;
 
 namespace
 {
-    int const border_width = 1;
-    int const border_margin_width = 3;
-}
+int const border_width = 1;
+int const border_margin_width = 3;
+}  // namespace
 
-CustomWebView::CustomWebView(Ui::MainWindow const &ui, ViewScale const &view_scale, QWidget *parent)
+CustomWebView::CustomWebView(Ui::MainWindow const &ui,
+                             ViewScale const &view_scale, QWidget *parent)
     : QWebEngineView(parent), ui(ui), view_scale(view_scale)
 {
     setAcceptDrops(false);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this, SIGNAL(customContextMenuRequested(QPoint const &)), SLOT(slotShowContextMenu(QPoint const &)));
+    connect(this, SIGNAL(customContextMenuRequested(QPoint const &)),
+            SLOT(slotShowContextMenu(QPoint const &)));
 
     // Set up timer to check for scroll changes
     scrollCheckTimer.setInterval(100);  // Check every 100ms
-    connect(&scrollCheckTimer, &QTimer::timeout, this, &CustomWebView::checkScrollChanges);
+    connect(&scrollCheckTimer, &QTimer::timeout, this,
+            &CustomWebView::checkScrollChanges);
     scrollCheckTimer.start();
 }
 
@@ -44,12 +47,12 @@ void CustomWebView::setScale(double scale)
     // ... (keep the existing implementation)
 }
 
-void CustomWebView::slotShowContextMenu(QPoint const & position)
+void CustomWebView::slotShowContextMenu(QPoint const &position)
 {
     // ... (keep the existing implementation)
 }
 
-void CustomWebView::paintEvent(QPaintEvent * event)
+void CustomWebView::paintEvent(QPaintEvent *event)
 {
     QWebEngineView::paintEvent(event);
 
@@ -62,18 +65,25 @@ void CustomWebView::paintEvent(QPaintEvent * event)
     // Draw the border.
     QPainter painter(this);
     painter.setPen(palette().mid().color());
-    painter.drawRect(QRect(QPoint(0, 0), QSize(max_x, max_y)).adjusted(0, 0, -border_width, -border_width));
+    painter.drawRect(QRect(QPoint(0, 0), QSize(max_x, max_y))
+                         .adjusted(0, 0, -border_width, -border_width));
 
     // Draw the border margin if there is a scrollbar.
     if (hasVertical)
     {
-        int margin_height = hasHorizontal ? height() - border_margin_width : height();
-        painter.fillRect(QRect(QPoint(max_x, 0), QSize(border_margin_width, margin_height)), palette().window().color());
+        int margin_height =
+            hasHorizontal ? height() - border_margin_width : height();
+        painter.fillRect(
+            QRect(QPoint(max_x, 0), QSize(border_margin_width, margin_height)),
+            palette().window().color());
     }
     if (hasHorizontal)
     {
-        int margin_width = hasVertical ? width() - border_margin_width : width();
-        painter.fillRect(QRect(QPoint(0, max_y), QSize(margin_width, border_margin_width)), palette().window().color());
+        int margin_width =
+            hasVertical ? width() - border_margin_width : width();
+        painter.fillRect(
+            QRect(QPoint(0, max_y), QSize(margin_width, border_margin_width)),
+            palette().window().color());
     }
 }
 
@@ -83,10 +93,7 @@ void CustomWebView::checkScrollChanges()
     update();
 }
 
-double CustomWebView::getCurrentScale() const
-{
-    return page()->zoomFactor();
-}
+double CustomWebView::getCurrentScale() const { return page()->zoomFactor(); }
 
 bool CustomWebView::hasVerticalScrollBar() const
 {

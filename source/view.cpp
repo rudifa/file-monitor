@@ -1,14 +1,14 @@
 
 #include "view.hpp"
 
-#include "utility.hpp"
-
-#include <QWheelEvent>
 #include <QGraphicsView>
+#include <QWheelEvent>
+
+#include "utility.hpp"
 
 using namespace utility;
 
-View::View(ViewScale zoom_parameters, QWidget * parent)
+View::View(ViewScale zoom_parameters, QWidget* parent)
     : QWidget(parent), view_scale(zoom_parameters), current_zoom(0)
 {
     transparent_tile_pixmap = QPixmap(32, 32);
@@ -25,21 +25,17 @@ void View::setZoom(int zoom)
     double scale = view_scale.zoomToScale(zoom);
     setScale(scale);
 
-    // We can't just use zoom in case we are being handed an invalid zoom (to jump to default).
+    // We can't just use zoom in case we are being handed an invalid zoom (to
+    // jump to default).
     slotScaleChanged(scale);
 }
 
-int View::getZoom() const
-{
-    return current_zoom;
-}
+int View::getZoom() const { return current_zoom; }
 
-void View::resetZoom()
-{
-    setZoom(0);
-}
+void View::resetZoom() { setZoom(0); }
 
-// This only announces that the scale has been changed elsewhere, don't change the scale in here.
+// This only announces that the scale has been changed elsewhere, don't change
+// the scale in here.
 void View::slotScaleChanged(double scale)
 {
     int zoom = view_scale.scaleToZoom(scale);
