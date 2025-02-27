@@ -1,13 +1,13 @@
 
 #include "finddialog.hpp"
 
-FindDialog::FindDialog(QWidget * parent)
-    : QDialog(parent)
+FindDialog::FindDialog(QWidget* parent) : QDialog(parent)
 {
     ui.setupUi(this);
 
     connect(ui.find_next_push_button, SIGNAL(clicked()), SLOT(slotFindNext()));
-    connect(ui.find_previous_push_button, SIGNAL(clicked()), SLOT(slotFindPrevious()));
+    connect(ui.find_previous_push_button, SIGNAL(clicked()),
+            SLOT(slotFindPrevious()));
 
     settings.beginGroup("search");
 }
@@ -16,9 +16,9 @@ void FindDialog::loadSettings()
 {
     ui.find_combo_box->clear();
 
-    QStringList previous_search_items = settings.value("previous").toStringList();
-    if (previous_search_items.isEmpty())
-        return;
+    QStringList previous_search_items =
+        settings.value("previous").toStringList();
+    if (previous_search_items.isEmpty()) return;
 
     ui.find_combo_box->addItems(previous_search_items);
 }

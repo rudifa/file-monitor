@@ -6,17 +6,20 @@
 
 class CustomTextEdit;
 
-namespace Ui { class MainWindow; }
+namespace Ui
+{
+class MainWindow;
+}
 
 class TextView : public View
 {
     Q_OBJECT
 
-public:
-    TextView(Ui::MainWindow const & ui, QWidget * parent);
+   public:
+    TextView(Ui::MainWindow const& ui, QWidget* parent);
 
-    QWidget * getWidget();
-    bool load(QString const & file_uri, bool is_reload = false);
+    QWidget* getWidget();
+    bool load(QString const& file_uri, bool is_reload = false);
 
     void setScale(double scale);
     void setScrollDimensions(QPoint dimensions);
@@ -29,20 +32,20 @@ public:
     virtual void selectAll();
     virtual void copy();
 
-public slots:
-    virtual void slotFindNext(QString const & text, bool case_sensitive);
-    virtual void slotFindPrevious(QString const & text, bool case_sensitive);
+   public slots:
+    virtual void slotFindNext(QString const& text, bool case_sensitive);
+    virtual void slotFindPrevious(QString const& text, bool case_sensitive);
 
-protected:
-    CustomTextEdit * text_edit;
+   protected:
+    CustomTextEdit* text_edit;
 
     QString unformatted_content;
     bool indent_xml;
     bool scroll_to_bottom_on_change;
 
-    void formatAndInsertContent(QString const & content, bool indent);
+    void formatAndInsertContent(QString const& content, bool indent);
 
-private slots:
+   private slots:
     void slotScrollToBottom();
 };
 

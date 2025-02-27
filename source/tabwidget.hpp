@@ -2,15 +2,14 @@
 #ifndef TAB_WIDGET_HPP
 #define TAB_WIDGET_HPP
 
+#include <QSettings>
 #include <QStringList>
 #include <QTabWidget>
-#include <QSettings>
-
 #include <memory>
 
 namespace Ui
 {
-    class MainWindow;
+class MainWindow;
 }
 
 class QSlider;
@@ -26,7 +25,7 @@ class TabWidget : public QTabWidget
 {
     Q_OBJECT
 
-public:
+   public:
     explicit TabWidget(Ui::MainWindow const &ui, QWidget *parent = 0);
 
     void updateTabConnections();
@@ -36,7 +35,7 @@ public:
 
     void mouseMoveEvent(QMouseEvent *event);
 
-public slots:
+   public slots:
     void slotOpenFile(QString const &file_uri);
     void slotOpenFiles();
     void slotOpenFiles(QStringList const &file_uris);
@@ -49,7 +48,7 @@ public slots:
     void slotIndentXML(bool indent_xml);
     void slotScrollToBottomOnChange(bool scroll_to_bottom);
 
-private slots:
+   private slots:
     void slotOpenRecentFile();
     void slotRemoveTab(int tab_index);
     void slotCurrentTabChanged(int new_index);
@@ -57,7 +56,7 @@ private slots:
     void slotSynchronizeZoomSlider();
     void slotFind();
 
-private:
+   private:
     Ui::MainWindow const &ui;
     QSlider *zoom_slider;
     FileSystemWatcher *file_watcher;

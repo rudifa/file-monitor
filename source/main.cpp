@@ -1,9 +1,9 @@
 
-#include "utility.hpp"
-#include "mainwindow.hpp"
-
 #include <QApplication>
 #include <QTranslator>
+
+#include "mainwindow.hpp"
+#include "utility.hpp"
 
 using namespace utility;
 
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     QString translation_uri = locale::getSystemTranslationUri(app);
     if (!translation_uri.isEmpty())
     {
-        translator.load(translation_uri);
+        (void)translator.load(translation_uri);
         app.installTranslator(&translator);
     }
 

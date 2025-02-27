@@ -3,8 +3,7 @@
 
 #include "ui_mainwindow.h"
 
-TextContextMenu::TextContextMenu(Ui::MainWindow const & ui)
-    : QMenu(0), ui(ui)
+TextContextMenu::TextContextMenu(Ui::MainWindow const& ui) : QMenu(0), ui(ui)
 {
     addAction(ui.action_edit_select_all);
     addAction(ui.action_edit_copy);
@@ -12,8 +11,7 @@ TextContextMenu::TextContextMenu(Ui::MainWindow const & ui)
     addAction(ui.action_edit_find);
 }
 
-ImageContextMenu::ImageContextMenu(Ui::MainWindow const & ui)
-    : QMenu(0), ui(ui)
+ImageContextMenu::ImageContextMenu(Ui::MainWindow const& ui) : QMenu(0), ui(ui)
 {
     addAction(ui.action_edit_zoom_in);
     addAction(ui.action_edit_zoom_out);

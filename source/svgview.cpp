@@ -1,22 +1,22 @@
 
 #include "svgview.hpp"
 
-#include "tabpage.hpp"
-#include "customgraphicsview.hpp"
-#include "utility.hpp"
-
-#include <QtSvg>
-#include <QtSvgWidgets/QGraphicsSvgItem>
 #include <QScrollBar>
 #include <QWheelEvent>
-
-#include <cmath>
+#include <QtSvg>
+#include <QtSvgWidgets/QGraphicsSvgItem>
 #include <cassert>
+#include <cmath>
+
+#include "customgraphicsview.hpp"
+#include "tabpage.hpp"
+#include "utility.hpp"
 
 using namespace utility;
 
 SvgView::SvgView(Ui::MainWindow const &ui, QWidget *parent)
-    : View(ViewScale(ViewScale::RampUp, .1, 500, 1), parent), graphics_view(new CustomGraphicsView(ui, view_scale, parent))
+    : View(ViewScale(ViewScale::RampUp, .1, 500, 1), parent),
+      graphics_view(new CustomGraphicsView(ui, view_scale, parent))
 {
 }
 
@@ -42,7 +42,8 @@ bool SvgView::load(QString const &file_uri, bool)
 
     graphics_scene->addItem(graphics_item);
 
-    connect(graphics_view, SIGNAL(signalScaleChanged(double)), SLOT(slotScaleChanged(double)));
+    connect(graphics_view, SIGNAL(signalScaleChanged(double)),
+            SLOT(slotScaleChanged(double)));
 
     return true;
 }
@@ -68,5 +69,6 @@ QPoint SvgView::getScrollDimensions() const
 
 void SvgView::makeBackgroundTransparent(bool transparent)
 {
-    graphics_view->setBackgroundBrush(transparent ? QBrush(transparent_tile_pixmap) : Qt::NoBrush);
+    graphics_view->setBackgroundBrush(
+        transparent ? QBrush(transparent_tile_pixmap) : Qt::NoBrush);
 }
