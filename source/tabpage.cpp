@@ -1,17 +1,21 @@
 
 #include "tabpage.hpp"
+#include "tabwidget.hpp"
 
 #include "view.hpp"
 #include "textview.hpp"
 #include "svgview.hpp"
 #include "htmlview.hpp"
 #include "imageview.hpp"
+#include "mainwindow.hpp"
 
 #include <QGridLayout>
 #include <QWheelEvent>
 #include <qmath.h>
 
 #include <cassert>
+
+#include <QDebug>
 
 namespace
 {
@@ -41,8 +45,8 @@ namespace
    }
 }
 
-TabPage::TabPage(Ui::MainWindow const & ui, QWidget * parent)
-    : QWidget(parent), ui(ui), displayed_to_user(false)
+TabPage::TabPage(Ui::MainWindow const &ui, TabWidget *tabWidget, QWidget *parent)
+    : QWidget(parent), ui(ui), m_tabWidget(tabWidget), displayed_to_user(false)
 {
 }
 
@@ -103,6 +107,47 @@ int TabPage::getPercentageZoom() const
     return view->getZoom();
 }
 
+void TabPage::applyZoomToAllTabs(int zoom)
+{
+    if (!m_tabWidget)
+    {
+        qDebug() << "TabWidget is null in applyZoomToAllTabs";
+        return;
+    }
+
+    for (int i = 0; i < m_tabWidget->count(); ++i)
+    {
+        TabPage* tabPage = qobject_cast<TabPage*>(m_tabWidget->widget(i));
+        if (tabPage && tabPage != this)
+        {
+            tabPage->view->setZoom(zoom);
+        }
+    }
+}
+
+void TabPage::slotZoomLock()
+{
+    MainWindow* mainWindow = qobject_cast<MainWindow*>(window());
+    if (!mainWindow) {
+        // qDebug() << "Failed to get MainWindow instance";
+        return;
+    }
+
+    if (mainWindow->isZoomLocked())
+    {
+        // Get the current zoom level
+        int currentZoom = view->getZoom();
+        qDebug() << "Zoom locked at" << currentZoom << "%";
+
+        // Apply the zoom level to all other tabs
+        applyZoomToAllTabs(currentZoom);
+    }
+    else
+    {
+        qDebug() << "Zoom unlocked";
+    }
+}
+
 void TabPage::slotZoomIn()
 {
     double zoom = view->getZoom() + zoom::step;
@@ -136,8 +181,19 @@ void TabPage::slotSetZoom(int zoom)
         return;
 
     view->setZoom(zoom);
-}
 
+    MainWindow *mainWindow = qobject_cast<MainWindow *>(window());
+    if (!mainWindow)
+    {
+        qDebug() << "Failed to get MainWindow instance in slotSetZoom";
+        return;
+    }
+
+    if (mainWindow->isZoomLocked() && m_tabWidget)
+    {
+        applyZoomToAllTabs(zoom);
+    }
+}
 void TabPage::slotLoadSettings()
 {
     if (!wasCurrentTab())
@@ -177,7 +233,7 @@ View * TabPage::createView(QString const & file_uri)
             return new SvgView(ui, this);
         case TabPage::IMAGE:
             return new ImageView(ui, this);
-        
+
         case TabPage::TEXT:
         default:
             return new TextView(ui, this);
