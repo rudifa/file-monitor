@@ -76,6 +76,7 @@ void TabWidget::updateTabConnections()
         TabPage * tab_page = tabPage(widget(i));
         if (i == currentIndex())
         {
+            connect(ui.action_lock_zoom, SIGNAL(triggered()), tab_page, SLOT(slotZoomLock()));
             connect(ui.action_edit_zoom_in, SIGNAL(triggered()), tab_page, SLOT(slotZoomIn()));
             connect(ui.action_edit_zoom_out, SIGNAL(triggered()), tab_page, SLOT(slotZoomOut()));
             connect(ui.action_edit_zoom_reset, SIGNAL(triggered()), tab_page, SLOT(slotResetZoom()));
@@ -89,6 +90,7 @@ void TabWidget::updateTabConnections()
         }
         else
         {
+            disconnect(ui.action_lock_zoom, SIGNAL(triggered()), tab_page, SLOT(slotZoomLock()));
             disconnect(ui.action_edit_zoom_in, SIGNAL(triggered()), tab_page, SLOT(slotZoomIn()));
             disconnect(ui.action_edit_zoom_out, SIGNAL(triggered()), tab_page, SLOT(slotZoomOut()));
             disconnect(ui.action_edit_zoom_reset, SIGNAL(triggered()), tab_page, SLOT(slotResetZoom()));
@@ -274,6 +276,8 @@ void TabWidget::saveSettings()
 
 TabPage * TabWidget::loadFile(QString const & file_uri)
 {
+    TabPage* newTab = new TabPage(ui, this);  // Create a new TabPage
+
     if (file_uri.isEmpty())
         return nullptr;
 
@@ -288,27 +292,27 @@ TabPage * TabWidget::loadFile(QString const & file_uri)
     if (loaded_tab_page)
     {
         setCurrentWidget(loaded_tab_page);
+        delete newTab;  // Delete the unused new tab
         return loaded_tab_page;
     }
 
-    TabPage * tab_page = new TabPage(ui, this);
-    if (!tab_page->load(canonical_file_uri))
+    if (!newTab->load(canonical_file_uri))
     {
         QMessageBox::warning(this, tr("File Error"), tr("This file could not be loaded."),
             QMessageBox::Ok, QMessageBox::NoButton);
-        tab_page->deleteLater();
+        delete newTab;
         return nullptr;
     }
 
-    tab_page->makeBackgroundTransparent(ui.action_transparent_background->isChecked());
-    tab_page->wordWrap(ui.action_word_wrap->isChecked());
-    tab_page->indentXML(ui.action_indent_xml->isChecked());
-    tab_page->scrollToBottomOnChange(ui.action_scroll_to_bottom->isChecked());
+    newTab->makeBackgroundTransparent(ui.action_transparent_background->isChecked());
+    newTab->wordWrap(ui.action_word_wrap->isChecked());
+    newTab->indentXML(ui.action_indent_xml->isChecked());
+    newTab->scrollToBottomOnChange(ui.action_scroll_to_bottom->isChecked());
 
-    addTab(tab_page, file_info.fileName());
+    addTab(newTab, file_info.fileName());
     file_watcher->addPath(file_uri);
 
-    return tab_page;
+    return newTab;
 }
 
 TabPage * TabWidget::tabPage(QWidget * widget) const

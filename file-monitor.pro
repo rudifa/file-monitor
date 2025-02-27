@@ -16,6 +16,8 @@ mac {
     #QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
 }
 
+CONFIG += console
+
 DEFINES += QT_NO_CAST_TO_ASCII QT_STRICT_ITERATORS
 
 QMAKE_CXXFLAGS += -std=c++0x
@@ -29,4 +31,3 @@ RESOURCES += resources.qrc
 include(translations/translations.pri)
 include(source/source.pri)
 include(deployment/deployment.pri)
-

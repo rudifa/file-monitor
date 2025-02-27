@@ -17,6 +17,11 @@ public:
     MainWindow(QWidget * parent = 0);
     ~MainWindow();
 
+    bool isZoomLocked() const
+    {
+        return ui.action_lock_zoom->isChecked();
+    }
+
 protected:
     // TODO: Internationalization needs work!
     void changeEvent(QEvent * event);
