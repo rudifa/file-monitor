@@ -2,11 +2,15 @@
 #ifndef UTILITY_HPP
 #define UTILITY_HPP
 
-#include <QtCore>
-#include <QtGui>
+#include <QFileInfo>
+#include <QPointF>
 #include <algorithm>
 #include <cmath>
 #include <functional>
+
+class QApplication;
+class QString;
+// class QStringList;
 
 namespace utility
 {
