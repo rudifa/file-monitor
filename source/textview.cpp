@@ -1,12 +1,12 @@
 
 #include "textview.hpp"
 
+#include <QDomDocument>
 #include <QFile>
 #include <QScrollBar>
 #include <QTextStream>
 #include <QTimer>
 #include <QWheelEvent>
-#include <QtXml/QDomDocument>
 #include <cassert>
 #include <cmath>
 

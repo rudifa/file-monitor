@@ -15,7 +15,7 @@ using namespace utility;
 
 namespace
 {
-QString getLocalesDirectory(QApplication const &app)
+QString getLocalesDirectory(QApplication const& app)
 {
     // On windows and during builds on unix, the locale folder is next to the
     // app.
@@ -34,16 +34,16 @@ QString getLocalesDirectory(QApplication const &app)
     // Locale directory could not be found.
     return QString();
 }
-inline QString languageLocaleToTranslationUri(QApplication const &app,
-                                              QString const &language_locale)
+inline QString languageLocaleToTranslationUri(QApplication const& app,
+                                              QString const& language_locale)
 {
     return getLocalesDirectory(app) + "/" + language_locale + ".qm";
 }
-inline QString QLocaleToXmlLangString(QLocale const &locale)
+inline QString QLocaleToXmlLangString(QLocale const& locale)
 {
     return locale.name().replace("_", "-");
 }
-inline QString langFromXmlLangString(QString const &xml_lang)
+inline QString langFromXmlLangString(QString const& xml_lang)
 {
     return xml_lang.section("-", 0, 0);
 }
@@ -59,7 +59,7 @@ inline double logisticFunction(double input)
 inline double logitFunction(double input) { return log(input / (1.0 - input)); }
 }  // namespace
 
-QString locale::getSystemTranslationUri(QApplication const &app)
+QString locale::getSystemTranslationUri(QApplication const& app)
 {
     // Convert from Qt to xml:lang language-locale convention.
     QString xml_lang = QLocaleToXmlLangString(QLocale::system());
@@ -84,7 +84,7 @@ QString locale::getSystemTranslationUri(QApplication const &app)
     return QString();
 }
 
-void settings::saveSettingsToFile(QString const &file_uri)
+void settings::saveSettingsToFile(QString const& file_uri)
 {
     QSettings global_settings;
     QSettings file_settings(file_uri, QSettings::IniFormat);
@@ -94,7 +94,7 @@ void settings::saveSettingsToFile(QString const &file_uri)
         file_settings.setValue(*it, global_settings.value(*it));
 }
 
-bool settings::loadSettingsFromFile(QString const &file_uri)
+bool settings::loadSettingsFromFile(QString const& file_uri)
 {
     QSettings file_settings(file_uri, QSettings::IniFormat);
     auto temp_keys = file_settings.allKeys();
@@ -178,14 +178,14 @@ double math::inverseRampUp(double input, double input_min, double input_max,
     return scaled_logit_function_output;
 }
 
-bool xml::isXML(QString const &content)
+bool xml::isXML(QString const& content)
 {
     QDomDocument document;
-    QDomDocument::ParseResult result = document.setContent(content);
+    auto result = document.setContent(content);
     return static_cast<bool>(result);
 }
 
-QStringList qt_extensions::operator-(QStringList lhs, QStringList const &rhs)
+QStringList qt_extensions::operator-(QStringList lhs, QStringList const& rhs)
 {
     for (int i = 0; i < rhs.count(); ++i) lhs.removeAll(rhs[i]);
 

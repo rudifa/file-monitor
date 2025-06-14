@@ -1,10 +1,9 @@
 
 #include "svgview.hpp"
 
+#include <QGraphicsSvgItem>
 #include <QScrollBar>
 #include <QWheelEvent>
-#include <QtSvg>
-#include <QtSvgWidgets/QGraphicsSvgItem>
 #include <cassert>
 #include <cmath>
 

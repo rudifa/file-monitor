@@ -263,19 +263,48 @@ void TabWidget::slotOpenFile(QString const &file_uri)
 
 void TabWidget::slotOpenFiles()
 {
+    qDebug() << "Entering slotOpenFiles()";
+
     // The open dialog starts in the current uri, or last open uri's directory.
+
     QString open_from_uri = currentTabUri();
     if (open_from_uri.isEmpty())
         open_from_uri = settings.value("lastOpenUri", "").toString();
 
-    QStringList file_uris = QFileDialog::getOpenFileNames(
-        this, tr("Select File"), open_from_uri, tr("*.*"));
+    QFileInfo fileInfo(open_from_uri);
+    QString initialDir = fileInfo.isDir() ? open_from_uri : fileInfo.path();
 
-    slotOpenFiles(file_uris);
+    qDebug() << "Current working directory:" << QDir::currentPath();
+    qDebug() << "Initial directory for file dialog:" << initialDir;
+
+    QStringList file_uris = QFileDialog::getOpenFileNames(
+        this, tr("Select Files"), initialDir, tr("All Files (*.*)"), nullptr,
+        QFileDialog::DontUseNativeDialog);
+
+    // NOTE:
+    // QFileDialog::DontUseNativeDialog was added after the change from Qt5 to
+    // Qt6, because in Qt6 the default native dialog did not show up to theuser.
+
+    qDebug() << "File dialog returned:" << file_uris;
+
+    if (file_uris.isEmpty())
+    {
+        qDebug() << "No files were selected";
+    }
+    else
+    {
+        qDebug() << "Selected files:" << file_uris;
+        slotOpenFiles(file_uris);
+
+        // Update the last open URI
+        settings.setValue("lastOpenUri", QFileInfo(file_uris.first()).path());
+    }
 }
 
 void TabWidget::slotOpenFiles(QStringList const &file_uris)
 {
+    qDebug() << "Opening files:" << file_uris;
+
     for (int i = 0; i < file_uris.count(); ++i) slotOpenFile(file_uris[i]);
 }
 
