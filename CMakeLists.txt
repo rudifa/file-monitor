@@ -96,4 +96,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 # Install
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+if(APPLE)
+    install(TARGETS ${PROJECT_NAME}
+        BUNDLE DESTINATION /Applications
+        RUNTIME DESTINATION /Applications
+    )
+else()
+    install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+endif()
