@@ -25,9 +25,12 @@ Currently supported file types are text, xml, html, svg, and raster image file f
 
 ## Modifications by [@rudifa](https://github.com/rudifa)
 
-Add `CMakeLists.txt` and update source files to build with `Qt 6.8.2` on a MacBook Pro arm64 running macOS Sequoia 15.3.1.
+- build: add `CMakeLists.txt` and use it
+- install: add `install` target to install the app to `/Applications/file-monitor.app`
+- source files: update to build with `Qt 6.8.2` on a MacBook Pro arm64 running macOS Sequoia 15.3.1.
+- main window: add `Lock Zoom` button to lock zoom level and position between file tabs
 
-## Build
+## Build with CMake
 
 In the project directory, run:
 
@@ -36,6 +39,7 @@ mkdir build
 cd build
 cmake ..
 make
+
 ```
 
 ## Run
@@ -48,7 +52,15 @@ In the `build` directory, run:
 open -a file-monitor.app
 ```
 
-This opens a window with a file browser to select files to view.
+## Install
+
+In the `build` directory, run:
+
+```bash
+make install
+```
+
+This copies the application files to /Applications/file-monitor.
 
 ## Example `file-monitor` display
 
